@@ -177,8 +177,9 @@ const ApexChartsView = ({ className, ...rest }) => {
             <Button
               ref={actionRef}
               onClick={() => {
-                  setMenuOpen(true)
-                }}
+                if(!drill){
+                  setMenuOpen(true);
+                }}}
               startIcon={
                 <SvgIcon fontSize="small">
                   <CalendarIcon />

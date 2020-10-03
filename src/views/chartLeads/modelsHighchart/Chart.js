@@ -77,9 +77,10 @@ const LineChart = ({ leads , setDrill}) => {
         drilldown: function (e) {
           setDrill(true)
         },
-        drillup: function(e){
+        drillupall: function(e){
           setDrill(false)
         }
+
       }
     },
     legend: {

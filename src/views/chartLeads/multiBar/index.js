@@ -109,7 +109,10 @@ const ApexChartsView = ({ className, ...rest }) => {
     setArrIds(stArr)
     //eslint-disable-next-line
   },[statuses])
-
+  useEffect(()=>{
+    setStoreSearch('&store=')
+    //eslint-disable-next-line
+  },[makeSearch])
   useEffect(()=>{
     let stArrS = [];
     if(sources){

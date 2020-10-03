@@ -100,6 +100,11 @@ const ApexChartsView = ({ className, ...rest }) => {
   },[user])
 
   useEffect(()=>{
+    setStoreSearch('&store=')
+    //eslint-disable-next-line
+  },[makeSearch])
+
+  useEffect(()=>{
     getLeadsAR(`${makeSearch}${statusSearch}${sourceSearch}${storeSearch}${date}`, 'models')
     //eslint-disable-next-line
   },[makeSearch, statusSearch, sourceSearch, storeSearch, date,])
@@ -177,7 +182,10 @@ const ApexChartsView = ({ className, ...rest }) => {
           <Grid item>
             <Button
               ref={actionRef}
-              onClick={() => setMenuOpen(true)}
+              onClick={() => {
+                if(!drill){
+                  setMenuOpen(true);
+                }}}
               startIcon={
                 <SvgIcon fontSize="small">
                   <CalendarIcon />

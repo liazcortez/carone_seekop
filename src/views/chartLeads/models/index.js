@@ -103,6 +103,11 @@ const ApexChartsView = ({ className, ...rest }) => {
   },[user])
 
   useEffect(()=>{
+    setStoreSearch('&store=')
+    //eslint-disable-next-line
+  },[makeSearch])
+
+  useEffect(()=>{
     getLeadsAR(`${makeSearch}${statusSearch}${sourceSearch}${storeSearch}${date}`, 'models')
     //eslint-disable-next-line
   },[makeSearch, statusSearch, sourceSearch, storeSearch, date,])

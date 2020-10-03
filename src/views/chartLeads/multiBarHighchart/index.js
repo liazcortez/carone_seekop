@@ -95,6 +95,10 @@ const ApexChartsView = ({ className, ...rest }) => {
     await getStoresByMake(id);
   };
 
+  useEffect(()=>{
+    setStoreSearch('&store=')
+    //eslint-disable-next-line
+  },[makeSearch])
 
   useEffect(()=>{
     let stArr = [];

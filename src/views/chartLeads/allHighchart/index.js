@@ -97,9 +97,7 @@ const ApexChartsView = ({ className, ...rest }) => {
   },[makeSearch, statusSearch, sourceSearch, storeSearch, date])
 
   useEffect(()=>{
-    if(makeSearch === `&make=`){
-      setStoreSearch('&store=')
-    }
+    setStoreSearch('&store=')
     //eslint-disable-next-line
   },[makeSearch])
 

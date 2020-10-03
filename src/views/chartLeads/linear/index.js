@@ -93,7 +93,10 @@ const ApexChartsView = ({ className, ...rest }) => {
 
     //eslint-disable-next-line
   }, []);
-
+  useEffect(()=>{
+    setStoreSearch('&store=')
+    //eslint-disable-next-line
+  },[makeSearch])
   useEffect(()=>{
     getMakes();
     getStatuses();
