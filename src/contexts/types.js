@@ -1,0 +1,203 @@
+// Auth
+export const REGISTER_SUCCESS = 'REGISTER_SUCCESS';
+export const REGISTER_FAIL = 'REGISTER_FAIL';
+export const USER_LOADED = 'USER_LOADED';
+export const AUTH_ERROR = 'AUTH_ERROR';
+export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
+export const LOGIN_FAIL = 'LOGIN_FAIL';
+export const LOGOUT = 'LOGOUT';
+export const CLEAR_ERRORS = 'CLEAR_ERRORS';
+export const FORGOT_PASSWORD = 'FORGOT_PASSWORD';
+export const RESET_PASSWORD = 'RESET_PASSWORD';
+export const FORGOT_PASSWORD_FAIL = 'FORGOT_PASSWORD_FAIL';
+export const RESET_PASSWORD_FAIL = 'RESET_PASSWORD_FAIL';
+export const UPDATE_PASSWORD = 'UPDATE_PASSWORD';
+export const UPDATE_PASSWORD_ERROR = 'UPDATE_PASSWORD_ERROR';
+export const CHANGE_PASSWORD = 'CHANGE_PASSWORD';
+export const UPDATE_PROFILE = 'UPDATE_PROFILE';
+
+
+// User
+export const UPDATE_USER = 'UPDATE_USER';
+export const GET_USER_BY_ID = 'GET_USER_BY_ID';
+export const GET_USERS = 'GET_USERS';
+export const GET_USER = 'GET_USER';
+export const DELETE_USER = 'DELETE_USER';
+export const CREATE_USER = 'CREATE_USER';
+export const GET_USERS_BY_STORE = 'GET_USERS_BY_STORE';
+
+// Leads
+export const GET_LEAD = 'GET_LEAD';
+export const GET_LEADS = 'GET_LEADS';
+export const GET_LEADS_BY_STORE = 'GET_LEADS_BY_STORE';
+export const GET_LEADS_BY_USER = 'GET_LEADS_BY_USER';
+export const UPDATE_LEAD = 'UPDATE_LEAD';
+export const DELETE_LEAD = 'DELETE_LEAD';
+export const CREATE_LEAD = 'CREATE_LEAD';
+export const GET_LEADS_CHART = 'GET_LEADS_CHART';
+export const GET_LEADS_BY_STATUS = 'GET_LEADS_BY_STATUS';
+export const GET_LEADS_AR = 'GET_LEADS_AR';
+export const GET_LEADS_SOLD = 'GET_LEADS_SOLD';
+export const GET_LEADS_NEW = 'GET_LEADS_NEW';
+export const GET_LEADS_FOLLOW = 'GET_LEADS_FOLLOW';
+export const GET_LEADS_DATE = 'GET_LEADS_DATE';
+export const GET_LAST_LEADS = 'GET_LAST_LEADS';
+export const GET_ALL_CHART_LEADS = 'GET_ALL_CHART_LEADS';
+export const GET_ANALYTICS = 'GET_ANALYTICS';
+export const GET_ANALYTICS_METRICS = 'GET_ANALYTICS_METRICS';
+
+// Vehicles
+export const GET_VEHICLES = 'GET_VEHICLES';
+export const GET_VEHICLE = 'GET_VEHICLE';
+export const GET_VEHICLES_BY_MAKE = 'GET_VEHICLES_BY_MAKE';
+export const CREATE_VEHICLE = 'CREATE_VEHICLE';
+export const DELETE_VEHICLE = 'DELETE_VEHICLE';
+export const UPDATE_VEHICLE = 'UPDATE_VEHICLE';
+
+// Makes
+export const GET_MAKES = 'GET_MAKES';
+export const GET_MAKE = 'GET_MAKE';
+export const CREATE_MAKE = 'CREATE_MAKE';
+export const DELETE_MAKE = 'DELETE_MAKE';
+export const UPDATE_MAKE = 'UPDATE_MAKE';
+
+// Stores
+export const GET_STORES = 'GET_STORES';
+export const GET_STORES_BY_MAKE = 'GET_STORES_BY_MAKE';
+export const GET_STORE = 'GET_STORE';
+export const CREATE_STORE = 'CREATE_STORE';
+export const DELETE_STORE = 'DELETE_STORE';
+export const UPDATE_STORE = 'UPDATE_STORE';
+
+// Companies
+export const GET_COMPANIES = 'GET_COMPANIES';
+export const GET_COMPANY = 'GET_COMPANY';
+export const CREATE_COMPANY = 'CREATE_COMPANY';
+export const DELETE_COMPANY = 'DELETE_COMPANY';
+export const UPDATE_COMPANY = 'UPDATE_COMPANY';
+
+// Social Account
+export const GET_SOCIAL_ACCOUNTS = 'GET_SOCIAL_ACCOUNTS';
+export const GET_SOCIAL_ACCOUNT = 'GET_SOCIAL_ACCOUNT';
+export const CREATE_SOCIAL_ACCOUNT = 'CREATE_SOCIAL_ACCOUNT';
+export const DELETE_SOCIAL_ACCOUNT = 'DELETE_SOCIAL_ACCOUNT';
+export const UPDATE_SOCIAL_ACCOUNT = 'UPDATE_SOCIAL_ACCOUNT';
+
+// Task
+export const GET_TASKS = 'GET_TASKS';
+export const GET_TASK = 'GET_TASK';
+export const CREATE_TASK= 'CREATE_TASK';
+export const DELETE_TASK = 'DELETE_TASK';
+export const UPDATE_TASK = 'UPDATE_TASK';
+
+
+// Status
+export const GET_STATUSES = 'GET_ALL_STATUS';
+export const GET_STATUS= 'GET_STATUS';
+export const CREATE_STATUS = 'CREATE_STATUS';
+export const DELETE_STATUS = 'DELETE_STATUS';
+export const UPDATE_STATUS = 'UPDATE_STATUS';
+
+
+// Sources
+export const GET_SOURCES = 'GET_SOURCES';
+export const GET_SOURCE = 'GET_SOURCE';
+export const CREATE_SOURCE = 'CREATE_SOURCE';
+export const DELETE_SOURCE = 'DELETE_SOURCE';
+export const UPDATE_SOURCE = 'UPDATE_SOURCE';
+
+// Mails
+export const GET_MAILS = 'GET_MAILS';
+export const GET_MAILS_BY_LEAD = 'GET_MAILS_BY_LEAD';
+export const GET_MAIL = 'GET_MAIL';
+export const CREATE_MAIL = 'CREATE_MAIL';
+export const DELETE_MAIL = 'DELETE_MAIL';
+export const UPDATE_MAIL = 'UPDATE_MAIL';
+
+// Mail Marketing
+export const CREATE_LIST = 'CREATE_LIST';
+export const GET_LISTS = 'GET_LISTS';
+export const GET_LIST = 'GET_LIST';
+export const UPDATE_LIST = 'UPDATE_LIST';
+export const DELETE_LIST = 'DELETE_LIST';
+
+export const CREATE_CONTACT = 'CREATE_CONTACT';
+export const GET_CONTACTS_BY_LIST = 'GET_CONTACTS_BY_LIST';
+
+// Appointments
+export const GET_APPOINTMENTS = 'GET_APPOINTMENTS';
+export const GET_APPOINTMENT = 'GET_APPOINTMENT';
+export const CREATE_APPOINTMENT = 'CREATE_APPOINTMENT';
+export const DELETE_APPOINTMENT = 'DELETE_APPOINTMENT';
+export const UPDATE_APPOINTMENT = 'UPDATE_APPOINTMENT';
+export const GET_APPOINTMENTS_BY_USER ='GET_APPOINTMENTS_BY_USER';
+export const GET_APPOINTMENTS_BY_STORE ='GET_APPOINTMENTS_BY_STORE';
+export const GET_APPOINTMENTS_AR = 'GET_APPOINTMENTS_AR';
+
+// Activities
+export const GET_ACTIVITIES = 'GET_ACTIVITIES';
+export const GET_ACTIVITY = 'GET_ACTIVITY';
+export const CREATE_ACTIVITY = 'CREATE_ACTIVITY';
+export const DELETE_ACTIVITY = 'DELETE_ACTIVITY';
+export const UPDATE_ACTIVITY = 'UPDATE_ACTIVITY';
+export const GET_ACTIVITIES_BY_USER ='GET_ACTIVITIES_BY_USER';
+export const GET_ACTIVITIES_BY_LEAD ='GET_ACTIVITIES_BY_STORE';
+export const GET_ACTIVITIES_AR = 'GET_ACTIVITIES_AR';
+
+// Comments
+export const GET_COMMENTS_BY_LEAD = 'GET_COMMENTS_BY_LEAD';
+export const CREATE_COMMENT = 'CREATE_COMMENT';
+
+// Chats
+export const SET_CURRENT_CHAT = 'SET_CURRENT_CHAT';
+export const CLEAR_CURRENT_CHAT = 'CLEAR_CURRENT_CHAT';
+export const GET_CHATS = 'GET_CHATS';
+export const ADD_CHAT = 'ADD_CHAT';
+export const GET_CHATS_BETA = 'GET_CHATS_BETA';
+export const ADD_CHAT_BETA = 'ADD_CHAT_BETA';
+export const ADD_MESSAGE = 'ADD_MESSAGE';
+export const GET_MESSAGES = 'GET_MESSAGES';
+export const ADD_MSG_FROM_CURRENT = 'ADD_MSG_FROM_CURRENT';
+export const GET_CHATS_BETA_BY_BUYER = 'GET_CHATS_BETA_BY_BUYER';
+export const GET_CHATS_BETA_BY_SELLER = 'GET_CHATS_BETA_BY_SELLER';
+export const SET_CURRENT_CONVERSATION_ID = 'SET_CURRENT_CONVERSATION_ID';
+export const GET_CHATS_BETA_BY_IS_READ = 'GET_CHATS_BETA_BY_IS_READ';
+export const ADD_CHATS_BETA_BY_IS_READ = 'ADD_CHATS_BETA_BY_IS_READ';
+export const UPDATE_CONVERSATION = 'UPDATE_CONVERSATION';
+export const GET_CHAT_BY_CONVERSATION_ID = 'GET_CHAT_BY_CONVERSATION_ID';
+
+// Notifications
+export const FILTER_NOTIFICATION_BY_IS_READ = 'FILTER_NOTIFICATION_BY_IS_READ';
+
+// Alert
+export const SET_ALERT = 'SET_ALERT';
+export const REMOVE_ALERT = 'REMOVE_ALERT';
+
+// Profile
+export const GET_PROFILE = 'GET_PROFILE';
+export const CREATE_PROFILE = 'CREATE_PROFILE';
+export const GET_PROFILE_BY_USER = 'GET_PROFILE_BY_USER';
+
+// Loading
+export const SET_LOADING = 'SET_LOADING';
+
+// Category
+export const GET_CATEGORIES = 'GET_CATEGORIES';
+
+// Error
+export const SET_ERROR = 'SET_ERROR';
+
+// Review
+export const CREATE_REVIEW = 'CREATE_REVIEW';
+export const GET_REVIEWS = 'GET_REVIEWS';
+export const UPDATE_REVIEW = 'UPDATE_REVIEW';
+
+// Success
+export const SET_SUCCESS = 'SET_SUCCESS';
+
+// Language
+export const SET_LANGUAGE = 'SET_LANGUAGE';
+
+// Clear States
+export const CLEAR_STATE = 'CLEAR_STATE';
+export const CLEAR_METRICS = 'CLEAR_METRICS';
