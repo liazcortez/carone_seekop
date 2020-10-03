@@ -15,6 +15,7 @@ import {
   makeStyles
 } from '@material-ui/core';
 import { useSnackbar } from 'notistack';
+import { useParams } from 'react-router';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
 import AddPhotoIcon from '@material-ui/icons/AddPhotoAlternate';
 import useLead from 'src/hooks/useLead';
@@ -64,10 +65,11 @@ const Compose = ({isMailOpen, setMailOpen}) => {
   const [fullScreen, setFullScreen] = useState(false);
   const { lead } = useLead();
   const [messageBody, setMessageBody] = useState('');
-  const { createMail } = useMail();
+  const { createMail, getMailsByLead } = useMail();
   const { enqueueSnackbar } = useSnackbar();
   const inputFile = useRef(null) 
   const [attachments, setAttachment] = useState(null);
+  const route = useParams();
   const [mail, setMail] = useState({
     email: lead.email,
     subject: '',
@@ -112,6 +114,8 @@ const Compose = ({isMailOpen, setMailOpen}) => {
     enqueueSnackbar('Email Sent', {
       variant: 'success'
     });
+
+    getMailsByLead(route.id)
   }
 
   const handleExitFullScreen = () => {

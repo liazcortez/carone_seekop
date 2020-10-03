@@ -36,7 +36,6 @@ import {
   Triangle as ModelChartIcon,
   Sidebar as MultiBarIcon,
   Key as SocialAccountIcon,
-  List as ListIcon,
   PenTool as CompanyIcon
   
 } from 'react-feather';
@@ -125,6 +124,11 @@ const sectionsRockstar = [
             href: '/app/extra/charts/all'
           },
           {
+            title: 'Stores Report',
+            icon: StoreIcon,
+            href: '/app/extra/charts/stores'
+          },
+          {
             title: 'Global Report Models',
             icon: MultiBarIcon,
             href: '/app/extra/charts/multiple'
@@ -155,6 +159,11 @@ const sectionsRockstar = [
             title: 'Global Report',
             icon: AllChartIcon,
             href: '/app/extra/highcharts/all'
+          },
+          {
+            title: 'Stores Report',
+            icon: StoreIcon,
+            href: '/app/extra/highcharts/stores'
           },
           {
             title: 'Global Report Models',

@@ -14,7 +14,6 @@ import useLead from 'src/hooks/useLead';
 import useCompany from 'src/hooks/useCompany';
 import { useHistory } from 'react-router-dom';
 import AlertP from 'src/components/Alert';
-import useList from 'src/hooks/useMailMarketing';
 import {
   Box,
   Button,
@@ -41,21 +40,18 @@ const LeadCreateForm = ({
   const { enqueueSnackbar } = useSnackbar();  
   const { user } = useAuth();
   const { stores, getStores } = useStore();
-  const { vehicles, getVehiclesByMake, vehicle, getVehicle } = useVehicle();
+  const { vehicles, getVehiclesByMake } = useVehicle();
   const { sources, getSources } = useSource();
   const { companies, getCompanies } = useCompany();
   const { createLead, getLeads, error } = useLead();
   const history = useHistory();
   const [submitedForm, setSubmitedForm] = useState(false);
-  const [list, setList] = useState('');
-  const [contact, setContact] = useState({});
   const [disableStoreInput, setDisableStoreInput] = useState(false)
   const [initialIdStore, setInitialIdStore] = useState('')
-  const { getLists, lists, createContact } = useList();
 
   useEffect(() => {
     
-    if(submitedForm && !list){
+    if(submitedForm){
       if(!error){
         enqueueSnackbar('Lead created', {
           variant: 'success'
@@ -67,28 +63,6 @@ const LeadCreateForm = ({
 
     // eslint-disable-next-line
   }, [submitedForm]);
-
-  useEffect(() => {
-    
-    if(list && vehicle && vehicle.make && contact){
-      createContact({...contact, 
-        Properties:{
-        make: vehicle.make.name,
-        model: vehicle.model,
-        year: vehicle.year.toString()
-      }})
-      if(!error){
-        enqueueSnackbar('Lead created', {
-          variant: 'success'
-        });
-        history.push('/app/management/customers');
-      }
-      setSubmitedForm(false)
-    }
-
-    // eslint-disable-next-line
-  }, [list, vehicle, contact]);
-
 
   useEffect(() => {
     getStores();

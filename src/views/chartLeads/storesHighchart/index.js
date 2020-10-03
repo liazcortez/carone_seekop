@@ -11,20 +11,19 @@ import {
   SvgIcon,
   Typography,
   TextField,
-  FormControlLabel,
-  Switch
 } from '@material-ui/core';
 import { Link as RouterLink } from 'react-router-dom';
 import Page from 'src/components/Page';
 import Chart from './Chart';
 import useLead from 'src/hooks/useLead';
 import moment from 'moment';
+import useStore from 'src/hooks/useStore';
 import { Calendar as CalendarIcon } from 'react-feather';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import useMake from 'src/hooks/useMake';
-import useSource from 'src/hooks/useSource';
+import useAuth from 'src/hooks/useAuth';
 import useStatus from 'src/hooks/useStatus';
-import useStore from 'src/hooks/useStore';
+import useSource from 'src/hooks/useSource';
 
 const timeRanges = [
   {
@@ -61,47 +60,48 @@ const useStyles = makeStyles(theme => ({
 const ApexChartsView = ({ className, ...rest }) => {
   const classes = useStyles();
   const { leads, getLeadsAR } = useLead();
+  const { user } = useAuth();
   const { statuses, getStatuses } = useStatus();
-  const { stores, getStores, getStoresByMake } = useStore();
   const { sources, getSources } = useSource();
   const { makes, getMakes } = useMake();
   const [timeRange, setTimeRange] = useState(timeRanges[2].text);
   const actionRef = useRef(null);
-  const [labels, setLabels] = useState(1);
-  const [isMenuOpen, setMenuOpen] = useState(false);
-  const [filter, setFilter] = useState('D-MMM');
-  const [statusSearch, setStatusSearch] = useState('');
-  const [sourceSearch, setSourceSearch] = useState('');
-  const [makeSearch, setMakeSearch] = useState('');
+  const { stores, getStores, getStoresByMake} = useStore();
   const [storeSearch, setStoreSearch] = useState('');
+  const [drill, setDrill] = useState(false);
+  const [isMenuOpen, setMenuOpen] = useState(false);
+  const [filter, setFilter] = useState('LT');
+  const [makeSearch, setMakeSearch] = useState('');
+  const [sourceSearch, setSourceSearch] = useState('');
+  const [statusSearch, setStatusSearch] = useState('');
   const [date, setDate] = useState(`&after=${moment().startOf('month').format('YYYY-MM-DD')}`);
-  const [typeBar, setTypeBar] = useState('column');
-  const [switchB, setSwitchB] = useState(true);
 
-  useEffect(() => {
-    getLeadsAR(`&after=${moment().startOf('month').format('YYYY-MM-DD')}`, 'all');
+  useEffect(()=>{
+    getMakes();
     getStatuses();
     getSources();
     getStores();
-    getMakes();
     //eslint-disable-next-line
-  }, []);
+  },[])
 
   const findStores = async(id) =>{
     await getStoresByMake(id);
   };
 
   useEffect(()=>{
-    getLeadsAR(`${makeSearch}${statusSearch}${sourceSearch}${storeSearch}${date}`, 'all')
+    if(user.store){
+      if(user.role !== 'rockstar'){
+      setMakeSearch(`&make=${user.store.make._id}`)
+      }
+    }
+    //getLeadsAR(`${makeSearch}${vehicleSearch}${date}`, 'models');
     //eslint-disable-next-line
-  },[makeSearch, statusSearch, sourceSearch, storeSearch, date])
+  },[user])
 
   useEffect(()=>{
-    if(makeSearch === `&make=`){
-      setStoreSearch('&store=')
-    }
+    getLeadsAR(`${makeSearch}${statusSearch}${sourceSearch}${storeSearch}${date}`, 'models')
     //eslint-disable-next-line
-  },[makeSearch])
+  },[makeSearch, statusSearch, sourceSearch, storeSearch, date,])
 
   const handleChangeTime = filter => {
     setTimeRange(filter);
@@ -170,13 +170,15 @@ const ApexChartsView = ({ className, ...rest }) => {
               </Typography>
             </Breadcrumbs>
             <Typography variant="h3" color="textPrimary">
-              Leads
+              {user && user.role !== 'rockstar' ? user.store && user.store.make.name : false} Leads
             </Typography>
           </Grid>
           <Grid item>
             <Button
               ref={actionRef}
-              onClick={() => setMenuOpen(true)}
+              onClick={() => {
+                  setMenuOpen(true)
+                }}
               startIcon={
                 <SvgIcon fontSize="small">
                   <CalendarIcon />
@@ -214,55 +216,19 @@ const ApexChartsView = ({ className, ...rest }) => {
         <Grid container spacing={3} style={{marginBottom: 35}}>
           <Grid item xs={6} md={6}>
             <Typography variant='body1' color='textPrimary'>
-                Make
-            </Typography>
-            <TextField
-                fullWidth
-                name="make"
-                onChange={(e)=>{ 
-                  setMakeSearch(`&make=${e.target.value}`)
-                  
-                  if(e.target.value === ''){
-                    setLabels(1)
-
-                    const func = async ()=>{
-                      await getStores();
-                    }
-
-                    func();
-
-                  }else{
-                    setLabels(0)
-                    findStores(e.target.value)
-
-                  }
-                }}
-                select
-                required
-                variant="outlined"
-                SelectProps={{ native: true }}
-                >
-                <option key={0} value={''}>All</option>
-
-                {makes && makes.map(make => (
-                    <option key={make._id} value={make._id}>
-                    {make.name.charAt(0).toUpperCase() + make.name.slice(1)}
-                    </option>
-                ))}
-            </TextField>
-          </Grid>
-          <Grid item xs={6} md={6}>
-          <Typography variant='body1' color='textPrimary'>
                 Status
             </Typography>
             <TextField
                 fullWidth
                 name="status"
-                onChange={(e)=>{ setStatusSearch(`&status=${e.target.value}`)}}
+                onChange={(e)=>{ 
+                  setStatusSearch(`&status=${e.target.value}`)
+                }}
                 select
                 required
                 variant="outlined"
                 SelectProps={{ native: true }}
+                disabled={drill}
                 >
                 <option key={0} value={''}>All</option>
 
@@ -270,22 +236,26 @@ const ApexChartsView = ({ className, ...rest }) => {
                   status.name !== 'default' ?
                     (<option key={status._id} value={status._id}>
                     {status.name.charAt(0).toUpperCase() + status.name.slice(1)}
-                    </option>) : false
+                    </option>): false
                 ))}
             </TextField>
-          </Grid>
-          <Grid item xs={6} md={6}>
-          <Typography variant='body1' color='textPrimary'>
+            </Grid>
+            <Grid item xs={6} md={6}>
+            <Typography variant='body1' color='textPrimary'>
                 Source
             </Typography>
             <TextField
                 fullWidth
                 name="source"
-                onChange={(e)=>{ setSourceSearch(`&source=${e.target.value}`)}}
+                onChange={(e)=>{ 
+                  setSourceSearch(`&source=${e.target.value}`)
+                }}
                 select
                 required
                 variant="outlined"
                 SelectProps={{ native: true }}
+                disabled={drill}
+
                 >
                 <option key={0} value={''}>All</option>
 
@@ -296,52 +266,12 @@ const ApexChartsView = ({ className, ...rest }) => {
                 ))}
             </TextField>
             </Grid>
-            <Grid item xs={6} md={6}>
-          <Typography variant='body1' color='textPrimary'>
-                Store
-            </Typography>
-            <TextField
-                fullWidth
-                name="store"
-                onChange={(e)=>{ setStoreSearch(`&store=${e.target.value}`)}}
-                select
-                required
-                variant="outlined"
-                SelectProps={{ native: true }}
-                >
-                <option key={0} value={''}>All</option>
-
-                {stores && stores.map(store => (
-                    <option key={store._id} value={store._id}>
-                    {store.name.charAt(0).toUpperCase() + store.name.slice(1)}
-                    </option>
-                ))}
-            </TextField>
-            </Grid>
-            <Grid item xs={12} md={12}>
-            <Typography variant='body1' color='textPrimary'>
-                Change Graph Type
-            </Typography>
-            <FormControlLabel
-                control={(
-                  <Switch
-                    checked={switchB}
-                    onChange={(e)=>{ 
-                      setSwitchB(!switchB);
-                      if(!switchB)
-                      setTypeBar('column') 
-                      else 
-                      setTypeBar('line');
-                    }}
-                  />
-                )}
-              />
-              </Grid>
+           
         </Grid>
 
         <Grid container spacing={3}>
           <Grid item xs={12}> 
-            <Chart leads={leads} filter={filter} type={typeBar} labels={labels}/>
+            <Chart leads={leads} filter={filter} setDrill={setDrill}/>
           </Grid>
         </Grid>
       </Container>

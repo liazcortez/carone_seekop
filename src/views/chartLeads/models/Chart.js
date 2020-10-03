@@ -32,35 +32,18 @@ const LineChart = ({ leads, filter, type }) => {
         enabled: true,
         enabledOnSeries: undefined,
         formatter: function(value, { seriesIndex, dataPointIndex, w }) {
-          return [w.globals.labels[dataPointIndex] + ' ' + w.config.series[seriesIndex].name, "Total:  " + value]
+          return value
         },  
         textAnchor: 'middle',
         style: {
-          fontSize: '12px',
+          fontSize: '14px',
           fontFamily: 'Helvetica, sans-serif',
           fontWeight: '700',
           colors: ["#fff"]
         },
-        background: {
-          enabled: true,
-          foreColor: '#444',
-          borderRadius: 2,
-          borderWidth: 0.5,
-          borderColor: '#000',
-          opacity: 0.7,
-        }
       },
       plotOptions: {
         bar: {
-          horizontal: false,
-          dataLabels: {
-            position: 'top'
-          }
-        }
-      },
-      plotOptions: {
-        bar: {
-          horizontal: false,
           dataLabels: {
             position: 'top'
           }

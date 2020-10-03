@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { Grid, makeStyles } from '@material-ui/core';
 import CustomerInfo from './CustomerInfo';
-import CallUser from './CallUser';
 import StatusLead  from './StatusLead';
 import Appointments from './Appointments';
 import AddAgent from './AddAgent';
