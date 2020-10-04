@@ -10,7 +10,6 @@ import AlertP from 'src/components/Alert';
 import { DateTimePicker } from '@material-ui/pickers';
 import useVehicle from 'src/hooks/useVehicle';
 import useSource from 'src/hooks/useSource';
-import { useParams } from 'react-router';
 import useCompany from 'src/hooks/useCompany';
 import {
   Box,
@@ -42,7 +41,6 @@ const LeadEditForm = ({
   const { getCompanies, companies } = useCompany();
   const history = useHistory();
   const [submitedForm, setSubmitedForm] = useState(false);
-  const route = useParams();
 
   useEffect(() => {
     
@@ -397,7 +395,6 @@ const LeadEditForm = ({
                         required
                         value={values.faauTotal}
                         variant="outlined"
-                        value={values.faauTotal}
 
                       />
                     </Grid>

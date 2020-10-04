@@ -1,45 +1,85 @@
 import React from 'react';
 import { Card, CardContent, Typography, useTheme } from '@material-ui/core';
-
 import leadsPerMake from 'src/utils/leadsPerMake';
-import makesToCount from 'src/utils/makesToCount';
-import datesFormat from 'src/utils/datesFormat'; 
-import leadsPerMonth from 'src/utils/leadsPerMonth';
-import _ from "lodash";
-
+import storesToCount from 'src/utils/storesToCount';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
+import _ from "lodash";
+import makesToCount from 'src/utils/makesToCount';
+import separateLeadsByMake from 'src/utils/separateLeadsByMake'
+import leadsPerStore from 'src/utils/leadsPerStore';
 
-const LineChart = ({ leads, filter, type, labels }) => {
+import Drilldown from 'highcharts/modules/drilldown';
+
+Drilldown(Highcharts);
+const LineChart = ({ leads, setDrill }) => {
   const theme = useTheme();
 
-  let arrMakes;
-  let categories;
-  let makesLeads;
+  let arrayData = [];
+  let arrayDrillData = [];
 
-  if(labels === 0){
 
-    arrMakes = datesFormat(leads, filter);
+  const arrMakes = makesToCount(leads);
+  const uniqueMakes = _.uniqBy(arrMakes);
+  const makesLeads = leadsPerMake(arrMakes);
+  const arrayLeadsByMakes = separateLeadsByMake(leads, uniqueMakes);
+  let models;
+  let uniqueModels;
+  let quant;
 
-    categories = _.uniqBy(arrMakes);
-    
-    makesLeads = leadsPerMonth(leads, categories, filter);
+  uniqueMakes.map( (make, i) =>{
 
-  }else{
-    arrMakes = makesToCount(leads);
+    arrayData.push({
+      name: make,
+      y: makesLeads[i],
+      drilldown: make
+    })
 
-    categories = _.uniqBy(arrMakes);
+    arrayDrillData.push({
+      id: make,
+      name: 'Leads',
+      data: []
+    })
+   return false;
+  })
 
-    makesLeads = leadsPerMake(arrMakes);
+  arrayLeadsByMakes.map( (leadsA, i)=>{
+    models = storesToCount(leadsA);
+    uniqueModels = _.uniqBy(models);
+    quant = leadsPerStore(leads, uniqueModels);
 
-  }
+    if(uniqueModels !== undefined){
+      uniqueModels.map((item, i) =>{
+
+        arrayDrillData.map( (b, j)=>{
+          if(b.id === leadsA[0].vehicle.make.name){
+            b.data.push([uniqueModels[i], quant[i]])
+          }
+          return false;
+
+        })
+        return false;
+      })
+    }
+
+    return false;
+
+  })
 
   const options = {
     chart: {
-      type: type,
+      type: 'column',
       backgroundColor: theme.palette.background.paper,
       style: {
         color: theme.palette.divider
+      },
+      events: {
+        drilldown: function (e) {
+          setDrill(true)
+        },
+        drillupall: function(e){
+          setDrill(false)
+        }
       }
     },
     legend: {
@@ -75,7 +115,7 @@ const LineChart = ({ leads, filter, type, labels }) => {
 
           },
           formatter: function() {
-            return Highcharts.numberFormat(this.y,0);
+            return Highcharts.numberFormat(this.y,0)
           }
         }
       }
@@ -87,7 +127,7 @@ const LineChart = ({ leads, filter, type, labels }) => {
       }
     },
     xAxis: {
-      categories: categories,
+      type: 'category',
       lineColor: theme.palette.divider,
       labels: {
          style: {
@@ -129,10 +169,26 @@ const LineChart = ({ leads, filter, type, labels }) => {
         lineWidth: 1
       }
     ],
+    drilldown: {
+      activeAxisLabelStyle: {
+        textDecoration: 'none',
+        fontFamily: 'Helvetica, sans-serif',
+        fontSize: '12px',
+        color: theme.palette.text.primary,
+      },
+      activeDataLabelStyle: {
+        textDecoration: 'none',
+        fontFamily: 'Helvetica, sans-serif',
+        fontSize: '12px',
+        color: theme.palette.text.primary,
+      },
+      series: arrayDrillData
+    },
     series: [
       {
         name: 'Leads',
-        data: makesLeads,
+        data: arrayData,
+        color: theme.palette.primary.main,
       }
     ]
   };

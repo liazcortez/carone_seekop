@@ -96,6 +96,11 @@ const ApexChartsView = ({ className, ...rest }) => {
     //eslint-disable-next-line
   },[makeSearch, statusSearch, sourceSearch, storeSearch, date])
 
+  useEffect(()=>{
+    setStoreSearch('&store=')
+    //eslint-disable-next-line
+  },[makeSearch])
+
   const handleChangeTime = filter => {
     setTimeRange(filter);
     setFilter();
@@ -296,7 +301,10 @@ const ApexChartsView = ({ className, ...rest }) => {
             <TextField
                 fullWidth
                 name="store"
-                onChange={(e)=>{ setStoreSearch(`&store=${e.target.value}`)}}
+                onChange={(e)=>{ 
+                  console.log(e.target.value)
+                  setStoreSearch(`&store=${e.target.value}`)
+                }}
                 select
                 required
                 variant="outlined"

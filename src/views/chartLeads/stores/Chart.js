@@ -3,36 +3,20 @@ import Chart from 'react-apexcharts';
 import { Card, CardContent, Typography, useTheme } from '@material-ui/core';
 
 import leadsPerMake from 'src/utils/leadsPerMake';
+
 import makesToCount from 'src/utils/makesToCount';
-import datesFormat from 'src/utils/datesFormat'; 
-import leadsPerMonth from 'src/utils/leadsPerMonth';
+
 import _ from "lodash";
 
-const LineChart = ({ leads, filter, type, labels }) => {
+const LineChart = ({ leads, filter, type }) => {
   const theme = useTheme();
 
-  let arrMakes;
-  let categories;
-  let makesLeads;
+  const arrMakes = makesToCount(leads);
 
-  if(labels === 0){
-
-    arrMakes = datesFormat(leads, filter);
-
-    categories = _.uniqBy(arrMakes);
-    
-    makesLeads = leadsPerMonth(leads, categories, filter);
-
-  }else{
-    arrMakes = makesToCount(leads);
-
-    categories = _.uniqBy(arrMakes);
-
-    makesLeads = leadsPerMake(arrMakes);
-
-  }
-
-
+  const categories = _.uniqBy(arrMakes);
+  
+  const makesLeads = leadsPerMake(arrMakes);
+  
   const chart = {
     options: {
       chart: {
@@ -57,7 +41,6 @@ const LineChart = ({ leads, filter, type, labels }) => {
           fontWeight: '700',
           colors: ["#fff"]
         },
-        offsetX: 30
       },
       plotOptions: {
         bar: {
@@ -153,6 +136,7 @@ const LineChart = ({ leads, filter, type, labels }) => {
           },
           opposite: true,
           seriesName: 'Leads'
+
         }
       ]
     },
@@ -170,7 +154,7 @@ const LineChart = ({ leads, filter, type, labels }) => {
         <Typography variant="h4" color="textPrimary">
           Leads
         </Typography>
-        <Chart type={type} height="500" {...chart} />
+          <Chart type={type} height="500" {...chart} />
       </CardContent>
     </Card>
   );

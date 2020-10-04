@@ -2,7 +2,6 @@ import React, { Suspense, Fragment, lazy } from 'react';
 import { Switch, Redirect, Route } from 'react-router-dom';
 import DashboardLayout from 'src/layouts/DashboardLayout';
 import DocsLayout from 'src/layouts/DocsLayout';
-import VideoCallLayout from 'src/layouts/VideoCallLayout';
 import MainLayout from 'src/layouts/MainLayout';
 import HomeView from 'src/views/home/HomeView';
 import LoadingScreen from 'src/components/LoadingScreen';
@@ -144,8 +143,18 @@ const routes = [
       },
       {
         exact: true,
+        path: '/app/extra/charts/stores',
+        component: lazy(() => import('src/views/chartLeads/stores'))
+      },
+      {
+        exact: true,
         path: '/app/extra/highcharts/models',
         component: lazy(() => import('src/views/chartLeads/modelsHighchart'))
+      },
+      {
+        exact: true,
+        path: '/app/extra/highcharts/stores',
+        component: lazy(() => import('src/views/chartLeads/storesHighchart'))
       },
       {
         exact: true,
@@ -489,17 +498,6 @@ const routes = [
       },
       {
         component: () => <Redirect to="/404" />
-      }
-    ]
-  },
-  {
-    path: '/videocalls',
-    layouts: VideoCallLayout,
-    routes: [
-      {
-        exact: true,
-        path: '/videocalls/:roomId',
-        component: lazy(() => import('src/views/videoChat/VideoChatView'))
       }
     ]
   },

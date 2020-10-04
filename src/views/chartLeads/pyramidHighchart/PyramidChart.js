@@ -44,11 +44,6 @@ const PyramidChart = ({ leads }) => {
     title: {
         text: ''
     },
-    legend: {
-        itemStyle: {
-            color: theme.palette.text.primary,
-        }
-    },
     plotOptions: {
         funnel: {
             borderWidth: 0

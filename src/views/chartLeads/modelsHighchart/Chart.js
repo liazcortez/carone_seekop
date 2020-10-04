@@ -12,7 +12,7 @@ import leadsPerModel from 'src/utils/leadsPerModel';
 import Drilldown from 'highcharts/modules/drilldown';
 
 Drilldown(Highcharts);
-const LineChart = ({ leads }) => {
+const LineChart = ({ leads , setDrill}) => {
   const theme = useTheme();
 
   let arrayData = [];
@@ -72,6 +72,15 @@ const LineChart = ({ leads }) => {
       backgroundColor: theme.palette.background.paper,
       style: {
         color: theme.palette.divider
+      },
+      events: {
+        drilldown: function (e) {
+          setDrill(true)
+        },
+        drillupall: function(e){
+          setDrill(false)
+        }
+
       }
     },
     legend: {
@@ -97,12 +106,7 @@ const LineChart = ({ leads }) => {
           inside: false,
           overflow: 'none',
           crop: true,
-          shape: 'callout',
-          borderColor: 'rgba(0,0,0,0.5)',
-          color: 'rgba(1,1,1,0.75)',
-          borderWidth: 0.5,
-          backgroundColor:'rgba(255,255,255,0.8)',
-          borderRadius: 5,
+          color: 'rgba(255,255,255,1)',
           y: -10,
           style: {
             fontFamily: 'Helvetica, sans-serif',
@@ -112,9 +116,7 @@ const LineChart = ({ leads }) => {
 
           },
           formatter: function() {
-            return '<strong>'+this.series.name+'</strong>'
-                        +'<br/>Make: <strong>'+ this.key+'</strong>'
-                  +'<br/>Total: <strong>'+ Highcharts.numberFormat(this.y,0)+'</strong>';
+            return Highcharts.numberFormat(this.y,0)
           }
         }
       }

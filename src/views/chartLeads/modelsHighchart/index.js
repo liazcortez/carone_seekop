@@ -11,8 +11,6 @@ import {
   SvgIcon,
   Typography,
   TextField,
-  FormControlLabel,
-  Switch
 } from '@material-ui/core';
 import { Link as RouterLink } from 'react-router-dom';
 import Page from 'src/components/Page';
@@ -63,6 +61,7 @@ const ApexChartsView = ({ className, ...rest }) => {
   const classes = useStyles();
   const { leads, getLeadsAR } = useLead();
   const { user } = useAuth();
+  const [drill, setDrill] = useState(false);
   const { statuses, getStatuses } = useStatus();
   const { sources, getSources } = useSource();
   const { makes, getMakes } = useMake();
@@ -77,8 +76,6 @@ const ApexChartsView = ({ className, ...rest }) => {
   const [sourceSearch, setSourceSearch] = useState('');
   const [statusSearch, setStatusSearch] = useState('');
   const [date, setDate] = useState(`&after=${moment().startOf('month').format('YYYY-MM-DD')}`);
-  const [typeBar, setTypeBar] = useState('column');
-  const [switchB, setSwitchB] = useState(true);
 
   useEffect(()=>{
     getMakes();
@@ -101,6 +98,11 @@ const ApexChartsView = ({ className, ...rest }) => {
     //getLeadsAR(`${makeSearch}${vehicleSearch}${date}`, 'models');
     //eslint-disable-next-line
   },[user])
+
+  useEffect(()=>{
+    setStoreSearch('&store=')
+    //eslint-disable-next-line
+  },[makeSearch])
 
   useEffect(()=>{
     getLeadsAR(`${makeSearch}${statusSearch}${sourceSearch}${storeSearch}${date}`, 'models')
@@ -180,7 +182,10 @@ const ApexChartsView = ({ className, ...rest }) => {
           <Grid item>
             <Button
               ref={actionRef}
-              onClick={() => setMenuOpen(true)}
+              onClick={() => {
+                if(!drill){
+                  setMenuOpen(true);
+                }}}
               startIcon={
                 <SvgIcon fontSize="small">
                   <CalendarIcon />
@@ -247,6 +252,8 @@ const ApexChartsView = ({ className, ...rest }) => {
                 select
                 variant="outlined"
                 SelectProps={{ native: true }}
+                disabled={drill}
+
                 >
                 <option key={0} value={''}>All</option>
 
@@ -272,6 +279,8 @@ const ApexChartsView = ({ className, ...rest }) => {
                 required
                 variant="outlined"
                 SelectProps={{ native: true }}
+                disabled={drill}
+
                 >
                 <option key={0} value={''}>All</option>
 
@@ -297,6 +306,8 @@ const ApexChartsView = ({ className, ...rest }) => {
                 required
                 variant="outlined"
                 SelectProps={{ native: true }}
+                disabled={drill}
+
                 >
                 <option key={0} value={''}>All</option>
 
@@ -319,6 +330,8 @@ const ApexChartsView = ({ className, ...rest }) => {
                 required
                 variant="outlined"
                 SelectProps={{ native: true }}
+                disabled={drill}
+
                 >
                 <option key={0} value={''}>All</option>
 
@@ -334,7 +347,7 @@ const ApexChartsView = ({ className, ...rest }) => {
 
         <Grid container spacing={3}>
           <Grid item xs={12}> 
-            <Chart leads={leads} filter={filter}/>
+            <Chart leads={leads} filter={filter} setDrill={setDrill}/>
           </Grid>
         </Grid>
       </Container>

@@ -100,11 +100,7 @@ const LineChart = ({ leads, filter, type, ids, idsS, showInfo }) => {
           inside: false,
           overflow: 'none',
           crop: true,
-          borderColor: 'rgba(0,0,0,0.5)',
-          color: 'rgba(1,1,1,0.75)',
-          borderWidth: 0.5,
-          backgroundColor:'rgba(255,255,255,0.8)',
-          borderRadius: 5,
+          color: 'rgba(255,255,255,1)',
           y: -10,
           style: {
             fontFamily: 'Helvetica, sans-serif',
@@ -114,9 +110,7 @@ const LineChart = ({ leads, filter, type, ids, idsS, showInfo }) => {
 
           },
           formatter: function() {
-            return '<strong>'+this.series.name+'</strong>'
-                        +'<br/>Make: <strong>'+ this.x+'</strong>'
-                  +'<br/>Total: <strong>'+ Highcharts.numberFormat(this.y,0)+'</strong>';
+            return  Highcharts.numberFormat(this.y,0)
           }
         }
       },
