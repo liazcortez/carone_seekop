@@ -2,20 +2,28 @@ import React from 'react';
 import Chart from 'react-apexcharts';
 import { Card, CardContent, Typography, useTheme } from '@material-ui/core';
 
-import leadsPerMake from 'src/utils/leadsPerMake';
+import leadsPerStore from 'src/utils/leadsPerStore2';
 
-import makesToCount from 'src/utils/makesToCount';
+import storesToCount from 'src/utils/storesToCount2';
 
 import _ from "lodash";
 
 const LineChart = ({ leads, filter, type }) => {
   const theme = useTheme();
 
-  const arrMakes = makesToCount(leads);
+  let arrMakes;
+  let categories;
+  let makesLeads;
 
-  const categories = _.uniqBy(arrMakes);
-  
-  const makesLeads = leadsPerMake(arrMakes);
+  if(leads.length > 0){
+    arrMakes = storesToCount(leads);
+    categories = _.uniqBy(arrMakes);
+    makesLeads = leadsPerStore(leads, categories);
+  }else{
+    arrMakes = []
+    categories = [];
+    makesLeads = [];
+  }
   
   const chart = {
     options: {

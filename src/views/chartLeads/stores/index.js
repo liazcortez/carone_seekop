@@ -216,7 +216,31 @@ const ApexChartsView = ({ className, ...rest }) => {
         </Grid>
 
         <Grid container spacing={3} style={{marginBottom: 35}}>
-          <Grid item xs={6} md={6}>
+        <Grid item xs={6} md={6}>
+            <Typography variant='body1' color='textPrimary'>
+                Makes
+            </Typography>
+            <TextField
+                fullWidth
+                name="make"
+                onChange={(e)=>{ 
+                  setMakeSearch(`&make=${e.target.value}`)
+                }}
+                select
+                required
+                variant="outlined"
+                SelectProps={{ native: true }}
+                >
+                <option key={0} value={''}>All</option>
+
+                {makes && makes.map(make => (
+                    (<option key={make._id} value={make._id}>
+                    {make.name.charAt(0).toUpperCase() + make.name.slice(1)}
+                    </option>)
+                ))}
+            </TextField>
+            </Grid>
+            <Grid item xs={6} md={6}>
             <Typography variant='body1' color='textPrimary'>
                 Status
             </Typography>
