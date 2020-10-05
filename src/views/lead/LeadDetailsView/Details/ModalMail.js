@@ -115,7 +115,7 @@ const Compose = ({isMailOpen, setMailOpen}) => {
       variant: 'success'
     });
 
-    getMailsByLead(route.id)
+    getMailsByLead(route.id);
   }
 
   const handleExitFullScreen = () => {

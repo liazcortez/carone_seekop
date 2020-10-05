@@ -11,6 +11,7 @@ import {
   TableCell,
   TableRow,
   Typography,
+  colors,
   makeStyles
 } from '@material-ui/core';
 import NumberFormat from 'react-number-format';
@@ -173,6 +174,18 @@ const CustomerInfo = ({ customer, className, ...rest }) => {
             </TableRow>
             ) : false
           }
+          <TableRow>
+              <TableCell className={classes.fontWeightMedium}>Rating</TableCell>
+              <TableCell>
+                <Typography variant="body2" style={{color:
+                  customer.rating === 'cold' ? colors.blue[500] :
+                  customer.rating === 'warm' ? '#ff9800' :
+                  customer.rating === 'hot' ? '#f44336' : 'primary'
+                }}>
+                  {customer && customer.rating}
+                </Typography>
+              </TableCell>
+            </TableRow>
           <TableRow>
               <TableCell className={classes.fontWeightMedium}>Updated At</TableCell>
               <TableCell>
