@@ -50,7 +50,26 @@ const LineChart = ({ leads, ids, showInfo }) => {
       },
       ...colorFinal,
       dataLabels: {
-        enabled: false
+        enabled: true,
+        enabledOnSeries: undefined,
+        formatter: function(value, { seriesIndex, dataPointIndex, w }) {
+          return value
+        },  
+        textAnchor: 'middle',
+        style: {
+          fontSize: '14px',
+          fontFamily: 'Helvetica, sans-serif',
+          fontWeight: '700',
+          colors: ["#fff"]
+        },
+        offsetY: -20
+      },
+      plotOptions: {
+        bar: {
+          dataLabels: {
+            position: 'top'
+          }
+        }
       },
       grid: {
         borderColor: theme.palette.divider,

@@ -4,6 +4,7 @@ import { Card, CardContent, Typography, useTheme, colors } from '@material-ui/co
 import leadsPerMake from 'src/utils/leadsPerMake';
 import leadsByStatus from 'src/utils/leadsByStatus';
 import leadsBySource from 'src/utils/leadsBySource';
+import generateColor from 'src/utils/createColorsGradient';
 
 import modelsToCount from 'src/utils/modelsToCount';
 
@@ -25,6 +26,7 @@ const LineChart = ({ leads, filter, type, ids, idsS, showInfo }) => {
   const categories = _.uniqBy(arrMakes);
   
   const makesLeads = leadsPerMake(arrMakes);
+  let colores = generateColor('#ffffff', theme.palette.primary.main, 12)
 
   let seriesStatuses = [];
   let seriesSources = [];
@@ -68,6 +70,15 @@ const LineChart = ({ leads, filter, type, ids, idsS, showInfo }) => {
   })
   }
 
+  let cakeLabels = [];
+  categories.map( (item, i ) => {
+    cakeLabels.push({
+      name: item,
+      y: makesLeads[i]
+    })
+    return false;
+  })
+
   cont = 0;
   
   if(showInfo === 'statuses'){
@@ -76,10 +87,22 @@ const LineChart = ({ leads, filter, type, ids, idsS, showInfo }) => {
     arrayInformation.push(...seriesSources)
   }
 
+  let finalSerie = [];
 
-  const options = {
+  makesLeads.map( (item, i) =>{
+    finalSerie.push({
+      y: item,
+      color: showInfo === 'statuses' ? colors.blue[400] :theme.palette.primary.main,
+    })
+    return false;
+  });
+  
+  let options;
+
+  if(type === 'column'){
+  options = {
     chart: {
-      type: type,
+      type: 'column',
       backgroundColor: theme.palette.background.paper,
       style: {
         color: theme.palette.divider
@@ -175,12 +198,47 @@ const LineChart = ({ leads, filter, type, ids, idsS, showInfo }) => {
     series: [
       {
         name: 'Leads',
-        data: makesLeads,
-        color: showInfo === 'statuses' ? colors.blue[400] :theme.palette.primary.main,
+        data: finalSerie
       },
       ...arrayInformation
     ]
   };
+  }else{
+    options = {
+      chart: {
+        plotBackgroundColor: null,
+        plotBorderWidth: null,
+        plotShadow: false,
+        type: 'pie'
+    },
+    categories: categories,
+    tooltip: {
+        pointFormat: '{series.name}: <b>{point.percentage:.2f}%</b>'
+    },
+    accessibility: {
+        point: {
+            valueSuffix: '%'
+        }
+    },
+    plotOptions: {
+        pie: {
+            borderWidth: 0,
+            allowPointSelect: true,
+            cursor: 'pointer',
+            colors: colores,
+            dataLabels: {
+                enabled: true,
+                format: '<b>{point.name}</b>: {point.percentage:.2f} %'
+            }
+        }
+    },
+    series: [{
+        name: 'Leads',
+        colorByPoint: true,
+        data: cakeLabels
+    }]
+    }
+  }
 
   return (
     <Card>

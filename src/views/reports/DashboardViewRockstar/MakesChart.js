@@ -33,7 +33,7 @@ const LineChart = ({ leads, ids, showInfo, filter }) => {
   }
 
     arrayInformation.push(...seriesStatuses);
-    colorFinal = {colors: [colors.blue['400'], theme.palette.primary.main, theme.palette.error.main, theme.palette.success.main, theme.palette.warning.main]};
+    colorFinal = {colors: [theme.palette.primary.main, theme.palette.primary.main, theme.palette.error.main, theme.palette.success.main, theme.palette.warning.main]};
   
     const chart = {
     options: {
@@ -47,7 +47,26 @@ const LineChart = ({ leads, ids, showInfo, filter }) => {
       },
       ...colorFinal,
       dataLabels: {
-        enabled: false
+        enabled: true,
+        enabledOnSeries: undefined,
+        formatter: function(value, { seriesIndex, dataPointIndex, w }) {
+          return value
+        },  
+        textAnchor: 'middle',
+        style: {
+          fontSize: '14px',
+          fontFamily: 'Helvetica, sans-serif',
+          fontWeight: '700',
+          colors: ["#fff"]
+        },
+        offsetY: -20
+      },
+      plotOptions: {
+        bar: {
+          dataLabels: {
+            position: 'top'
+          }
+        }
       },
       grid: {
         borderColor: theme.palette.divider,
@@ -124,7 +143,7 @@ const LineChart = ({ leads, ids, showInfo, filter }) => {
         name: 'Leads',
         data: makesLeads
       },
-      ...arrayInformation
+      // ...arrayInformation
     ]
   };
 

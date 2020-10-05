@@ -57,27 +57,6 @@ const Chart = ({
     layout: {
       padding: 0
     },
-    dataLabels: {
-      enabled: true,
-      formatter: function(value, { seriesIndex, dataPointIndex, w }) {
-        return 'a'
-      },  
-      textAnchor: 'middle',
-      style: {
-        fontSize: '14px',
-        fontFamily: 'Helvetica, sans-serif',
-        fontWeight: '700',
-        colors: ["#fff"]
-      },
-      offsetY: -20
-    },
-    plotOptions: {
-      bar: {
-        dataLabels: {
-          position: 'top'
-        }
-      }
-    },
     scales: {
       xAxes: [
         {
@@ -113,7 +92,7 @@ const Chart = ({
       ]
     },
     tooltips: {
-      enabled: false,
+      enabled: true,
       mode: 'index',
       intersect: false,
       caretSize: 10,

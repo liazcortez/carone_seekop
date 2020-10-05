@@ -452,6 +452,7 @@ const Results = ({ className, leads, ...rest }) => {
                 <TableCell>Timeframe</TableCell>
                 <TableCell>Date</TableCell>
                 <TableCell>Assigned</TableCell>
+                <TableCell>Temperature</TableCell>
                 <TableCell>Status</TableCell>
                 {/*<TableCell align="right">Actions</TableCell>*/}
               </TableRow>
@@ -529,6 +530,18 @@ const Results = ({ className, leads, ...rest }) => {
                     <TableCell>   
                         {lead && lead.agent && lead.agent.name ? lead.agent.name : 'None'}                
                     </TableCell>
+                    <TableCell>
+                        
+                        <Label
+                          className={classes.capitalize}
+                          color={lead && lead.rating && 
+                            lead.rating === 'hot' ? 'error' :
+                            lead.rating === 'warm' ? 'warning' : 
+                            lead.rating === 'cold' ? 'blue' : 'primary'}
+                        >   
+                        {lead && lead.rating && lead.rating ? lead.rating : ''}
+                        </Label>
+                  </TableCell>
                     <TableCell>
                         
                           <Label

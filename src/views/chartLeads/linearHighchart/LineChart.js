@@ -3,19 +3,17 @@ import { Card, CardContent, Typography, useTheme } from '@material-ui/core';
 
 import leadsPerMonth from 'src/utils/leadsPerMonth';
 import datesFormat from 'src/utils/datesFormat';
-import salesPerMonth from 'src/utils/leadsSoldPerMonth';
 import salesPerMonth2 from 'src/utils/leadsSoldPerMonth2';
-import makesToCount from 'src/utils/makesToCount';
-import leadsPerMake from 'src/utils/leadsPerMake';
 import _ from 'lodash'
 import '../styles.css'
+import generateColor from 'src/utils/createColorsGradient';
 
 
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 
 
-const LineChart = ({ leads, filter, type, ids, idsS, labels}) => {
+const LineChart = ({ leads, filter, type, ids, idsS}) => {
   const theme = useTheme();
 
   let fix = [];
@@ -28,11 +26,11 @@ const LineChart = ({ leads, filter, type, ids, idsS, labels}) => {
   
   fix.push(...ids);
   fix2.push(...idsS);
+  let colores = generateColor('#ffffff', theme.palette.primary.main, 12)
 
   //1 all
   //0 unique
 
-  if(labels === 0){
     arrMakes = datesFormat(leads, filter);
 
     categories = _.uniqBy(arrMakes);
@@ -41,43 +39,63 @@ const LineChart = ({ leads, filter, type, ids, idsS, labels}) => {
 
     salesMonth = salesPerMonth2(leads, categories, filter);
 
-  }else{
-    arrMakes = makesToCount(leads);
+    let cakeLabels = [];
+    categories.map( (item, i ) => {
+      cakeLabels.push({
+        name: item,
+        y: makesLeads[i]
+      })
+      return false;
+    })
 
-    categories = _.uniqBy(arrMakes);
-    
-    makesLeads = leadsPerMake(arrMakes);
+    let finalSerie = [];
 
-    salesMonth = salesPerMonth(leads, categories, filter);
+    makesLeads.map( (item, i) =>{
+      finalSerie.push({
+        y: item,
+        color: '#1f87e6'
+      })
+      return false;
+    });
 
-  }
+    let finalSerie2 = [];
 
-  
+    salesMonth.map( (item, i) =>{
+      finalSerie2.push({
+        y: item,
+        color: '#ff5c7c'
+      })
+      return false
+    });
 
   // const categories = datesFormat(leads, filter);
 
   // const leadsMonth = leadsPerMonth(leads, categories, filter);
 
-  const options = {
-    chart: {
-      type: type,
+  let options;
+  if(type === 'column'){
+    options = {
+      chart: {
+      type: 'column',
       backgroundColor: theme.palette.background.paper,
       style: {
         color: theme.palette.divider
-      },
+      }
     },
     legend: {
       itemStyle: {
           color: theme.palette.text.primary,
       }
     },
-    tooltip: { 
+    tooltip: {
       enabled: false
     },
     plotOptions: {
       column: {
         borderWidth: 0,
-        color: theme.palette.primary.main
+        color: theme.palette.primary.main,
+      colors: colores,
+
       },
       line: {
         borderWidth: 1,
@@ -90,7 +108,6 @@ const LineChart = ({ leads, filter, type, ids, idsS, labels}) => {
           overflow: 'none',
           crop: true,
           color: 'rgba(255,255,255,1)',
-          borderRadius: 5,
           y: -10,
           style: {
             fontFamily: 'Helvetica, sans-serif',
@@ -100,12 +117,11 @@ const LineChart = ({ leads, filter, type, ids, idsS, labels}) => {
 
           },
           formatter: function() {
-            return  Highcharts.numberFormat(this.y,0)
+            return Highcharts.numberFormat(this.y,0);
           }
         }
       }
     },
-    
     title: {
       text: '',
       style: {
@@ -158,17 +174,51 @@ const LineChart = ({ leads, filter, type, ids, idsS, labels}) => {
     series: [
       {
         name: 'Leads',
-        data: makesLeads,
-        color: '#1f87e6',
+        data: finalSerie,
+        color: '#1f87e6'
       },
       {
         name: 'Sales',
-        data: salesMonth,
-        color: '#ff5c7c',
+        data: finalSerie2,
+        color: '#ff5c7c'
       }
     ]
   };
-
+  }else{
+    options = {
+      chart: {
+        plotBackgroundColor: null,
+        plotBorderWidth: null,
+        plotShadow: false,
+        type: 'pie'
+    },
+    tooltip: {
+        pointFormat: '{series.name}: <b>{point.percentage:.2f}%</b>'
+    },
+    accessibility: {
+        point: {
+            valueSuffix: '%'
+        }
+    },
+    plotOptions: {
+        pie: {
+          borderWidth: 0,
+            allowPointSelect: true,
+            cursor: 'pointer',
+            colors: colores,
+            dataLabels: {
+                enabled: true,
+                format: '<b>{point.name}</b>: {point.percentage:.2f} %'
+            }
+        }
+    },
+    series: [{
+        name: 'Leads',
+        colorByPoint: true,
+        data: cakeLabels
+    }]
+    }
+  }
   return (
     <Card>
       <CardContent>

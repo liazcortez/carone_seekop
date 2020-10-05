@@ -2,7 +2,7 @@ const storesToCount = (data) => {
 
     let storesArray;
     if(data !== undefined){
-        storesArray = data.map(item => item && item.store && item.store.make.name + ' ' + item.store.name);
+        storesArray = data.map(item => item && item.store && item.store.make && item.store.make.name + ' ' + item.store.name);
     }else{
         storesArray = []
     }

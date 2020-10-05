@@ -36,8 +36,7 @@ import {
   Triangle as ModelChartIcon,
   Sidebar as MultiBarIcon,
   Key as SocialAccountIcon,
-  PenTool as CompanyIcon
-  
+  List as ListIcon
 } from 'react-feather';
 import Logo from 'src/components/Logo';
 import useAuth from 'src/hooks/useAuth';
@@ -124,6 +123,11 @@ const sectionsRockstar = [
             href: '/app/extra/charts/all'
           },
           {
+            title: 'Daily Sales',
+            icon: SoldChartIcon,
+            href: '/app/extra/charts/linear'
+          },
+          {
             title: 'Stores Report',
             icon: StoreIcon,
             href: '/app/extra/charts/stores'
@@ -139,11 +143,6 @@ const sectionsRockstar = [
             href: '/app/extra/charts/models'
           },
           {
-            title: 'Daily Sales',
-            icon: SoldChartIcon,
-            href: '/app/extra/charts/linear'
-          },
-          {
             title: 'Leads By Status',
             icon: PyramidChartIcon,
             href: '/app/extra/charts/pyramid'
@@ -152,19 +151,29 @@ const sectionsRockstar = [
       },
       {
         title: 'Charts Highcharts',
-        href: '/app/extra/charts',
+        href: '/app/extra/highcharts',
         icon: BarChartIcon,
         items: [
           {
             title: 'Global Report',
-            icon: AllChartIcon,
-            href: '/app/extra/highcharts/all'
-          },
-          {
-            title: 'Stores Report',
             icon: StoreIcon,
             href: '/app/extra/highcharts/stores'
           },
+          // {
+          //   title: 'Global Report',
+          //   icon: AllChartIcon,
+          //   href: '/app/extra/highcharts/all'
+          // },
+          {
+            title: 'Daily Sales',
+            icon: SoldChartIcon,
+            href: '/app/extra/highcharts/linear'
+          },
+          // {
+          //   title: 'Stores Report',
+          //   icon: StoreIcon,
+          //   href: '/app/extra/highcharts/stores'
+          // },
           {
             title: 'Global Report Models',
             icon: MultiBarIcon,
@@ -174,11 +183,6 @@ const sectionsRockstar = [
             title: 'Leads By Models',
             icon: ModelChartIcon,
             href: '/app/extra/highcharts/models'
-          },
-          {
-            title: 'Daily Sales',
-            icon: SoldChartIcon,
-            href: '/app/extra/highcharts/linear'
           },
           {
             title: 'Leads By Status',
@@ -229,11 +233,6 @@ const rockstarSection = [
             title: 'Users',
             href: '/app/management/users',
             icon: UserIcon
-          },
-          {
-            title: 'Companies',
-            href: '/app/management/companies',
-            icon: CompanyIcon
           },
           {
             title: 'Social Accounts',

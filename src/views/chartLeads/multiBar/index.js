@@ -11,15 +11,20 @@ import {
   SvgIcon,
   Typography,
   TextField,
-  FormControlLabel,
-  Switch
+  ButtonGroup
 } from '@material-ui/core';
 import { Link as RouterLink } from 'react-router-dom';
 import Page from 'src/components/Page';
 import Chart from './Chart';
 import useLead from 'src/hooks/useLead';
 import moment from 'moment';
-import { Calendar as CalendarIcon } from 'react-feather';
+import { 
+  Calendar as CalendarIcon,
+  BarChart2 as BarIcon,
+  Circle as CakeIcon,
+  Facebook as SourceIcon,
+  AlertCircle as StatusIcon
+ } from 'react-feather';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import useMake from 'src/hooks/useMake';
 import useAuth from 'src/hooks/useAuth';
@@ -78,8 +83,6 @@ const ApexChartsView = ({ className, ...rest }) => {
   const [date, setDate] = useState(`&after=${moment().startOf('month').format('YYYY-MM-DD')}`);
   const [typeBar, setTypeBar] = useState('bar');
   const [showInfo, setShowInfo] = useState('sources');
-  const [switchB, setSwitchB] = useState(true);
-  const [switchB2, setSwitchB2] = useState(true);
   const [arrIds, setArrIds] = useState('')
   const [arrIdsS, setArrIdsS] = useState('')
 
@@ -352,44 +355,32 @@ const ApexChartsView = ({ className, ...rest }) => {
                 ))}
             </TextField>
             </Grid>
-            <Grid item xs={6} md={6}>
-            <Typography variant='body1' color='textPrimary'>
-                Change Graph Type
-            </Typography>
-            <FormControlLabel
-                control={(
-                  <Switch
-                    checked={switchB}
-                    onChange={(e)=>{ 
-                      setSwitchB(!switchB);
-                      if(!switchB)
-                      setTypeBar('bar') 
-                      else 
-                      setTypeBar('line');
-                    }}
-                  />
-                )}
-              />
-              </Grid>
-              <Grid item xs={6} md={6}>
-              <Typography variant='body1' color='textPrimary'>
-                Status / Sources
-              </Typography>
-              <FormControlLabel
-                  control={(
-                    <Switch
-                      checked={switchB2}
-                      onChange={(e)=>{ 
-                        setSwitchB2(!switchB2);
-                        if(!switchB2)
-                        setShowInfo('sources') 
-                        else 
-                        setShowInfo('statuses');
-                      }}
-                    />
-                  )}
-                />
-              </Grid>
+            <Grid item xs={6} md={6} container
+              direction="row"
+              justify="center"
+              alignItems="center">
+              <ButtonGroup color="primary" size='large' >
+                <Button style={{'textTransform': 'capitalize'}} variant={typeBar === 'bar' ? 'contained' : 'outlined'}  onClick={(e)=>{ 
+                  setTypeBar('bar') 
+                }}><BarIcon /> <p style={{marginLeft: 5, fontSize: 14}}>Bar</p></Button>
+                <Button style={{'textTransform': 'capitalize'}} variant={typeBar === 'pie' ? 'contained' : 'outlined'}  onClick={(e)=>{
+                  setTypeBar('pie') 
+                }}><CakeIcon /><p style={{marginLeft: 5, fontSize: 14}}>Cake</p></Button>
+              </ButtonGroup>
+            </Grid>
+            <Grid item xs={6} md={6} container
+              direction="row"
+              justify="center"
+              alignItems="center">
+              <ButtonGroup color="primary" size='large' >
+                <Button style={{'textTransform': 'capitalize'}} variant={typeBar === 'sources' ? 'contained' : 'outlined'}  onClick={(e)=>{ 
+                  setShowInfo('sources') 
+                }}><SourceIcon /><p style={{marginLeft: 5, fontSize: 14}}>Source</p></Button>
+                <Button style={{'textTransform': 'capitalize'}} variant={typeBar === 'statuses' ? 'contained' : 'outlined'}  onClick={(e)=>{
+                  setShowInfo('statuses') 
+                }}><StatusIcon /><p style={{marginLeft: 5, fontSize: 14}}>Status</p></Button>
+              </ButtonGroup>
+            </Grid>
         </Grid>
 
         <Grid container spacing={3}>

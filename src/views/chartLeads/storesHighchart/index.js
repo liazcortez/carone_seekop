@@ -11,16 +11,19 @@ import {
   SvgIcon,
   Typography,
   TextField,
+  ButtonGroup
 } from '@material-ui/core';
 import { Link as RouterLink } from 'react-router-dom';
 import Page from 'src/components/Page';
 import Chart from './Chart';
 import useLead from 'src/hooks/useLead';
 import moment from 'moment';
-import useStore from 'src/hooks/useStore';
-import { Calendar as CalendarIcon } from 'react-feather';
+import { 
+  Calendar as CalendarIcon,
+  BarChart2 as BarIcon,
+  Circle as CakeIcon
+ } from 'react-feather';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
-import useMake from 'src/hooks/useMake';
 import useAuth from 'src/hooks/useAuth';
 import useStatus from 'src/hooks/useStatus';
 import useSource from 'src/hooks/useSource';
@@ -63,30 +66,23 @@ const ApexChartsView = ({ className, ...rest }) => {
   const { user } = useAuth();
   const { statuses, getStatuses } = useStatus();
   const { sources, getSources } = useSource();
-  const { makes, getMakes } = useMake();
   const [timeRange, setTimeRange] = useState(timeRanges[2].text);
   const actionRef = useRef(null);
-  const { stores, getStores, getStoresByMake} = useStore();
-  const [storeSearch, setStoreSearch] = useState('');
   const [drill, setDrill] = useState(false);
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [filter, setFilter] = useState('LT');
   const [makeSearch, setMakeSearch] = useState('');
   const [sourceSearch, setSourceSearch] = useState('');
   const [statusSearch, setStatusSearch] = useState('');
+  const [typeBar, setTypeBar] = useState('column');
+
   const [date, setDate] = useState(`&after=${moment().startOf('month').format('YYYY-MM-DD')}`);
 
   useEffect(()=>{
-    getMakes();
     getStatuses();
     getSources();
-    getStores();
     //eslint-disable-next-line
   },[])
-
-  const findStores = async(id) =>{
-    await getStoresByMake(id);
-  };
 
   useEffect(()=>{
     if(user.store){
@@ -99,9 +95,9 @@ const ApexChartsView = ({ className, ...rest }) => {
   },[user])
 
   useEffect(()=>{
-    getLeadsAR(`${makeSearch}${statusSearch}${sourceSearch}${storeSearch}${date}`, 'models')
+    getLeadsAR(`${makeSearch}${statusSearch}${sourceSearch}${date}`, 'models')
     //eslint-disable-next-line
-  },[makeSearch, statusSearch, sourceSearch, storeSearch, date,])
+  },[makeSearch, statusSearch, sourceSearch, date,])
 
   const handleChangeTime = filter => {
     setTimeRange(filter);
@@ -267,12 +263,29 @@ const ApexChartsView = ({ className, ...rest }) => {
                 ))}
             </TextField>
             </Grid>
+            <Grid item xs={12} md={12} container
+              direction="row"
+              justify="center"
+              alignItems="center">
+              <ButtonGroup color="primary" size='large' >
+                <Button style={{'textTransform': 'capitalize'}} variant={typeBar === 'column' ? 'contained' : 'outlined'}  onClick={(e)=>{ 
+                  if(!drill){
+                    setTypeBar('column') 
+                  }
+                }}><BarIcon /> <p style={{marginLeft: 5, fontSize: 14}}>Bar</p></Button>
+                <Button style={{'textTransform': 'capitalize'}} variant={typeBar === 'pie' ? 'contained' : 'outlined'}  onClick={(e)=>{
+                  if(!drill){
+                    setTypeBar('pie') 
+                  }
+                }}><CakeIcon /><p style={{marginLeft: 5, fontSize: 14}}>Cake</p></Button>
+              </ButtonGroup>
+            </Grid>
            
         </Grid>
 
         <Grid container spacing={3}>
           <Grid item xs={12}> 
-            <Chart leads={leads} filter={filter} setDrill={setDrill}/>
+            <Chart leads={leads} filter={filter} setDrill={setDrill} type={typeBar}/>
           </Grid>
         </Grid>
       </Container>

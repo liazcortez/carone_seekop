@@ -6,6 +6,7 @@ import makesToCount from 'src/utils/makesToCount';
 import datesFormat from 'src/utils/datesFormat'; 
 import leadsPerMonth from 'src/utils/leadsPerMonth';
 import _ from "lodash";
+import generateColor from 'src/utils/createColorsGradient';
 
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
@@ -34,9 +35,34 @@ const LineChart = ({ leads, filter, type, labels }) => {
 
   }
 
-  const options = {
-    chart: {
-      type: type,
+  let finalSerie = [];
+
+  makesLeads.map( (item, i) =>{
+    finalSerie.push({
+      y: item,
+      color: theme.palette.primary.main
+    })
+    return false;
+  });
+
+  let colores = generateColor('#ffffff', theme.palette.primary.main, 12)
+
+  let cakeLabels = [];
+  categories.map( (item, i ) => {
+    cakeLabels.push({
+      name: item,
+      y: makesLeads[i]
+    })
+    return false;
+  })
+
+
+  let options;
+
+  if(type === 'column'){
+    options = {
+      chart: {
+      type: 'column',
       backgroundColor: theme.palette.background.paper,
       style: {
         color: theme.palette.divider
@@ -53,7 +79,9 @@ const LineChart = ({ leads, filter, type, labels }) => {
     plotOptions: {
       column: {
         borderWidth: 0,
-        color: theme.palette.primary.main
+        color: theme.palette.primary.main,
+      colors: colores,
+
       },
       line: {
         borderWidth: 1,
@@ -132,11 +160,46 @@ const LineChart = ({ leads, filter, type, labels }) => {
     series: [
       {
         name: 'Leads',
-        data: makesLeads,
+        data: finalSerie,
       }
     ]
   };
 
+  }else{
+    options = {
+      chart: {
+        plotBackgroundColor: null,
+        plotBorderWidth: null,
+        plotShadow: false,
+        type: 'pie'
+    },
+    tooltip: {
+        pointFormat: '{series.name}: <b>{point.percentage:.2f}%</b>'
+    },
+    accessibility: {
+        point: {
+            valueSuffix: '%'
+        }
+    },
+    plotOptions: {
+        pie: {
+          borderWidth: 0,
+            allowPointSelect: true,
+            cursor: 'pointer',
+            colors: colores,
+            dataLabels: {
+                enabled: true,
+                format: '<b>{point.name}</b>: {point.percentage:.2f} %'
+            }
+        }
+    },
+    series: [{
+        name: 'Leads',
+        colorByPoint: true,
+        data: cakeLabels
+    }]
+    }
+  }
   return (
     <Card>
       <CardContent>
