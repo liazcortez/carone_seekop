@@ -1,16 +1,25 @@
 import React from 'react';
 import Chart from 'react-apexcharts';
 import { Card, CardContent, Typography, useTheme, colors } from '@material-ui/core';
-
 import leadsPerMonth from 'src/utils/leadsPerMonth';
 import datesFormat from 'src/utils/datesFormat';
-
-import leadsByStatus from 'src/utils/leadsByStatus2';
+// import leadsByStatus from 'src/utils/leadsByStatus2';
+import _ from 'lodash'
+import leadsPerStatus from 'src/utils/leadsPerStatus';
+import statusToCount from 'src/utils/statusToCount';
+import setKeyValueArray from 'src/utils/setKeyValueArray';
 
 const LineChart = ({ leads, ids, showInfo, filter }) => {
   const theme = useTheme();
 
-  const categories = datesFormat(leads, filter);
+  const arrStatus = statusToCount(leads);
+
+  const categories = _.uniqBy(arrStatus);
+
+  const statusLeads = leadsPerStatus(arrStatus);
+
+
+  // const categories = datesFormat(leads, filter);
 
   const leadsMonth = leadsPerMonth(leads, categories, filter);
 
@@ -26,13 +35,13 @@ const LineChart = ({ leads, ids, showInfo, filter }) => {
     fix.map( item => seriesStatuses.push(
       {
         name: Object.keys(item)[0],
-        data: leadsByStatus(leads, categories, item[Object.keys(item)[0]], filter)
+        // data: leadsByStatus(leads, categories, item[Object.keys(item)[0]], filter)
       }
     ))
   }
 
     arrayInformation.push(...seriesStatuses);
-    colorFinal = {colors: [colors.blue['400'], theme.palette.primary.main,theme.palette.error.main, theme.palette.success.main, theme.palette.warning.main]};
+    colorFinal = {colors: [theme.palette.primary.main, theme.palette.primary.main,theme.palette.error.main, theme.palette.success.main, theme.palette.warning.main]};
   
     const chart = {
     options: {
@@ -46,7 +55,26 @@ const LineChart = ({ leads, ids, showInfo, filter }) => {
       },
       ...colorFinal,
       dataLabels: {
-        enabled: false
+        enabled: true,
+        enabledOnSeries: undefined,
+        formatter: function(value, { seriesIndex, dataPointIndex, w }) {
+          return value
+        },  
+        textAnchor: 'middle',
+        style: {
+          fontSize: '14px',
+          fontFamily: 'Helvetica, sans-serif',
+          fontWeight: '700',
+          colors: ["#fff"]
+        },
+        offsetY: -20
+      },
+      plotOptions: {
+        bar: {
+          dataLabels: {
+            position: 'top'
+          }
+        }
       },
       grid: {
         borderColor: theme.palette.divider,
@@ -121,9 +149,9 @@ const LineChart = ({ leads, ids, showInfo, filter }) => {
     series: [
       {
         name: 'Leads',
-        data: leadsMonth
+        data: statusLeads
       },
-      ...arrayInformation
+      // ...arrayInformation
     ]
   };
 

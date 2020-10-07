@@ -16,8 +16,10 @@ const LineChart = ({ leads, filter, type }) => {
   const categories = _.uniqBy(arrMakes);
   
   const makesLeads = leadsPerMake(arrMakes);
+  let chart;
   
-  const chart = {
+  if(type === 'bar'){
+   chart = {
     options: {
       chart: {
         background: theme.palette.background.paper,
@@ -34,6 +36,7 @@ const LineChart = ({ leads, filter, type }) => {
         formatter: function(value, { seriesIndex, dataPointIndex, w }) {
           return value
         },  
+        offsetY: -20,
         textAnchor: 'middle',
         style: {
           fontSize: '14px',
@@ -147,7 +150,54 @@ const LineChart = ({ leads, filter, type }) => {
       }
     ]
   };
+  }else{
+    chart = {
 
+      options: {
+        labels: categories,
+        theme: {
+          monochrome: {
+            enabled: true,
+            color: theme.palette.primary.main,
+            shadeTo: 'light',
+            shadeIntensity: 0.65
+          }
+        },  
+        stroke: {
+          show: true,
+          curve: 'smooth',
+          lineCap: 'butt',
+          colors: undefined,
+          width: 2,
+          dashArray: 0,      
+        }, 
+        dataLabels: {
+          enabled: true,
+          formatter: function(value, { seriesIndex, dataPointIndex, w }) {
+            return [w.config.labels[seriesIndex], value.toFixed(2) + '%', '( ' +
+            w.globals.seriesTotals.reduce((a, b) => {
+              return a + b
+            }, 0) + ' )'
+            ]
+          },  
+          textAnchor: 'middle',
+          style: {
+            fontSize: '14px',
+            fontFamily: 'Helvetica, sans-serif',
+            fontWeight: '700',
+            colors: ["#fff"]
+          },
+        },   
+        legend: {
+          show: true,
+          labels: {
+            colors: theme.palette.text.secondary
+          }
+        }
+      },
+        series: makesLeads,
+    }
+  }
   return (
     <Card>
       <CardContent>

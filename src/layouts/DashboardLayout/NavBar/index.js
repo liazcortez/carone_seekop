@@ -36,8 +36,9 @@ import {
   Triangle as ModelChartIcon,
   Sidebar as MultiBarIcon,
   Key as SocialAccountIcon,
-  PenTool as CompanyIcon
-  
+  List as ListIcon,
+  Clock as HourIcon,
+  File as DocumentIcon
 } from 'react-feather';
 import Logo from 'src/components/Logo';
 import useAuth from 'src/hooks/useAuth';
@@ -124,12 +125,17 @@ const sectionsRockstar = [
             href: '/app/extra/charts/all'
           },
           {
+            title: 'Monthly Comparative',
+            icon: SoldChartIcon,
+            href: '/app/extra/charts/linear'
+          },
+          {
             title: 'Stores Report',
             icon: StoreIcon,
             href: '/app/extra/charts/stores'
           },
           {
-            title: 'Global Report Models',
+            title: 'Models Comparative',
             icon: MultiBarIcon,
             href: '/app/extra/charts/multiple'
           },
@@ -137,11 +143,6 @@ const sectionsRockstar = [
             title: 'Leads By Models',
             icon: ModelChartIcon,
             href: '/app/extra/charts/models'
-          },
-          {
-            title: 'Daily Sales',
-            icon: SoldChartIcon,
-            href: '/app/extra/charts/linear'
           },
           {
             title: 'Leads By Status',
@@ -152,33 +153,38 @@ const sectionsRockstar = [
       },
       {
         title: 'Charts Highcharts',
-        href: '/app/extra/charts',
+        href: '/app/extra/highcharts',
         icon: BarChartIcon,
         items: [
           {
             title: 'Global Report',
-            icon: AllChartIcon,
+            icon: StoreIcon,
             href: '/app/extra/highcharts/all'
           },
           {
-            title: 'Stores Report',
-            icon: StoreIcon,
-            href: '/app/extra/highcharts/stores'
+            title: 'Monthly Comparative',
+            icon: SoldChartIcon,
+            href: '/app/extra/highcharts/linear'
           },
           {
-            title: 'Global Report Models',
+            title: 'Daily Monthly Comparative',
+            icon: CalendarIcon,
+            href: '/app/extra/highcharts/daily'
+          },
+          {
+            title: 'Models Comparative',
             icon: MultiBarIcon,
             href: '/app/extra/highcharts/multiple'
+          },
+          {
+            title: 'Hours Comparative',
+            icon: HourIcon,
+            href: '/app/extra/highcharts/hours'
           },
           {
             title: 'Leads By Models',
             icon: ModelChartIcon,
             href: '/app/extra/highcharts/models'
-          },
-          {
-            title: 'Daily Sales',
-            icon: SoldChartIcon,
-            href: '/app/extra/highcharts/linear'
           },
           {
             title: 'Leads By Status',
@@ -191,7 +197,6 @@ const sectionsRockstar = [
 
   }
 ];
-
 const rockstarSection = [
   {
     subheader: 'Control Panel',
@@ -231,9 +236,9 @@ const rockstarSection = [
             icon: UserIcon
           },
           {
-            title: 'Companies',
-            href: '/app/management/companies',
-            icon: CompanyIcon
+            title: 'Documents',
+            href: '/app/management/documents',
+            icon: DocumentIcon
           },
           {
             title: 'Social Accounts',

@@ -11,6 +11,7 @@ import {
   SvgIcon,
   Typography,
   TextField,
+  ButtonGroup
 } from '@material-ui/core';
 import { Link as RouterLink } from 'react-router-dom';
 import Page from 'src/components/Page';
@@ -18,7 +19,11 @@ import Chart from './Chart';
 import useLead from 'src/hooks/useLead';
 import moment from 'moment';
 import useStore from 'src/hooks/useStore';
-import { Calendar as CalendarIcon } from 'react-feather';
+import { 
+  Calendar as CalendarIcon,
+  BarChart2 as BarIcon,
+  Circle as CakeIcon
+ } from 'react-feather';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import useMake from 'src/hooks/useMake';
 import useAuth from 'src/hooks/useAuth';
@@ -69,6 +74,7 @@ const ApexChartsView = ({ className, ...rest }) => {
   const actionRef = useRef(null);
   const { stores, getStores, getStoresByMake} = useStore();
   const [storeSearch, setStoreSearch] = useState('');
+  const [typeBar, setTypeBar] = useState('column');
 
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [filter, setFilter] = useState('LT');
@@ -176,7 +182,7 @@ const ApexChartsView = ({ className, ...rest }) => {
               </Typography>
             </Breadcrumbs>
             <Typography variant="h3" color="textPrimary">
-              {user && user.role !== 'rockstar' ? user.store && user.store.make.name : false} Leads
+              {user && user.role !== 'rockstar' ? user.store && user.store.make.name : false} Leads By Model
             </Typography>
           </Grid>
           <Grid item>
@@ -221,7 +227,7 @@ const ApexChartsView = ({ className, ...rest }) => {
         </Grid>
 
         <Grid container spacing={3} style={{marginBottom: 35}}>
-          {user && user.role === 'rockstar' ? (
+          {/* {user && user.role === 'rockstar' ? (
             <Grid item xs={6} md={6}>
             <Typography variant='body1' color='textPrimary'>
                 Make
@@ -248,7 +254,7 @@ const ApexChartsView = ({ className, ...rest }) => {
                   }
 
                 }}
-                disabled={user && user.role === 'rockstar' ? false : true}
+                // disabled={user && user.role === 'rockstar' ? false : true}
                 select
                 variant="outlined"
                 SelectProps={{ native: true }}
@@ -264,7 +270,7 @@ const ApexChartsView = ({ className, ...rest }) => {
                 ))}
             </TextField>
           </Grid>
-          ):false}
+          ):false} */}
           <Grid item xs={6} md={6}>
             <Typography variant='body1' color='textPrimary'>
                 Status
@@ -342,12 +348,28 @@ const ApexChartsView = ({ className, ...rest }) => {
                 ))}
             </TextField>
             </Grid>
-           
+            <Grid item xs={12} md={12} container
+              direction="row"
+              justify="center"
+              alignItems="center">
+              <ButtonGroup color="primary" size='large' >
+                <Button style={{'textTransform': 'capitalize'}} variant={typeBar === 'column' ? 'contained' : 'outlined'}  onClick={(e)=>{ 
+                  if(!drill){
+                    setTypeBar('column') 
+                  }
+                }}><BarIcon /> <p style={{marginLeft: 5, fontSize: 14}}>Bar</p></Button>
+                <Button style={{'textTransform': 'capitalize'}} variant={typeBar === 'pie' ? 'contained' : 'outlined'}  onClick={(e)=>{
+                  if(!drill){
+                    setTypeBar('pie') 
+                  }
+                }}><CakeIcon /><p style={{marginLeft: 5, fontSize: 14}}>Cake</p></Button>
+              </ButtonGroup>
+            </Grid>
         </Grid>
 
         <Grid container spacing={3}>
           <Grid item xs={12}> 
-            <Chart leads={leads} filter={filter} setDrill={setDrill}/>
+            <Chart leads={leads} filter={filter} setDrill={setDrill}  type={typeBar}/>
           </Grid>
         </Grid>
       </Container>

@@ -3,7 +3,6 @@ import React, {
   useState,
   useEffect
 } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import moment from 'moment';
@@ -12,7 +11,6 @@ import {
   Breadcrumbs,
   Button,
   Grid,
-  Link,
   Menu,
   MenuItem,
   SvgIcon,
@@ -136,14 +134,12 @@ const Header = ({ className, filterChange, ...rest }) => {
           separator={<NavigateNextIcon fontSize="small" />}
           aria-label="breadcrumb"
         >
-          <Link
+          <Typography
             variant="body1"
-            color="inherit"
-            to="/app"
-            component={RouterLink}
+            color="textPrimary"
           >
             Dashboard
-          </Link>
+          </Typography>
           <Typography
             variant="body1"
             color="textPrimary"

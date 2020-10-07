@@ -11,16 +11,18 @@ import {
   SvgIcon,
   Typography,
   TextField,
-  FormControlLabel,
-  Switch
+  ButtonGroup
 } from '@material-ui/core';
 import { Link as RouterLink } from 'react-router-dom';
 import Page from 'src/components/Page';
 import Chart from './Chart';
 import useLead from 'src/hooks/useLead';
 import moment from 'moment';
-import useStore from 'src/hooks/useStore';
-import { Calendar as CalendarIcon } from 'react-feather';
+import { 
+  Calendar as CalendarIcon,
+  BarChart2 as BarIcon,
+  Circle as CakeIcon
+ } from 'react-feather';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import useMake from 'src/hooks/useMake';
 import useAuth from 'src/hooks/useAuth';
@@ -68,8 +70,6 @@ const ApexChartsView = ({ className, ...rest }) => {
   const { makes, getMakes } = useMake();
   const [timeRange, setTimeRange] = useState(timeRanges[2].text);
   const actionRef = useRef(null);
-  const { stores, getStores, getStoresByMake} = useStore();
-  const [storeSearch, setStoreSearch] = useState('');
 
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [filter, setFilter] = useState('LT');
@@ -78,19 +78,18 @@ const ApexChartsView = ({ className, ...rest }) => {
   const [statusSearch, setStatusSearch] = useState('');
   const [date, setDate] = useState(`&after=${moment().startOf('month').format('YYYY-MM-DD')}`);
   const [typeBar, setTypeBar] = useState('bar');
-  const [switchB, setSwitchB] = useState(true);
+  const [loaded, setLoaded] = useState(false);
 
+  const functionAsync = async() =>{
+    await getMakes();
+    await  getStatuses();
+    await getSources();
+    setLoaded(true)
+  }
   useEffect(()=>{
-    getMakes();
-    getStatuses();
-    getSources();
-    getStores();
+    functionAsync();
     //eslint-disable-next-line
   },[])
-
-  const findStores = async(id) =>{
-    await getStoresByMake(id);
-  };
 
   useEffect(()=>{
     if(user.store){
@@ -103,9 +102,9 @@ const ApexChartsView = ({ className, ...rest }) => {
   },[user])
 
   useEffect(()=>{
-    getLeadsAR(`${makeSearch}${statusSearch}${sourceSearch}${storeSearch}${date}`, 'models')
+    getLeadsAR(`${makeSearch}${statusSearch}${sourceSearch}${date}`, 'models')
     //eslint-disable-next-line
-  },[makeSearch, statusSearch, sourceSearch, storeSearch, date,])
+  },[makeSearch, statusSearch, sourceSearch, date,])
 
   const handleChangeTime = filter => {
     setTimeRange(filter);
@@ -216,7 +215,31 @@ const ApexChartsView = ({ className, ...rest }) => {
         </Grid>
 
         <Grid container spacing={3} style={{marginBottom: 35}}>
-          <Grid item xs={6} md={6}>
+        <Grid item xs={6} md={6}>
+            <Typography variant='body1' color='textPrimary'>
+                Makes
+            </Typography>
+            <TextField
+                fullWidth
+                name="make"
+                onChange={(e)=>{ 
+                  setMakeSearch(`&make=${e.target.value}`)
+                }}
+                select
+                required
+                variant="outlined"
+                SelectProps={{ native: true }}
+                >
+                <option key={0} value={''}>All</option>
+
+                {makes && makes.map(make => (
+                    (<option key={make._id} value={make._id}>
+                    {make.name.charAt(0).toUpperCase() + make.name.slice(1)}
+                    </option>)
+                ))}
+            </TextField>
+            </Grid>
+            <Grid item xs={6} md={6}>
             <Typography variant='body1' color='textPrimary'>
                 Status
             </Typography>
@@ -265,30 +288,24 @@ const ApexChartsView = ({ className, ...rest }) => {
                 ))}
             </TextField>
             </Grid>
-            <Grid item xs={12} md={12}>
-            <Typography variant='body1' color='textPrimary'>
-                Change Graph Type
-            </Typography>
-            <FormControlLabel
-                control={(
-                  <Switch
-                    checked={switchB}
-                    onChange={(e)=>{ 
-                      setSwitchB(!switchB);
-                      if(!switchB)
-                      setTypeBar('bar') 
-                      else 
-                      setTypeBar('line');
-                    }}
-                  />
-                )}
-              />
-              </Grid>
+            <Grid item xs={12} md={12} container
+              direction="row"
+              justify="center"
+              alignItems="center">
+              <ButtonGroup color="primary" size='large' >
+                <Button style={{'textTransform': 'capitalize'}} variant={typeBar === 'bar' ? 'contained' : 'outlined'}  onClick={(e)=>{ 
+                    setTypeBar('bar') 
+                }}><BarIcon /> <p style={{marginLeft: 5, fontSize: 14}}>Bar</p></Button>
+                <Button style={{'textTransform': 'capitalize'}} variant={typeBar === 'pie' ? 'contained' : 'outlined'}  onClick={(e)=>{
+                    setTypeBar('pie') 
+                }}><CakeIcon /><p style={{marginLeft: 5, fontSize: 14}}>Cake</p></Button>
+              </ButtonGroup>
+            </Grid>
         </Grid>
 
         <Grid container spacing={3}>
           <Grid item xs={12}> 
-            <Chart leads={leads} filter={filter} type={typeBar}/>
+            <Chart leads={leads} filter={filter} type={typeBar} load={loaded}/>
           </Grid>
         </Grid>
       </Container>

@@ -4,13 +4,10 @@ import { Card, CardContent, Typography, useTheme } from '@material-ui/core';
 
 import leadsPerMonth from 'src/utils/leadsPerMonth';
 import datesFormat from 'src/utils/datesFormat';
-import salesPerMonth from 'src/utils/leadsSoldPerMonth';
 import salesPerMonth2 from 'src/utils/leadsSoldPerMonth2';
-import makesToCount from 'src/utils/makesToCount';
-import leadsPerMake from 'src/utils/leadsPerMake';
 import _ from 'lodash'
 
-const LineChart = ({ leads, filter, type, ids, idsS, labels, showInfo}) => {
+const LineChart = ({ leads, filter, type, ids, idsS, showInfo}) => {
   const theme = useTheme();
 
   let fix = [];
@@ -27,7 +24,6 @@ const LineChart = ({ leads, filter, type, ids, idsS, labels, showInfo}) => {
   //1 all
   //0 unique
 
-  if(labels === 0){
     arrMakes = datesFormat(leads, filter);
 
     categories = _.uniqBy(arrMakes);
@@ -36,25 +32,15 @@ const LineChart = ({ leads, filter, type, ids, idsS, labels, showInfo}) => {
 
     salesMonth = salesPerMonth2(leads, categories, filter);
 
-  }else{
-    arrMakes = makesToCount(leads);
-
-    categories = _.uniqBy(arrMakes);
-    
-    makesLeads = leadsPerMake(arrMakes);
-
-    salesMonth = salesPerMonth(leads, categories, filter);
-
-  }
-
-  
 
   // const categories = datesFormat(leads, filter);
 
   // const leadsMonth = leadsPerMonth(leads, categories, filter);
 
+  let chart; 
+  if(type==='bar'){
 
-  const chart = {
+   chart = {
     options: {
       chart: {
         background: theme.palette.background.paper,
@@ -180,13 +166,57 @@ const LineChart = ({ leads, filter, type, ids, idsS, labels, showInfo}) => {
       {
         name: 'Leads',
         data: makesLeads,
-      },
-      {
-        name: 'Sales',
-        data: salesMonth,
       }
     ]
   };
+  }else{
+    chart = {
+
+      options: {
+        labels: categories,
+        theme: {
+          monochrome: {
+            enabled: true,
+            color: theme.palette.primary.main,
+            shadeTo: 'light',
+            shadeIntensity: 0.65
+          }
+        },  
+        stroke: {
+          show: true,
+          curve: 'smooth',
+          lineCap: 'butt',
+          colors: undefined,
+          width: 2,
+          dashArray: 0,      
+        }, 
+        dataLabels: {
+          enabled: true,
+          formatter: function(value, { seriesIndex, dataPointIndex, w }) {
+            return [w.config.labels[seriesIndex], value.toFixed(2) + '%', '( ' +
+            w.globals.seriesTotals.reduce((a, b) => {
+              return a + b
+            }, 0) + ' )'
+            ]
+          },  
+          textAnchor: 'middle',
+          style: {
+            fontSize: '14px',
+            fontFamily: 'Helvetica, sans-serif',
+            fontWeight: '700',
+            colors: ["#fff"]
+          },
+        },   
+        legend: {
+          show: true,
+          labels: {
+            colors: theme.palette.text.secondary
+          }
+        }
+      },
+        series: makesLeads,
+    }
+  }
 
   return (
     <Card>
@@ -194,7 +224,7 @@ const LineChart = ({ leads, filter, type, ids, idsS, labels, showInfo}) => {
         <Typography variant="h4" color="textPrimary">
           Leads
         </Typography>
-        <Chart type={type} height="300" {...chart} />
+        <Chart type={type} height="500" {...chart} />
       </CardContent>
     </Card>
   );

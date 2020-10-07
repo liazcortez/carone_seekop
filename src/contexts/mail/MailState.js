@@ -11,6 +11,7 @@ import {
   SET_ERROR,
   CLEAR_STATE,
   SET_LOADING,
+  CREATE_MAIL_ATTACHMENT,
   GET_MAILS_BY_LEAD
 } from '../types';
 
@@ -81,6 +82,22 @@ const MailState = props => {
     }
   };
 
+  //Create Mail attachment
+  const createMailAttachment = async (mail, attachment) => {
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem("token")}`
+      }
+    };
+    setLoading();
+    try {
+      const res = await api.post(`/mails`, { ...mail, attachments: attachment }, config);
+      dispatch({ type: CREATE_MAIL_ATTACHMENT, payload: res.data.data });
+    } catch (err) {
+      dispatch({ type: SET_ERROR, payload: err.response.data})
+    }
+  }
 
   //Create Mail
   const createMail = async (mail) => {
@@ -138,7 +155,8 @@ const MailState = props => {
         updateMail,
         clearState,
         setLoading,
-        getMailsByLead
+        getMailsByLead,
+        createMailAttachment
       }}
     >
       {props.children}

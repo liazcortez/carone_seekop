@@ -11,15 +11,20 @@ import {
   TableCell,
   TableRow,
   Typography,
+  colors,
   makeStyles
 } from '@material-ui/core';
 import NumberFormat from 'react-number-format';
+import Label from 'src/components/Label';
 import moment from 'moment';
 const useStyles = makeStyles(theme => ({
   root: {},
   fontWeightMedium: {
     fontWeight: theme.typography.fontWeightMedium
-  }
+  },
+  capitalize: {
+    'text-transform': 'Capitalize',
+  },
 }));
 
 const CustomerInfo = ({ customer, className, ...rest }) => {
@@ -173,6 +178,20 @@ const CustomerInfo = ({ customer, className, ...rest }) => {
             </TableRow>
             ) : false
           }
+          <TableRow>
+              <TableCell className={classes.fontWeightMedium}>Rating</TableCell>
+              <TableCell>
+              <Label
+                className={classes.capitalize}
+                color={customer && customer.rating && 
+                  customer.rating === 'hot' ? 'error' :
+                  customer.rating === 'warm' ? 'warning' : 
+                  customer.rating === 'cold' ? 'blue' : 'primary'}
+              >   
+              {customer && customer.rating ? customer.rating : ''}
+              </Label>
+              </TableCell>
+            </TableRow>
           <TableRow>
               <TableCell className={classes.fontWeightMedium}>Updated At</TableCell>
               <TableCell>

@@ -12,7 +12,7 @@ import { AlertOctagon as Icon } from 'react-feather';
 import clsx from 'clsx';
 import Page from 'src/components/Page';
 import Header from './Header';
-import LatestProjects from './LatestProjects';
+// import LatestProjects from './LatestProjects';
 import NewLeads from './NewLeads';
 import useLead from 'src/hooks/useLead';
 import { useHistory } from 'react-router';
@@ -26,6 +26,7 @@ import MakesChart from './MakesChart';
 import useStatus from 'src/hooks/useStatus'
 import useAppointment from 'src/hooks/useAppointment';
 import useAuth from 'src/hooks/useAuth';
+import LeadsByStore from './LeadsByStore';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -298,28 +299,39 @@ const DashboardView = ({className, ...rest}) => {
              
           </Grid>
           <Grid
+             item
+             lg={8}
+             md={12}
+             sm={12}
+             xs={12}
+          >
+            
+            <LeadsByStore leads={leads} ids={arrIds} filter={filter}/>
+             
+          </Grid>
+          <Grid
             item
-            lg={8}
-            md={12}
-            sm={12}
-            xs={12}
+            lg={6}
+            md={6}
+            sm={6}
+            xs={6}
           >
             <PerformanceOverTime leads={leads} ids={arrIds} filter={filter}/>
           </Grid>
 
           <Grid
              item
-             lg={12}
-             md={12}
-             sm={12}
-             xs={12}
+             lg={6}
+             md={6}
+             sm={6}
+             xs={6}
           >
             
             <MakesChart leads={leads} ids={arrIds} filter={filter}/>
              
           </Grid>
           </Grid>
-          <Grid
+          {/* <Grid
           container
           spacing={3}
           >
@@ -332,7 +344,7 @@ const DashboardView = ({className, ...rest}) => {
           >
             <LatestProjects />
           </Grid>
-        </Grid>
+        </Grid> */}
       </Container>
     </Page>
   );

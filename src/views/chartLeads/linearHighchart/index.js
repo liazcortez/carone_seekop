@@ -13,7 +13,8 @@ import {
   MenuItem,
   SvgIcon,
   Typography,
-  TextField
+  TextField,
+  ButtonGroup
 } from '@material-ui/core';
 import { Link as RouterLink } from 'react-router-dom';
 import Page from 'src/components/Page';
@@ -24,7 +25,11 @@ import useStore from 'src/hooks/useStore';
 //import RadialChart from './RadialChart';
 import useLead from 'src/hooks/useLead';
 import moment from 'moment';
-import { Calendar as CalendarIcon } from 'react-feather';
+import { 
+  Calendar as CalendarIcon,
+  BarChart2 as BarIcon,
+  Circle as CakeIcon
+ } from 'react-feather';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 
 import useMake from 'src/hooks/useMake';
@@ -76,7 +81,6 @@ const ApexChartsView = ({ className, ...rest }) => {
   const [date, setDate] = useState(`&after=${moment().startOf('month').format('YYYY-MM-DD')}`);
   const { user } = useAuth();
   const [filter, setFilter] = useState('D-MMM');
-  const [labels, setLabels] = useState(1);
   const [sourceSearch, setSourceSearch] = useState('');
   const { statuses, getStatuses } = useStatus();
   const [switchB, setSwitchB] = useState(true);
@@ -93,7 +97,10 @@ const ApexChartsView = ({ className, ...rest }) => {
 
     //eslint-disable-next-line
   }, []);
-
+  useEffect(()=>{
+    setStoreSearch('&store=')
+    //eslint-disable-next-line
+  },[makeSearch])
   useEffect(()=>{
     getMakes();
     getStatuses();
@@ -101,10 +108,7 @@ const ApexChartsView = ({ className, ...rest }) => {
     getStores();
     //eslint-disable-next-line
   },[])
-  useEffect(()=>{
-    setStoreSearch('&store=')
-    //eslint-disable-next-line
-  },[makeSearch])
+
   const findStores = async(id) =>{
     await getStoresByMake(id);
   };
@@ -207,7 +211,7 @@ const ApexChartsView = ({ className, ...rest }) => {
               </Typography>
             </Breadcrumbs>
             <Typography variant="h3" color="textPrimary">
-              Sold Leads
+              Monthly Comparative
             </Typography>
           </Grid>
           <Grid item>
@@ -259,16 +263,6 @@ const ApexChartsView = ({ className, ...rest }) => {
                 name="make"
                 onChange={(e)=>{ 
                   setMakeSearch(`&make=${e.target.value}`)
-                  if(e.target.value === ''){
-                    const func = async ()=>{ await getStores();}
-                    func();
-                    setLabels(1)
-
-                  }else{
-                    findStores(e.target.value)
-                    setLabels(0)
-
-                  }
                 }}
                 disabled={user && user.role === 'rockstar' ? false : true}
                 select
@@ -331,32 +325,26 @@ const ApexChartsView = ({ className, ...rest }) => {
                 ))}
             </TextField>
             </Grid>
-            <Grid item xs={12} md={12}>
-            <Typography variant='body1' color='textPrimary'>
-                Change Graph Type
-            </Typography>
-            <FormControlLabel
-                control={(
-                  <Switch
-                    checked={switchB}
-                    onChange={(e)=>{ 
-                      setSwitchB(!switchB);
-                      if(!switchB)
-                      setTypeBar('column') 
-                      else 
-                      setTypeBar('line');
-                    }}
-                  />
-                )}
-              />
-              </Grid>
+            <Grid item xs={12} md={12} container
+              direction="row"
+              justify="center"
+              alignItems="center">
+              <ButtonGroup color="primary" size='large' >
+                <Button style={{'textTransform': 'capitalize'}} variant={typeBar === 'column' ? 'contained' : 'outlined'}  onClick={(e)=>{ 
+                  setTypeBar('column') 
+                }}><BarIcon /> <p style={{marginLeft: 5, fontSize: 14}}>Bar</p></Button>
+                <Button style={{'textTransform': 'capitalize'}} variant={typeBar === 'pie' ? 'contained' : 'outlined'}  onClick={(e)=>{
+                  setTypeBar('pie') 
+                }}><CakeIcon /><p style={{marginLeft: 5, fontSize: 14}}>Cake</p></Button>
+              </ButtonGroup>
+            </Grid>
               
         </Grid>
 
         <Grid container spacing={3}>
           <Grid item xs={12}>
 
-            <LineChart leads={leads} filter={filter} type={typeBar} ids={arrIds} idsS={arrIdsS} showInfo={showInfo} labels={labels}/>
+            <LineChart leads={leads} filter={filter} type={typeBar} ids={arrIds} idsS={arrIdsS} showInfo={showInfo} />
           </Grid>{/*
           <Grid item xs={12} md={8}>
             <AreaChart leads={leads} filter={filter} />

@@ -92,7 +92,7 @@ const Invoices = ({ className, ...rest }) => {
                   </TableHead>
                   <TableBody>
                     {mails && mails.map((mail) => (
-                      <TableRow key={mail._id}>
+                      <TableRow key={mail._id + mail.createdAt}>
                         <TableCell>
                           {mail && mail.subject}
                         </TableCell>

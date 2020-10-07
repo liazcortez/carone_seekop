@@ -8,11 +8,11 @@ import _ from "lodash";
 import makesToCount from 'src/utils/makesToCount';
 import separateLeadsByMake from 'src/utils/separateLeadsByMake'
 import leadsPerStore from 'src/utils/leadsPerStore';
-
+import generateColor from 'src/utils/createColorsGradient';
 import Drilldown from 'highcharts/modules/drilldown';
 
 Drilldown(Highcharts);
-const LineChart = ({ leads, setDrill }) => {
+const LineChart = ({ leads, setDrill, type}) => {
   const theme = useTheme();
 
   let arrayData = [];
@@ -26,6 +26,8 @@ const LineChart = ({ leads, setDrill }) => {
   let models;
   let uniqueModels;
   let quant;
+
+  let colors = generateColor('#ffffff', theme.palette.primary.main, 12)
 
   uniqueMakes.map( (make, i) =>{
 
@@ -66,9 +68,13 @@ const LineChart = ({ leads, setDrill }) => {
 
   })
 
-  const options = {
+
+  let options;
+
+  if(type === 'pie'){
+  options = {
     chart: {
-      type: 'column',
+      type: 'pie',
       backgroundColor: theme.palette.background.paper,
       style: {
         color: theme.palette.divider
@@ -88,16 +94,18 @@ const LineChart = ({ leads, setDrill }) => {
       }
     },
     tooltip: {
-      enabled: false
+      pointFormat: '{series.name}: <b>{point.percentage:.2f}%</b>'
     },
     plotOptions: {
-      column: {
+      pie: {
         borderWidth: 0,
-        color: theme.palette.primary.main
-      },
-      line: {
-        borderWidth: 1,
-        color: theme.palette.primary.main
+        allowPointSelect: true,
+        cursor: 'pointer',
+        colors: colors,
+        dataLabels: {
+            enabled: true,
+            format: '<b>{point.name}</b>: {point.percentage:.2f} %'
+        }
       },
       series: {
         dataLabels: { 
@@ -192,7 +200,134 @@ const LineChart = ({ leads, setDrill }) => {
       }
     ]
   };
-
+  }else{
+    options = {
+      chart: {
+        type: 'column',
+        backgroundColor: theme.palette.background.paper,
+        style: {
+          color: theme.palette.divider
+        },
+        events: {
+          drilldown: function (e) {
+            setDrill(true)
+          },
+          drillupall: function(e){
+            setDrill(false)
+          }
+        }
+      },
+      legend: {
+        itemStyle: {
+            color: theme.palette.text.primary,
+        }
+      },
+      tooltip: {
+        enabled: true
+      },
+      plotOptions: {
+        column: {
+          borderWidth: 0,
+          color: theme.palette.primary.main
+        },
+        line: {
+          borderWidth: 1,
+          color: theme.palette.primary.main
+        },
+        series: {
+          dataLabels: { 
+            enabled: true, 
+            inside: false,
+            overflow: 'none',
+            crop: true,
+            color: 'rgba(255,255,255,1)',
+            y: -10,
+            style: {
+              fontFamily: 'Helvetica, sans-serif',
+              fontSize: '12px',
+              fontWeight: 'normal',
+              textShadow: 'none',
+  
+            },
+            formatter: function() {
+              return Highcharts.numberFormat(this.y,0)
+            }
+          }
+        }
+      },
+      title: {
+        text: '',
+        style: {
+          color: theme.palette.divider
+        }
+      },
+      xAxis: {
+        type: 'category',
+        lineColor: theme.palette.divider,
+        labels: {
+           style: {
+              color: theme.palette.text.primary,
+           }
+        },
+      },
+      yAxis: [
+        {
+          title: {
+            text: '',
+            style: {
+              color: theme.palette.text.primary
+            },
+          },
+          labels: {
+            style: {
+              color: theme.palette.text.primary,
+            }
+          },
+          gridLineColor: theme.palette.divider,
+          lineColor: theme.palette.divider,
+          lineWidth: 1
+        },
+        {
+          title: {
+            text: '',
+            style: {
+              color: theme.palette.text.primary
+            },
+          },
+          labels: {
+            style: {
+              color: theme.palette.text.primary,
+            }
+          },
+          opposite: true,
+          lineColor: theme.palette.divider,
+          lineWidth: 1
+        }
+      ],
+      drilldown: {
+        activeAxisLabelStyle: {
+          textDecoration: 'none',
+          fontFamily: 'Helvetica, sans-serif',
+          fontSize: '12px',
+          color: theme.palette.text.primary,
+        },
+        activeDataLabelStyle: {
+          textDecoration: 'none',
+          fontFamily: 'Helvetica, sans-serif',
+          fontSize: '12px',
+          color: theme.palette.text.primary,
+        },
+        series: arrayDrillData
+      },
+      series: [
+        {
+          name: 'Leads',
+          data: arrayData,
+          color: theme.palette.primary.main,
+        }
+      ]
+    };
+  }
   return (
     <Card>
       <CardContent>

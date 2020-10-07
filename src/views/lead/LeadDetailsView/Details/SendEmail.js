@@ -43,7 +43,7 @@ const SendEmail = ({ className, setMailOpen, ...rest }) => {
 
   return (
     <Card className={clsx(classes.root, className)} {...rest}>
-      <CardHeader title="Send Email" />
+      <CardHeader title="Documentation" />
       <Divider />
       <CardContent>
         <Box mt={2}>
@@ -56,7 +56,7 @@ const SendEmail = ({ className, setMailOpen, ...rest }) => {
             startIcon={<MailIcon />}
             onClick={handleOpen}
           >
-            Send Mail
+            Documentation
           </Button>
         </Box>
       </CardContent>

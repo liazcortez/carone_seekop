@@ -2,22 +2,30 @@ import React from 'react';
 import Chart from 'react-apexcharts';
 import { Card, CardContent, Typography, useTheme } from '@material-ui/core';
 
-import leadsPerMake from 'src/utils/leadsPerMake';
-
-import makesToCount from 'src/utils/makesToCount';
+import leadsPerStore from 'src/utils/leadsPerStore2';
+import storesToCount from 'src/utils/storesToCount2';
 
 import _ from "lodash";
 
-const LineChart = ({ leads, filter, type }) => {
+const LineChart = ({ leads, filter, type, load}) => {
   const theme = useTheme();
 
-  const arrMakes = makesToCount(leads);
+  let arrMakes = [];
+  let categories = [];
+  let makesLeads = [];
 
-  const categories = _.uniqBy(arrMakes);
-  
-  const makesLeads = leadsPerMake(arrMakes);
-  
-  const chart = {
+
+  if(leads){
+    arrMakes = storesToCount(leads);
+    categories = _.uniqBy(arrMakes);
+    makesLeads = leadsPerStore(leads, categories);
+  }
+
+
+  let chart;
+
+  if(type=== 'bar'){
+  chart = {
     options: {
       chart: {
         background: theme.palette.background.paper,
@@ -34,6 +42,7 @@ const LineChart = ({ leads, filter, type }) => {
         formatter: function(value, { seriesIndex, dataPointIndex, w }) {
           return value
         },  
+        offsetY: -20,
         textAnchor: 'middle',
         style: {
           fontSize: '14px',
@@ -44,6 +53,7 @@ const LineChart = ({ leads, filter, type }) => {
       },
       plotOptions: {
         bar: {
+          
           dataLabels: {
             position: 'top'
           }
@@ -76,7 +86,7 @@ const LineChart = ({ leads, filter, type }) => {
         }
       },
       stroke: {
-        width: 1,
+        width: 0,
         curve: 'smooth',
         lineCap: 'butt',
         dashArray: [0, 3]
@@ -147,6 +157,54 @@ const LineChart = ({ leads, filter, type }) => {
       }
     ]
   };
+  }else{
+    chart = {
+
+      options: {
+        labels: categories,
+        theme: {
+          monochrome: {
+            enabled: true,
+            color: theme.palette.primary.main,
+            shadeTo: 'light',
+            shadeIntensity: 0.65
+          }
+        },  
+        stroke: {
+          show: false,
+          curve: 'smooth',
+          lineCap: 'butt',
+          colors: undefined,
+          width: 0,
+          dashArray: 0,      
+        }, 
+        dataLabels: {
+          enabled: true,
+          formatter: function(value, { seriesIndex, dataPointIndex, w }) {
+            return [w.config.labels[seriesIndex], value.toFixed(2) + '%', '( ' +
+            w.globals.seriesTotals.reduce((a, b) => {
+              return a + b
+            }, 0) + ' )'
+            ]
+          },  
+          textAnchor: 'middle',
+          style: {
+            fontSize: '14px',
+            fontFamily: 'Helvetica, sans-serif',
+            fontWeight: '700',
+            colors: ["#fff"]
+          },
+        },  
+        legend: {
+          show: true,
+          labels: {
+            colors: theme.palette.text.secondary
+          }
+        }
+      },
+        series: makesLeads
+    }
+  }
 
   return (
     <Card>
@@ -154,7 +212,12 @@ const LineChart = ({ leads, filter, type }) => {
         <Typography variant="h4" color="textPrimary">
           Leads
         </Typography>
+        {load ? (
           <Chart type={type} height="500" {...chart} />
+        ) : 
+        <Card style={{height: 500}} >
+          </Card>
+          } 
       </CardContent>
     </Card>
   );

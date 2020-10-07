@@ -2,18 +2,16 @@ import React from 'react';
 import Chart from 'react-apexcharts';
 import { Card, CardContent, Typography, useTheme } from '@material-ui/core';
 
-import leadsPerMonth from 'src/utils/leadsPerMonth';
-import datesFormat from 'src/utils/datesFormat';
-import salesPerMonth from 'src/utils/leadsSoldPerMonth';
+const LineChart = ({analytics, labels}) => {
+  const theme = useTheme();  
+  let serie = [];
 
-const LineChart = ({ leads, filter }) => {
-  const theme = useTheme();
-
-  const categories = datesFormat(leads, filter);
-
-  const leadsMonth = leadsPerMonth(leads, categories, filter);
-
-  const salesMonth = salesPerMonth(leads, categories, filter);
+  if(analytics !== undefined){
+    serie.push({
+      name: 'Leads',
+      data: analytics
+      })
+  }
 
   const chart = {
     options: {
@@ -23,11 +21,31 @@ const LineChart = ({ leads, filter }) => {
         toolbar: {
           show: false
         },
-        zoom: false
+        zoom: false,
+       
       },
-      colors: ['#1f87e6', '#ff5c7c'],
+      colors: [theme.palette.primary.main],
       dataLabels: {
-        enabled: false
+        enabled: true,
+        enabledOnSeries: undefined,
+        formatter: function(value, { seriesIndex, dataPointIndex, w }) {
+          return value
+        },  
+        textAnchor: 'middle',
+        style: {
+          fontSize: '14px',
+          fontFamily: 'Helvetica, sans-serif',
+          fontWeight: '700',
+          colors: ["#fff"]
+        },
+        offsetY: -20
+      },
+      plotOptions: {
+        bar: {
+          dataLabels: {
+            position: 'top'
+          }
+        }
       },
       grid: {
         borderColor: theme.palette.divider,
@@ -49,7 +67,6 @@ const LineChart = ({ leads, filter }) => {
         size: 4,
         strokeColors: ['#1f87e6', '#27c6db'],
         strokeWidth: 0,
-        shape: 'circle',
         radius: 2,
         hover: {
           size: undefined,
@@ -57,10 +74,7 @@ const LineChart = ({ leads, filter }) => {
         }
       },
       stroke: {
-        width: 3,
-        curve: 'smooth',
-        lineCap: 'butt',
-        dashArray: [0, 3]
+        width: 1,
       },
       theme: {
         mode: theme.palette.type
@@ -69,6 +83,9 @@ const LineChart = ({ leads, filter }) => {
         theme: theme.palette.type
       },
       xaxis: {
+        tooltip: {
+          enabled: false
+        },
         axisBorder: {
           color: theme.palette.divider
         },
@@ -76,7 +93,7 @@ const LineChart = ({ leads, filter }) => {
           show: false,
           color: theme.palette.divider
         },
-        categories: categories,
+        categories: labels ? labels : ['No Information'],
         labels: {
           style: {
             colors: theme.palette.text.secondary
@@ -85,6 +102,9 @@ const LineChart = ({ leads, filter }) => {
       },
       yaxis: [
         {
+          tooltip: {
+            enabled: false
+          },
           axisBorder: {
             show: true,
             color: theme.palette.divider
@@ -98,37 +118,11 @@ const LineChart = ({ leads, filter }) => {
               colors: theme.palette.text.secondary
             }
           },
-          seriesName: 'Leads'
-        },
-        {
-          axisBorder: {
-            show: true,
-            color: theme.palette.divider
-          },
-          axisTicks: {
-            show: true,
-            color: theme.palette.divider
-          },
-          labels: {
-            style: {
-              colors: theme.palette.text.secondary
-            }
-          },
-          opposite: true,
-          seriesName: 'Leads'
+
         }
       ]
     },
-    series: [
-      {
-        name: 'Leads',
-        data: leadsMonth
-      },
-      {
-        name: 'Sales',
-        data: salesMonth
-      }
-    ]
+    series: [...serie]
   };
 
   return (
@@ -137,7 +131,7 @@ const LineChart = ({ leads, filter }) => {
         <Typography variant="h4" color="textPrimary">
           Leads
         </Typography>
-        <Chart type="bar" height="300" {...chart} />
+          <Chart type='bar' height="500" {...chart} />
       </CardContent>
     </Card>
   );
