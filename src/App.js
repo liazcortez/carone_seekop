@@ -29,6 +29,7 @@ import AppointmentState from './contexts/appointment/AppointmentState';
 import TaskState from './contexts/task/TaskState';
 import ActivityState from './contexts/activities/ActivityState';
 import MailState from './contexts/mail/MailState';
+import DocumentState from './contexts/document/DocumentState';
 import CompanyState from './contexts/company/CompanyState';
 import MailMarketingState from './contexts/mailMarketing/MailMarketingState';
 import SocialAccount from './contexts/socialAccount/SocialAccountState';
@@ -71,12 +72,14 @@ const App = () => {
                                           <CompanyState>
                                             <MailState>
                                               <MailMarketingState>
-                                                <GlobalStyles />
-                                                <ScrollReset />
-                                                <GoogleAnalytics />
-                                                <CookiesNotification />
-                                                <SettingsNotification />
-                                                {renderRoutes(routes)}
+                                                <DocumentState>
+                                                  <GlobalStyles />
+                                                  <ScrollReset />
+                                                  <GoogleAnalytics />
+                                                  <CookiesNotification />
+                                                  <SettingsNotification />
+                                                  {renderRoutes(routes)}
+                                                </DocumentState>
                                               </MailMarketingState>
                                             </MailState>
                                           </CompanyState>

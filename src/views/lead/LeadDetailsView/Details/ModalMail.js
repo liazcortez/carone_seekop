@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 import {
   Backdrop,
@@ -12,12 +12,14 @@ import {
   SvgIcon,
   Tooltip,
   Typography,
-  makeStyles
+  makeStyles,
+  MenuItem,
+  Checkbox,
+  TextField
 } from '@material-ui/core';
-import { useSnackbar } from 'notistack';
 import { useParams } from 'react-router';
-import AttachFileIcon from '@material-ui/icons/AttachFile';
-import AddPhotoIcon from '@material-ui/icons/AddPhotoAlternate';
+import useDocument from 'src/hooks/useDocument';
+import { useSnackbar } from 'notistack';
 import useLead from 'src/hooks/useLead';
 import {
   X as XIcon,
@@ -59,17 +61,22 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const Compose = ({isMailOpen, setMailOpen}) => {
+let ArrayName = {};
+let ArrayFiles = {};
+
+const Compose = ({isMailOpen, setMailOpen, store}) => {
   const classes = useStyles();
-  // const { isComposeOpen } = useSelector((state) => state.mail);
   const [fullScreen, setFullScreen] = useState(false);
-  const { lead } = useLead();
-  const [messageBody, setMessageBody] = useState('');
-  const { createMail, getMailsByLead } = useMail();
-  const { enqueueSnackbar } = useSnackbar();
-  const inputFile = useRef(null) 
-  const [attachments, setAttachment] = useState(null);
   const route = useParams();
+  const { lead } = useLead();
+  const { getDocumentsByStore, documents } = useDocument();
+  const [messageBody, setMessageBody] = useState('');
+  const { createMailAttachment, getMailsByLead } = useMail();
+  const { enqueueSnackbar } = useSnackbar();
+  const [state, setState] = useState(null);
+  const [files, setFiles] = useState([]);
+  const [buttonState, setButtonState] = useState(true)
+  const [attachments, setAttachment] = useState([]);
   const [mail, setMail] = useState({
     email: lead.email,
     subject: '',
@@ -81,25 +88,69 @@ const Compose = ({isMailOpen, setMailOpen}) => {
     setMail({...mail, [e.target.name]: e.target.value})
   }
 
+  const handleChangeInputs = event => {
+    setState({ ...state, [event.target.name]: event.target.checked });
+  };
+
+  useEffect(()=>{
+    if(documents){
+      documents.map(doc => ArrayName[doc.title] = false);
+      setState(ArrayName)
+
+      documents.map(doc => ArrayFiles[doc.title] = doc);
+    }
+    //eslint-disable-next-line
+  },[documents])
+
+  useEffect(()=>{
+    if(mail){
+      if(mail.message === '' || mail.subject === ''){
+        setButtonState(true)
+      }else{
+        setButtonState(false)
+
+      }
+    }
+    //eslint-disable-next-line
+  },[mail])
+
+  useEffect(()=>{
+    const keys = [];
+    for (var k in ArrayFiles) keys.push(k);
+    setAttachment([])
+    setFiles([])
+
+    if(state !== null){
+      keys.map(item => {
+        if(state[item]){
+          files.push(ArrayFiles[item])
+        }
+      })
+    }
+    setAttachment(files)
+    //eslint-disable-next-line
+  },[state])
+
   useEffect(() => {
     setMail({ ...mail, lead: lead._id, email: lead.email})
     //eslint-disable-next-line
   }, [lead]);
 
   useEffect(() => {
-    
+    if(lead.store)
+    getDocumentsByStore(lead.store._id)
     //eslint-disable-next-line
-  }, [attachments])
+  }, [lead])
 
-  const handleChange = (value, delta, source, editor) => {
-    setMessageBody(value);
-
-    const text = editor.getText(value);
-    setMail({...mail, message: text})
-  };
+  // const handleChange = (value, delta, source, editor) => {
+  //   setMessageBody(value);
+  //   const text = editor.getText(value);
+  //   setMail({...mail, message: text})
+  // };
 
   const handleSubmit = async () =>{
-    await createMail(mail);
+    await createMailAttachment(mail, attachments);
+    // await createMail(mail);
     setMailOpen(false);
 
     setMessageBody('');
@@ -114,8 +165,8 @@ const Compose = ({isMailOpen, setMailOpen}) => {
     enqueueSnackbar('Email Sent', {
       variant: 'success'
     });
-
     getMailsByLead(route.id);
+
   }
 
   const handleExitFullScreen = () => {
@@ -129,14 +180,6 @@ const Compose = ({isMailOpen, setMailOpen}) => {
   const handleClose = () => {
     setMailOpen(false);
   };
-
-  const handleAttach = () => {
-   inputFile.current.click();
-  };
-
-  const fileChangeHandler = (e) =>{
-    setAttachment(e.target.files[0]);
-  }
 
    if (!isMailOpen) {
      return null;
@@ -202,17 +245,49 @@ const Compose = ({isMailOpen, setMailOpen}) => {
             placeholder="Subject"
             onChange={handleChangeMail}
             value={mail.subject}
+            required
           />
         </Box>
         <Divider />
-        <QuillEditor
+        <Box>
+        <Typography style={{display: 'inline-block', paddingLeft: 15}} variant='h6' color='textPrimary'>Documentation: </Typography>
+        {
+            state !== null  && documents && documents.map(doc => (
+              <Button
+              key={doc._id}
+              name={doc.title}
+              onClick={(e) => {
+                setState({ ...state, [doc.title]: !state[doc.title] });
+              }}
+            >
+              <Checkbox checked={state[doc.title] || false} onChange={handleChangeInputs} name={doc.title}/>   
+              <Typography style={{textTransform: 'capitalize'}} variant='h6' color='textPrimary'>{doc.title}</Typography>            
+
+            </Button>
+            ))
+          }
+        </Box>
+
+        <Divider />
+        <Input
+          multiline
+          rows={5}
+          disableUnderline
+          placeholder="Leave a message"
+          className={classes.editor}
+          style={{padding: 15, paddingTop: 5}}
+          name="message"
+          onChange={handleChangeMail}
+          value={mail.message}
+          required
+        />
+        {/* <QuillEditor
           className={classes.editor}
           onChange={handleChange}
           name="message"
           placeholder="Leave a message"
           value={messageBody}
-
-        />
+        /> */}
         <Divider />
         <Box
           display="flex"
@@ -225,27 +300,12 @@ const Compose = ({isMailOpen, setMailOpen}) => {
             variant="contained"
             className={classes.action}
             onClick={handleSubmit}
+            disabled={buttonState}
           >
             Send
           </Button>
-          <Tooltip title="Attach image">
-            <IconButton
-              size="small"
-              className={classes.action}
-            >
-              <AddPhotoIcon />
-            </IconButton>
-          </Tooltip>
-          <input type='file' id='file' ref={inputFile} multiple style={{display: 'none'}} onChange={fileChangeHandler}/>
-          <Tooltip title="Attach file">
-              <IconButton
-                size="small"
-                className={classes.action}
-                onClick={handleAttach}
-                >
-                <AttachFileIcon />
-              </IconButton>
-          </Tooltip>
+         
+          
         </Box>
       </Paper>
     </Portal>

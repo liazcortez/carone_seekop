@@ -113,6 +113,16 @@ const routes = [
       },
       {
         exact: true,
+        path: '/app/extra/highcharts/daily',
+        component: lazy(() => import('src/views/chartLeads/dailyHighchart'))
+      },
+      {
+        exact: true,
+        path: '/app/extra/highcharts/hours',
+        component: lazy(() => import('src/views/chartLeads/hoursHighchart'))
+      },
+      {
+        exact: true,
         path: '/app/extra/highcharts/linear',
         component: lazy(() => import('src/views/chartLeads/linearHighchart'))
       },
@@ -155,11 +165,6 @@ const routes = [
         exact: true,
         path: '/app/extra/highcharts/stores',
         component: lazy(() => import('src/views/chartLeads/storesHighchart'))
-      },
-      {
-        exact: true,
-        path: '/app/extra/charts/bar',
-        component: lazy(() => import('src/views/chartLeads/bars'))
       },
       {
         exact: true,
@@ -216,6 +221,11 @@ const routes = [
       },
       {
         exact: true,
+        path: '/app/management/documents',
+        component: lazy(() => import('src/views/document/DocumentListView'))
+      },
+      {
+        exact: true,
         path: '/app/management/socialAccounts',
         component: lazy(() => import('src/views/socialAccount/SocialAccountListView'))
       },
@@ -266,6 +276,11 @@ const routes = [
       },
       {
         exact: true,
+        path: '/app/management/documents/:id',
+        component: lazy(() => import('src/views/document/DocumentDetailsView'))
+      },
+      {
+        exact: true,
         path: '/app/management/companies/:id',
         component: lazy(() => import('src/views/company/CompanyDetailsView'))
       },
@@ -303,6 +318,11 @@ const routes = [
         exact: true,
         path: '/app/management/leads/:id/edit',
         component: lazy(() => import('src/views/lead/LeadEditView'))
+      },
+      {
+        exact: true,
+        path: '/app/management/documents/:id/edit',
+        component: lazy(() => import('src/views/document/DocumentEditView'))
       },
       {
         exact: true,
@@ -348,6 +368,11 @@ const routes = [
         exact: true,
         path: '/app/create/make',
         component: lazy(() => import('src/views/make/MakeCreateView'))
+      },
+      {
+        exact: true,
+        path: '/app/create/document',
+        component: lazy(() => import('src/views/document/DocumentCreateView'))
       },
       {
         exact: true,

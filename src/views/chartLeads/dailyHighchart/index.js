@@ -19,7 +19,7 @@ import {
 import { Link as RouterLink } from 'react-router-dom';
 import Page from 'src/components/Page';
 //import AreaChart from './AreaChart';
-import LineChart from './LineChart';
+import LineChart from './Chart';
 import useStore from 'src/hooks/useStore';
 
 //import RadialChart from './RadialChart';
@@ -80,7 +80,6 @@ const ApexChartsView = ({ className, ...rest }) => {
   const [makeSearch, setMakeSearch] = useState('');
   const [date, setDate] = useState(`&after=${moment().startOf('month').format('YYYY-MM-DD')}`);
   const { user } = useAuth();
-  const [filter, setFilter] = useState('D-MMM');
   const [sourceSearch, setSourceSearch] = useState('');
   const { statuses, getStatuses } = useStatus();
   const [switchB, setSwitchB] = useState(true);
@@ -92,7 +91,7 @@ const ApexChartsView = ({ className, ...rest }) => {
   const [arrIdsS, setArrIdsS] = useState('');
 
   useEffect(() => {
-    getLeadsAR(`${makeSearch}${sourceSearch}${storeSearch}${date}`, 'all2')
+    getLeadsAR(`${makeSearch}${sourceSearch}${storeSearch}`, 'all2')
 
 
     //eslint-disable-next-line
@@ -114,9 +113,9 @@ const ApexChartsView = ({ className, ...rest }) => {
   };
 
   useEffect(()=>{
-    getLeadsAR(`${makeSearch}${sourceSearch}${storeSearch}${date}`, 'all2')
+    getLeadsAR(`${makeSearch}${sourceSearch}${storeSearch}`, 'all2')
     //eslint-disable-next-line
-  },[makeSearch, sourceSearch, storeSearch, date,])
+  },[makeSearch, sourceSearch, storeSearch])
 
   useEffect(()=>{
     let stArr = [];
@@ -144,48 +143,6 @@ const ApexChartsView = ({ className, ...rest }) => {
     //eslint-disable-next-line
   },[sources])
 
-  const handleChangeTime = filter => {
-    setTimeRange(filter);
-    setFilter();
-    switch (filter) {
-      case 'today':
-        setDate(`&after=${moment().format('YYYY-MM-DD')}`)
-        setFilter('LT');
-
-        break;
-      case 'yesterday':
-        setDate(`&after=${moment()
-          .subtract('1', 'days')
-          .format('YYYY-MM-DD')}&before=${moment().format(
-          'YYYY-MM-DD'
-        )}`);
-        setFilter('LT');
-
-        break;
-      case 'month':
-        setDate(`&after=${moment().startOf('month').format('YYYY-MM-DD')}`);
-        setFilter('D-MMM');
-
-        break;
-      case '6month':
-        setDate(`&after=${
-          moment()
-            .startOf('month')
-            .subtract('6', 'months').format('YYYY-MM-DD')
-        }`);
-        setFilter('MMMM');
-
-        break;
-      case 'year':
-        setDate(`&after=${moment().startOf('year').format('YYYY-MM-DD')}`);
-        setFilter('MMMM');
-        break;
-
-      default:
-        break;
-    }
-  };
-
   return (
     <Page className={classes.root} title="ApexCharts">
       <Container maxWidth="lg">
@@ -211,10 +168,10 @@ const ApexChartsView = ({ className, ...rest }) => {
               </Typography>
             </Breadcrumbs>
             <Typography variant="h3" color="textPrimary">
-              Monthly Comparative
+              Daily Monthly Comparative
             </Typography>
           </Grid>
-          <Grid item>
+          {/* <Grid item>
             <Button
               ref={actionRef}
               onClick={() => setMenuOpen(true)}
@@ -249,8 +206,8 @@ const ApexChartsView = ({ className, ...rest }) => {
                 </MenuItem>
               ))}
             </Menu>
-          </Grid>
-        </Grid>
+          </Grid>*/}
+        </Grid> 
 
         <Grid container spacing={3} style={{marginBottom: 35}}>
           {user && user.role === 'rockstar' ? (
@@ -344,14 +301,8 @@ const ApexChartsView = ({ className, ...rest }) => {
         <Grid container spacing={3}>
           <Grid item xs={12}>
 
-            <LineChart leads={leads} filter={filter} type={typeBar} ids={arrIds} idsS={arrIdsS} showInfo={showInfo} />
-          </Grid>{/*
-          <Grid item xs={12} md={8}>
-            <AreaChart leads={leads} filter={filter} />
+            <LineChart leads={leads} type={typeBar} ids={arrIds} idsS={arrIdsS} showInfo={showInfo} />
           </Grid>
-          <Grid item xs={12} md={4}>
-            <RadialChart />
-          </Grid>*/}
         </Grid>
       </Container>
     </Page>

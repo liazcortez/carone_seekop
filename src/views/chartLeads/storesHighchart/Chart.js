@@ -223,7 +223,7 @@ const LineChart = ({ leads, setDrill, type}) => {
         }
       },
       tooltip: {
-        enabled: false
+        enabled: true
       },
       plotOptions: {
         column: {

@@ -24,10 +24,9 @@ import {
   Circle as CakeIcon
  } from 'react-feather';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
-import useMake from 'src/hooks/useMake';
-import useSource from 'src/hooks/useSource';
+import useAuth from 'src/hooks/useAuth';
 import useStatus from 'src/hooks/useStatus';
-import useStore from 'src/hooks/useStore';
+import useSource from 'src/hooks/useSource';
 
 const timeRanges = [
   {
@@ -64,44 +63,41 @@ const useStyles = makeStyles(theme => ({
 const ApexChartsView = ({ className, ...rest }) => {
   const classes = useStyles();
   const { leads, getLeadsAR } = useLead();
+  const { user } = useAuth();
   const { statuses, getStatuses } = useStatus();
-  const { stores, getStores, getStoresByMake } = useStore();
   const { sources, getSources } = useSource();
-  const { makes, getMakes } = useMake();
   const [timeRange, setTimeRange] = useState(timeRanges[2].text);
   const actionRef = useRef(null);
-  const [labels, setLabels] = useState(1);
+  const [drill, setDrill] = useState(false);
   const [isMenuOpen, setMenuOpen] = useState(false);
-  const [filter, setFilter] = useState('D-MMM');
-  const [statusSearch, setStatusSearch] = useState('');
-  const [sourceSearch, setSourceSearch] = useState('');
+  const [filter, setFilter] = useState('LT');
   const [makeSearch, setMakeSearch] = useState('');
-  const [storeSearch, setStoreSearch] = useState('');
-  const [date, setDate] = useState(`&after=${moment().startOf('month').format('YYYY-MM-DD')}`);
+  const [sourceSearch, setSourceSearch] = useState('');
+  const [statusSearch, setStatusSearch] = useState('');
   const [typeBar, setTypeBar] = useState('column');
 
-  useEffect(() => {
-    getLeadsAR(`&after=${moment().startOf('month').format('YYYY-MM-DD')}`, 'all');
+  const [date, setDate] = useState(`&after=${moment().startOf('month').format('YYYY-MM-DD')}`);
+
+  useEffect(()=>{
     getStatuses();
     getSources();
-    getStores();
-    getMakes();
     //eslint-disable-next-line
-  }, []);
-
-  const findStores = async(id) =>{
-    await getStoresByMake(id);
-  };
+  },[])
 
   useEffect(()=>{
-    getLeadsAR(`${makeSearch}${statusSearch}${sourceSearch}${storeSearch}${date}`, 'all')
+    if(user.store){
+      if(user.role !== 'rockstar'){
+      setMakeSearch(`&make=${user.store.make._id}`)
+      }
+    }
+    //getLeadsAR(`${makeSearch}${vehicleSearch}${date}`, 'models');
     //eslint-disable-next-line
-  },[makeSearch, statusSearch, sourceSearch, storeSearch, date])
+  },[user])
 
   useEffect(()=>{
-    setStoreSearch('&store=')
+    getLeadsAR(`${makeSearch}${statusSearch}${sourceSearch}${date}`, 'models')
     //eslint-disable-next-line
-  },[makeSearch])
+  },[makeSearch, statusSearch, sourceSearch, date,])
 
   const handleChangeTime = filter => {
     setTimeRange(filter);
@@ -170,13 +166,16 @@ const ApexChartsView = ({ className, ...rest }) => {
               </Typography>
             </Breadcrumbs>
             <Typography variant="h3" color="textPrimary">
-              Leads
+              {user && user.role !== 'rockstar' ? user.store && user.store.make.name : false} Global Report
             </Typography>
           </Grid>
           <Grid item>
             <Button
               ref={actionRef}
-              onClick={() => setMenuOpen(true)}
+              onClick={() => {
+                if(!drill){
+                  setMenuOpen(true);
+                }}}
               startIcon={
                 <SvgIcon fontSize="small">
                   <CalendarIcon />
@@ -214,55 +213,19 @@ const ApexChartsView = ({ className, ...rest }) => {
         <Grid container spacing={3} style={{marginBottom: 35}}>
           <Grid item xs={6} md={6}>
             <Typography variant='body1' color='textPrimary'>
-                Make
+              Status
             </Typography>
             <TextField
                 fullWidth
-                name="make"
+                name="status"
                 onChange={(e)=>{ 
-                  setMakeSearch(`&make=${e.target.value}`)
-                  
-                  if(e.target.value === ''){
-                    setLabels(1)
-
-                    const func = async ()=>{
-                      await getStores();
-                    }
-
-                    func();
-
-                  }else{
-                    setLabels(0)
-                    findStores(e.target.value)
-
-                  }
+                  setStatusSearch(`&status=${e.target.value}`)
                 }}
                 select
                 required
                 variant="outlined"
                 SelectProps={{ native: true }}
-                >
-                <option key={0} value={''}>All</option>
-
-                {makes && makes.map(make => (
-                    <option key={make._id} value={make._id}>
-                    {make.name.charAt(0).toUpperCase() + make.name.slice(1)}
-                    </option>
-                ))}
-            </TextField>
-          </Grid>
-          <Grid item xs={6} md={6}>
-          <Typography variant='body1' color='textPrimary'>
-                Status
-            </Typography>
-            <TextField
-                fullWidth
-                name="status"
-                onChange={(e)=>{ setStatusSearch(`&status=${e.target.value}`)}}
-                select
-                required
-                variant="outlined"
-                SelectProps={{ native: true }}
+                disabled={drill}
                 >
                 <option key={0} value={''}>All</option>
 
@@ -270,22 +233,26 @@ const ApexChartsView = ({ className, ...rest }) => {
                   status.name !== 'default' ?
                     (<option key={status._id} value={status._id}>
                     {status.name.charAt(0).toUpperCase() + status.name.slice(1)}
-                    </option>) : false
+                    </option>): false
                 ))}
             </TextField>
-          </Grid>
-          <Grid item xs={6} md={6}>
-          <Typography variant='body1' color='textPrimary'>
+            </Grid>
+            <Grid item xs={6} md={6}>
+            <Typography variant='body1' color='textPrimary'>
                 Source
             </Typography>
             <TextField
                 fullWidth
                 name="source"
-                onChange={(e)=>{ setSourceSearch(`&source=${e.target.value}`)}}
+                onChange={(e)=>{ 
+                  setSourceSearch(`&source=${e.target.value}`)
+                }}
                 select
                 required
                 variant="outlined"
                 SelectProps={{ native: true }}
+                disabled={drill}
+
                 >
                 <option key={0} value={''}>All</option>
 
@@ -296,49 +263,29 @@ const ApexChartsView = ({ className, ...rest }) => {
                 ))}
             </TextField>
             </Grid>
-            <Grid item xs={6} md={6}>
-          <Typography variant='body1' color='textPrimary'>
-                Store
-            </Typography>
-            <TextField
-                fullWidth
-                name="store"
-                onChange={(e)=>{ 
-                  console.log(e.target.value)
-                  setStoreSearch(`&store=${e.target.value}`)
-                }}
-                select
-                required
-                variant="outlined"
-                SelectProps={{ native: true }}
-                >
-                <option key={0} value={''}>All</option>
-
-                {stores && stores.map(store => (
-                    <option key={store._id} value={store._id}>
-                    {store.name.charAt(0).toUpperCase() + store.name.slice(1)}
-                    </option>
-                ))}
-            </TextField>
-            </Grid>
             <Grid item xs={12} md={12} container
               direction="row"
               justify="center"
               alignItems="center">
               <ButtonGroup color="primary" size='large' >
                 <Button style={{'textTransform': 'capitalize'}} variant={typeBar === 'column' ? 'contained' : 'outlined'}  onClick={(e)=>{ 
-                  setTypeBar('column') 
+                  if(!drill){
+                    setTypeBar('column') 
+                  }
                 }}><BarIcon /> <p style={{marginLeft: 5, fontSize: 14}}>Bar</p></Button>
                 <Button style={{'textTransform': 'capitalize'}} variant={typeBar === 'pie' ? 'contained' : 'outlined'}  onClick={(e)=>{
-                  setTypeBar('pie') 
+                  if(!drill){
+                    setTypeBar('pie') 
+                  }
                 }}><CakeIcon /><p style={{marginLeft: 5, fontSize: 14}}>Cake</p></Button>
               </ButtonGroup>
             </Grid>
+           
         </Grid>
 
         <Grid container spacing={3}>
           <Grid item xs={12}> 
-            <Chart leads={leads} filter={filter} type={typeBar} labels={labels}/>
+            <Chart leads={leads} filter={filter} setDrill={setDrill} type={typeBar}/>
           </Grid>
         </Grid>
       </Container>

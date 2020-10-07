@@ -26,6 +26,14 @@ export const DELETE_USER = 'DELETE_USER';
 export const CREATE_USER = 'CREATE_USER';
 export const GET_USERS_BY_STORE = 'GET_USERS_BY_STORE';
 
+// Document
+export const GET_DOCUMENTS = 'GET_DOCUMENTS';
+export const GET_DOCUMENTS_BY_STORE = 'GET_DOCUMENTS_BY_STORE';
+export const GET_DOCUMENT = 'GET_DOCUMENT';
+export const CREATE_DOCUMENT= 'CREATE_DOCUMENT';
+export const DELETE_DOCUMENT = 'DELETE_DOCUMENT';
+export const UPDATE_DOCUMENT = 'UPDATE_DOCUMENT';
+
 // Leads
 export const GET_LEAD = 'GET_LEAD';
 export const GET_LEADS = 'GET_LEADS';
@@ -113,6 +121,7 @@ export const GET_MAIL = 'GET_MAIL';
 export const CREATE_MAIL = 'CREATE_MAIL';
 export const DELETE_MAIL = 'DELETE_MAIL';
 export const UPDATE_MAIL = 'UPDATE_MAIL';
+export const CREATE_MAIL_ATTACHMENT = 'CREATE_MAIL_ATTACHMENT';
 
 // Mail Marketing
 export const CREATE_LIST = 'CREATE_LIST';

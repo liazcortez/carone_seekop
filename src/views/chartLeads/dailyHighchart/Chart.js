@@ -7,14 +7,17 @@ import salesPerMonth2 from 'src/utils/leadsSoldPerMonth2';
 import _ from 'lodash'
 import '../styles.css'
 import generateColor from 'src/utils/createColorsGradient';
+import moment from 'moment';
 
 
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 
 
-const LineChart = ({ leads, filter, type, ids, idsS}) => {
+const LineChart = ({ leads, type, ids, idsS}) => {
   const theme = useTheme();
+
+  const today = moment().format('DD');
 
   let fix = [];
   let fix2 = [];
@@ -22,22 +25,22 @@ const LineChart = ({ leads, filter, type, ids, idsS}) => {
   let arrMakes;
   let categories;
   let makesLeads;
-  let salesMonth;
+
   
   fix.push(...ids);
   fix2.push(...idsS);
   let colores = generateColor('#ffffff', theme.palette.primary.main, 12)
 
-  //1 all
-  //0 unique
+  const todayLeads = _.filter(leads, lead => {
+      if (moment(lead.createdAt).format('DD') === today) return lead;
+    })
 
-    arrMakes = datesFormat(leads, filter);
+    arrMakes = datesFormat(todayLeads, 'DD-MMMM-YYYY');
 
     categories = _.uniqBy(arrMakes);
     
-    makesLeads = leadsPerMonth(leads, categories, filter);
+    makesLeads = leadsPerMonth(todayLeads, categories, 'DD-MMMM-YYYY');
 
-    salesMonth = salesPerMonth2(leads, categories, filter);
 
     let cakeLabels = [];
     categories.map( (item, i ) => {
@@ -59,14 +62,6 @@ const LineChart = ({ leads, filter, type, ids, idsS}) => {
     });
 
     let finalSerie2 = [];
-
-    salesMonth.map( (item, i) =>{
-      finalSerie2.push({
-        y: item,
-        color: '#ff5c7c'
-      })
-      return false
-    });
 
   // const categories = datesFormat(leads, filter);
 

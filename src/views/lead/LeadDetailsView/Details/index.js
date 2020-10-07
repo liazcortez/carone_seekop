@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { Grid, makeStyles } from '@material-ui/core';
@@ -11,6 +11,8 @@ import Reviews from 'src/views/project/ProjectDetailsView/Reviews';
 import useComment from 'src/hooks/useComment';
 import { useParams } from 'react-router-dom';
 import useAuth from 'src/hooks/useAuth';
+import SendEmail from './SendEmail';
+import ModalMail from './ModalMail';
 
 const useStyles = makeStyles(() => ({
   root: {}
@@ -21,7 +23,8 @@ const Details = ({ customer, className, ...rest }) => {
   const { comments, getCommentsByLead } = useComment();
   const { user } = useAuth();
   const route = useParams();
-  // const [ isMailOpen, setMailOpen] = useState(false)
+  const [ isMailOpen, setMailOpen] = useState(false)
+
 
   useEffect(() => {
     getCommentsByLead(route.id);
@@ -46,10 +49,10 @@ const Details = ({ customer, className, ...rest }) => {
 
         <Grid item lg={3} md={3} xl={3} xs={12}>
           <StatusLead lead={route.id} style={{ marginBottom: '1em' }} />
-          {/* <SendEmail setMailOpen={setMailOpen} style={{ marginBottom: '1em' }} /> */}
+          <SendEmail setMailOpen={setMailOpen} style={{ marginBottom: '1em' }} />
           <Appointments style={{ marginBottom: '1em' }} />
           {/* <CallUser user={user} customer={customer} style={{ marginBottom: '1em' }} /> */}
-          {/* <ModalMail isMailOpen={isMailOpen} setMailOpen={setMailOpen} style={{ marginBottom: '1em' }} /> */}
+          <ModalMail isMailOpen={isMailOpen} setMailOpen={setMailOpen} style={{ marginBottom: '1em' }} />
           {user.role === 'rockstar' || user.role === 'admin' || user.role === 'super admin' ? (
           <AddAgent style={{ marginBottom: '1em' }} />
           ) : (

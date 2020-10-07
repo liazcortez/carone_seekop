@@ -170,7 +170,7 @@ const ApexChartsView = ({ className, ...rest }) => {
               </Typography>
             </Breadcrumbs>
             <Typography variant="h3" color="textPrimary">
-              Leads
+              Global Report
             </Typography>
           </Grid>
           <Grid item>
@@ -297,14 +297,13 @@ const ApexChartsView = ({ className, ...rest }) => {
             </TextField>
             </Grid>
             <Grid item xs={6} md={6}>
-          <Typography variant='body1' color='textPrimary'>
+            <Typography variant='body1' color='textPrimary'>
                 Store
             </Typography>
             <TextField
                 fullWidth
                 name="store"
                 onChange={(e)=>{ 
-                  console.log(e.target.value)
                   setStoreSearch(`&store=${e.target.value}`)
                 }}
                 select

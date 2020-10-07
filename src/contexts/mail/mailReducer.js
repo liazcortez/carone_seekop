@@ -7,11 +7,19 @@ import {
   SET_ERROR,
   CLEAR_STATE,
   SET_LOADING,
-  GET_MAILS_BY_LEAD
+  GET_MAILS_BY_LEAD,
+  CREATE_MAIL_ATTACHMENT
  } from '../types';
 
 export default (state, action) => {
   switch (action.type) {
+    case CREATE_MAIL_ATTACHMENT: 
+      return{
+        ...state,
+        mails: action.payload,
+        loading: false,
+        error: null
+      }
     case GET_MAILS_BY_LEAD:
       return {
         ...state,

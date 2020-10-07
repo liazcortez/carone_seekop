@@ -2,6 +2,7 @@ import React from 'react';
 import { Card, CardContent, Typography, useTheme } from '@material-ui/core';
 
 import leadsPerMonth from 'src/utils/leadsPerMonth';
+import datesFormat2 from 'src/utils/datesFormat2';
 import datesFormat from 'src/utils/datesFormat';
 import salesPerMonth2 from 'src/utils/leadsSoldPerMonth2';
 import _ from 'lodash'
@@ -13,15 +14,17 @@ import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 
 
-const LineChart = ({ leads, filter, type, ids, idsS}) => {
+const LineChart = ({ leads, type, ids, idsS}) => {
   const theme = useTheme();
 
   let fix = [];
   let fix2 = [];
 
   let arrMakes;
+  let arrMakes2;
   let categories;
   let makesLeads;
+  let categories2;
   let salesMonth;
   
   fix.push(...ids);
@@ -31,18 +34,20 @@ const LineChart = ({ leads, filter, type, ids, idsS}) => {
   //1 all
   //0 unique
 
-    arrMakes = datesFormat(leads, filter);
+    arrMakes = datesFormat(leads, 'H');
+    arrMakes2 = datesFormat2(leads, 'H');
 
     categories = _.uniqBy(arrMakes);
+    categories2 = _.uniqBy(arrMakes2);
     
-    makesLeads = leadsPerMonth(leads, categories, filter);
+    makesLeads = leadsPerMonth(leads, categories, 'H');
 
-    salesMonth = salesPerMonth2(leads, categories, filter);
+    salesMonth = salesPerMonth2(leads, categories, 'H');
 
     let cakeLabels = [];
     categories.map( (item, i ) => {
       cakeLabels.push({
-        name: item,
+        name: item+':00',
         y: makesLeads[i]
       })
       return false;
@@ -123,7 +128,7 @@ const LineChart = ({ leads, filter, type, ids, idsS}) => {
       }
     },
     xAxis: {
-      categories: categories,
+      categories: categories2,
       lineColor: theme.palette.divider,
       labels: {
          style: {

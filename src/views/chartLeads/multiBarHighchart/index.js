@@ -210,7 +210,7 @@ const ApexChartsView = ({ className, ...rest }) => {
               </Typography>
             </Breadcrumbs>
             <Typography variant="h3" color="textPrimary">
-              {user && user.role !== 'rockstar' ? user.store && user.store.make.name : false} Leads
+              {user && user.role !== 'rockstar' ? user.store && user.store.make.name : false} Models Comparative
             </Typography>
           </Grid>
           <Grid item>

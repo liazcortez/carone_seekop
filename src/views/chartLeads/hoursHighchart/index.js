@@ -19,7 +19,7 @@ import {
 import { Link as RouterLink } from 'react-router-dom';
 import Page from 'src/components/Page';
 //import AreaChart from './AreaChart';
-import LineChart from './LineChart';
+import LineChart from './Chart';
 import useStore from 'src/hooks/useStore';
 
 //import RadialChart from './RadialChart';
@@ -211,7 +211,7 @@ const ApexChartsView = ({ className, ...rest }) => {
               </Typography>
             </Breadcrumbs>
             <Typography variant="h3" color="textPrimary">
-              Monthly Comparative
+              Hours Comparative
             </Typography>
           </Grid>
           <Grid item>
@@ -344,7 +344,7 @@ const ApexChartsView = ({ className, ...rest }) => {
         <Grid container spacing={3}>
           <Grid item xs={12}>
 
-            <LineChart leads={leads} filter={filter} type={typeBar} ids={arrIds} idsS={arrIdsS} showInfo={showInfo} />
+            <LineChart leads={leads} type={typeBar} ids={arrIds} idsS={arrIdsS} showInfo={showInfo} />
           </Grid>{/*
           <Grid item xs={12} md={8}>
             <AreaChart leads={leads} filter={filter} />

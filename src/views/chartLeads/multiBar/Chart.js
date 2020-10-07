@@ -19,8 +19,6 @@ const LineChart = ({ leads, filter, type, ids, idsS, showInfo }) => {
   fix.push(...ids);
   fix2.push(...idsS);
 
-  console.log(showInfo)
-  console.log(type)
 
   const arrMakes = modelsToCount(leads);
 

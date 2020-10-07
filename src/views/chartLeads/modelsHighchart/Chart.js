@@ -9,7 +9,6 @@ import makesToCount from 'src/utils/makesToCount';
 import separateLeadsByMake from 'src/utils/separateLeadsByMake'
 import leadsPerModel from 'src/utils/leadsPerModel';
 import generateColor from 'src/utils/createColorsGradient';
-
 import Drilldown from 'highcharts/modules/drilldown';
 
 Drilldown(Highcharts);
@@ -94,7 +93,7 @@ const LineChart = ({ leads , setDrill, type}) => {
       }
     },
     tooltip: {
-      enabled: false
+      enabled: true
     },
     plotOptions: {
       column: {

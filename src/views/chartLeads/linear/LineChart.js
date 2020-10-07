@@ -166,10 +166,6 @@ const LineChart = ({ leads, filter, type, ids, idsS, showInfo}) => {
       {
         name: 'Leads',
         data: makesLeads,
-      },
-      {
-        name: 'Sales',
-        data: salesMonth,
       }
     ]
   };

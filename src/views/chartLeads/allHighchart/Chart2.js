@@ -1,35 +1,24 @@
 import React from 'react';
 import { Card, CardContent, Typography, useTheme } from '@material-ui/core';
 
+import leadsPerMake from 'src/utils/leadsPerMake';
+import makesToCount from 'src/utils/makesToCount';
+import datesFormat from 'src/utils/datesFormat'; 
 import leadsPerMonth from 'src/utils/leadsPerMonth';
-import datesFormat from 'src/utils/datesFormat';
-import salesPerMonth2 from 'src/utils/leadsSoldPerMonth2';
-import _ from 'lodash'
-import '../styles.css'
+import _ from "lodash";
 import generateColor from 'src/utils/createColorsGradient';
-
 
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 
-
-const LineChart = ({ leads, filter, type, ids, idsS}) => {
+const LineChart = ({ leads, filter, type, labels }) => {
   const theme = useTheme();
-
-  let fix = [];
-  let fix2 = [];
 
   let arrMakes;
   let categories;
   let makesLeads;
-  let salesMonth;
-  
-  fix.push(...ids);
-  fix2.push(...idsS);
-  let colores = generateColor('#ffffff', theme.palette.primary.main, 12)
 
-  //1 all
-  //0 unique
+  if(labels === 0){
 
     arrMakes = datesFormat(leads, filter);
 
@@ -37,42 +26,39 @@ const LineChart = ({ leads, filter, type, ids, idsS}) => {
     
     makesLeads = leadsPerMonth(leads, categories, filter);
 
-    salesMonth = salesPerMonth2(leads, categories, filter);
+  }else{
+    arrMakes = makesToCount(leads);
 
-    let cakeLabels = [];
-    categories.map( (item, i ) => {
-      cakeLabels.push({
-        name: item,
-        y: makesLeads[i]
-      })
-      return false;
+    categories = _.uniqBy(arrMakes);
+
+    makesLeads = leadsPerMake(arrMakes);
+
+  }
+
+  let finalSerie = [];
+
+  makesLeads.map( (item, i) =>{
+    finalSerie.push({
+      y: item,
+      color: theme.palette.primary.main
     })
+    return false;
+  });
 
-    let finalSerie = [];
+  let colores = generateColor('#ffffff', theme.palette.primary.main, 12)
 
-    makesLeads.map( (item, i) =>{
-      finalSerie.push({
-        y: item,
-        color: theme.palette.primary.main
-      })
-      return false;
-    });
+  let cakeLabels = [];
+  categories.map( (item, i ) => {
+    cakeLabels.push({
+      name: item,
+      y: makesLeads[i]
+    })
+    return false;
+  })
 
-    let finalSerie2 = [];
-
-    salesMonth.map( (item, i) =>{
-      finalSerie2.push({
-        y: item,
-        color: '#ff5c7c'
-      })
-      return false
-    });
-
-  // const categories = datesFormat(leads, filter);
-
-  // const leadsMonth = leadsPerMonth(leads, categories, filter);
 
   let options;
+
   if(type === 'column'){
     options = {
       chart: {
@@ -88,12 +74,18 @@ const LineChart = ({ leads, filter, type, ids, idsS}) => {
       }
     },
     tooltip: {
-      enabled: true
+      enabled: false
     },
     plotOptions: {
       column: {
         borderWidth: 0,
         color: theme.palette.primary.main,
+      colors: colores,
+
+      },
+      line: {
+        borderWidth: 1,
+        color: theme.palette.primary.main
       },
       series: {
         dataLabels: { 
@@ -169,10 +161,10 @@ const LineChart = ({ leads, filter, type, ids, idsS}) => {
       {
         name: 'Leads',
         data: finalSerie,
-        color: theme.palette.primary.main
       }
     ]
   };
+
   }else{
     options = {
       chart: {

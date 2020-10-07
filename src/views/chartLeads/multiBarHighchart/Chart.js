@@ -114,7 +114,7 @@ const LineChart = ({ leads, filter, type, ids, idsS, showInfo }) => {
       }
     },
     tooltip: {
-      enabled: false
+      enabled: true
     },
     plotOptions: {
       series: {
@@ -200,7 +200,7 @@ const LineChart = ({ leads, filter, type, ids, idsS, showInfo }) => {
         name: 'Leads',
         data: finalSerie
       },
-      ...arrayInformation
+      // ...arrayInformation
     ]
   };
   }else{
