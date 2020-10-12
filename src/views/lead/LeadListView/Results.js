@@ -275,6 +275,8 @@ const Results = ({ className, leads, ...rest }) => {
 
 
   const handleTabsChange = (event, value) => {
+    setPage(0)
+
     const updatedFilters = {
       ...filters,
       hasAcceptedMarketing: null,

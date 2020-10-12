@@ -244,6 +244,8 @@ const Results = ({ className, documents, ...rest }) => {
   const selectedAllDocuments = selectedDocuments.length === documents.length;
 
   const handleTabsChange = (event, value) => {
+    setPage(0)
+
     const updatedFilters = {
       ...filters,
       hasAcceptedMarketing: null,

@@ -223,6 +223,8 @@ const Results = ({ className, socialAccounts, ...rest }) => {
   const selectedAllSocialAccounts = selectedSocialAccounts.length === socialAccounts.length;
 
   const handleTabsChange = (event, value) => {
+    setPage(0)
+
     const updatedFilters = {
       ...filters,
       hasAcceptedMarketing: null,

@@ -232,6 +232,8 @@ const Results = ({ className, stores, ...rest }) => {
   const selectedAllStores = selectedStores.length === stores.length;
 
   const handleTabsChange = (event, value) => {
+    setPage(0)
+
     const updatedFilters = {
       ...filters,
       hasAcceptedMarketing: null,

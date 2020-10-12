@@ -280,6 +280,8 @@ const Results = ({ className, users, ...rest }) => {
 
 
   const handleTabsChange = (event, value) => {
+    setPage(0)
+
     const updatedFilters = {
       ...filters,
       hasAcceptedMarketing: null,

@@ -223,6 +223,8 @@ const Results = ({ className, companies, ...rest }) => {
   const selectedAllCompanies = selectedCompanies.length === companies.length;
 
   const handleTabsChange = (event, value) => {
+    setPage(0)
+
     const updatedFilters = {
       ...filters,
       hasAcceptedMarketing: null,
