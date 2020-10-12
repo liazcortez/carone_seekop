@@ -16,7 +16,7 @@ const LineChart = ({ leads, filter, type, ids, idsS, showInfo}) => {
   let arrMakes;
   let categories;
   let makesLeads;
-  let salesMonth;
+  let salesMonth = [];
   
   fix.push(...ids);
   fix2.push(...idsS);
@@ -50,7 +50,7 @@ const LineChart = ({ leads, filter, type, ids, idsS, showInfo}) => {
         },
         zoom: false
       },
-      colors: ['#1f87e6', '#ff5c7c'],
+      colors: [theme.palette.primary.main],
       dataLabels: {
         enabled: true,
         enabledOnSeries: undefined,
@@ -64,13 +64,16 @@ const LineChart = ({ leads, filter, type, ids, idsS, showInfo}) => {
           fontWeight: '700',
           colors: ["#fff"]
         },
+        offsetY: -20
     
       },
       plotOptions: {
         bar: {
           dataLabels: {
             position: 'top'
-          }
+          },
+          color: theme.palette.primary.main
+
         }
       },
       grid: {
@@ -166,6 +169,7 @@ const LineChart = ({ leads, filter, type, ids, idsS, showInfo}) => {
       {
         name: 'Leads',
         data: makesLeads,
+        color: theme.palette.primary.main
       }
     ]
   };

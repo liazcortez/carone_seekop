@@ -271,7 +271,7 @@ const Compose = ({isMailOpen, setMailOpen, store}) => {
         <Divider />
         <Input
           multiline
-          rows={5}
+          rows={fullScreen ? 25 : 5}
           disableUnderline
           placeholder="Leave a message"
           className={classes.editor}

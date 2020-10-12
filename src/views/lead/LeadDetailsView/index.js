@@ -37,7 +37,7 @@ const CustomerDetailsView = () => {
   const { getActivitiesByLead } = useActivity();
   const tabs = [
     { value: 'details', label: 'Details' },
-    { value: 'email', label: 'Email' },
+    // { value: 'email', label: 'Email' },
     { value: 'activities', label: 'Activities' }
   ];
   const [statusOpened, setStatusOpened] = useState(null);

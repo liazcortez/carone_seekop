@@ -113,6 +113,26 @@ const routes = [
       },
       {
         exact: true,
+        path: '/app/extra/charts/vs',
+        component: lazy(() => import('src/views/chartLeads/vsBar'))
+      },
+      {
+        exact: true,
+        path: '/app/extra/highcharts/vs',
+        component: lazy(() => import('src/views/chartLeads/vsBarHighchart'))
+      },
+      {
+        exact: true,
+        path: '/app/extra/charts/agents',
+        component: lazy(() => import('src/views/chartLeads/agents'))
+      },
+      {
+        exact: true,
+        path: '/app/extra/highcharts/agents',
+        component: lazy(() => import('src/views/chartLeads/agentsHighchart'))
+      },
+      {
+        exact: true,
         path: '/app/extra/highcharts/daily',
         component: lazy(() => import('src/views/chartLeads/dailyHighchart'))
       },
@@ -238,6 +258,31 @@ const routes = [
         exact: true,
         path: '/app/management/stores',
         component: lazy(() => import('src/views/store/StoreListView'))
+      },
+      {
+        exact: true,
+        path: '/app/management/alarms',
+        component: lazy(() => import('src/views/alarm/AlarmDetailsView'))
+      },
+      {
+        exact: true,
+        path: '/app/management/settings/:id',
+        component: lazy(() => import('src/views/setting/SettingDetailsView'))
+      },
+      {
+        exact: true,
+        path: '/app/management/settings',
+        component: lazy(() => import('src/views/setting/SettingListView'))
+      },
+      {
+        exact: true,
+        path: '/app/management/settings/:id/edit',
+        component: lazy(() => import('src/views/setting/SettingEditView'))
+      },
+      {
+        exact: true,
+        path: '/app/create/setting',
+        component: lazy(() => import('src/views/setting/SettingCreateView'))
       },
       {
         exact: true,

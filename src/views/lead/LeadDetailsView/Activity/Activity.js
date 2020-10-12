@@ -18,7 +18,9 @@ import {
   Mail as MailIcon,
   CheckSquare as AppointmentIcon,
   MessageCircle as CommentIcon,
-  Phone as VideoCallIcon
+  Video as VideoCallIcon,
+  Phone as CallIcon
+
 } from 'react-feather';
 
 
@@ -49,6 +51,10 @@ const avatarsMap = {
   },
   videocall: {
     icon: VideoCallIcon,
+    className: 'avatarGray'
+  },
+  call: {
+    icon: CallIcon,
     className: 'avatarGreen'
   }
 };
@@ -86,6 +92,9 @@ const useStyles = makeStyles((theme) => ({
   },
   avatarTeal: {
     backgroundColor: colors.teal[500]
+  },
+  avatarGray: {
+    backgroundColor: colors.grey[500]
   }
 }));
 
@@ -106,13 +115,7 @@ const Activity = ({ activity, className, ...rest }) => {
           variant="body1"
           color="textPrimary"
         >
-          <Link
-            color="textPrimary"
-            component={RouterLink}
-            to="#"
-            variant="h6"
-          >
-          </Link>
+          
           {' '}
           {activity.description}
         </Typography>
@@ -128,7 +131,6 @@ const Activity = ({ activity, className, ...rest }) => {
 };
 
 Activity.propTypes = {
-  activity: PropTypes.object.isRequired,
   className: PropTypes.string
 };
 

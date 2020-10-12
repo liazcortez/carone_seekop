@@ -6,7 +6,6 @@ import {
   Breadcrumbs,
   Button,
   Grid,
-  Link,
   SvgIcon,
   Typography,
   makeStyles
@@ -43,22 +42,13 @@ const Header = ({ className, ...rest }) => {
           separator={<NavigateNextIcon fontSize="small" />}
           aria-label="breadcrumb"
         >
-          <Link
+         
+          <Typography
             variant="body1"
-            color="inherit"
-            to="/app"
-            component={RouterLink}
-          >
-            Dashboard
-          </Link>
-          <Link
-            variant="body1"
-            color="inherit"
-            to="/app/management"
-            component={RouterLink}
+            color="textPrimary"
           >
             Management
-          </Link>
+          </Typography>
           <Typography
             variant="body1"
             color="textPrimary"

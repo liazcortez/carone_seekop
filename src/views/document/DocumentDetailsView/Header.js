@@ -2,25 +2,66 @@ import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
+import SimpleDialog from 'src/components/SimpleDialog'
+
+import { useHistory, useParams } from 'react-router';
 import {
   Breadcrumbs,
   Button,
   Grid,
   SvgIcon,
   Typography,
-  makeStyles
+  makeStyles,
+  Link
 } from '@material-ui/core';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import { Edit as EditIcon } from 'react-feather';
+import { ArrowLeft as BackIcon } from 'react-feather';
 
-const useStyles = makeStyles(() => ({
-  root: {}
+import useAuth from 'src/hooks/useAuth';
+import useLead from 'src/hooks/useLead';
+import { useSnackbar } from 'notistack';
+
+const useStyles = makeStyles((theme) => ({
+  root: {},
+  error: {
+    color: theme.palette.common.white,
+    backgroundColor: theme.palette.error.main,
+    "&:hover": {
+      backgroundColor: "#d0392e"
+    },
+    marginLeft: 15
+  },
 }));
 
 const Header = ({ className, document, ...rest }) => {
   const classes = useStyles();
+  const { user } = useAuth();
+  const { deleteLead, getLeads } = useLead();
+  const { enqueueSnackbar } = useSnackbar();  
+  const history = useHistory();
+  const route = useParams();
 
+  const [open, setOpen] = React.useState(false);
+  const handleClose = async (value) => {
+    setOpen(false);
+    if(value === 'yes'){      
+      deleteLead(route.id);
+      getLeads();
+      enqueueSnackbar('Document deleted', {
+        variant: 'error'
+      });
+      history.push("/app/management/documents");
+    }
+  };
+
+
+  const handleDelete = () =>{
+    setOpen(true);    
+  }
+  
   return (
+    
     <Grid
       container
       spacing={3}
@@ -29,22 +70,21 @@ const Header = ({ className, document, ...rest }) => {
       {...rest}
     >
       <Grid item>
+      <SimpleDialog open={open} onClose={handleClose} />
+
         <Breadcrumbs
           separator={<NavigateNextIcon fontSize="small" />}
           aria-label="breadcrumb"
         >
-          <Typography
+                   
+          <Link
             variant="body1"
-            color="textPrimary"
-          >
-            Dashboard
-          </Typography>
-          <Typography
-            variant="body1"
-            color="textPrimary"
+            color="inherit"
+            to="/app/management/documents"
+            component={RouterLink}
           >
             Management
-          </Typography>
+          </Link>
           <Typography
             variant="body1"
             color="textPrimary"
@@ -60,11 +100,28 @@ const Header = ({ className, document, ...rest }) => {
         </Typography>
       </Grid>
       <Grid item>
-        <Button
+
+      <Button
+          color="secondary"
+          variant="contained"
+          startIcon={
+            <SvgIcon fontSize="small">
+              <BackIcon />
+            </SvgIcon>
+          }
+          component={RouterLink}
+          to="/app/management/documents"
+        >
+        
+            Go Back
+        </Button>
+      { user && user.role === 'rockstar' ? (
+       <> <Button
+          style={{marginLeft: 15}}
           color="secondary"
           variant="contained"
           component={RouterLink}
-          to={`/app/management/documents/${document ? document._id : ''}/edit`}
+          to={`/app/management/documents/${document && document._id}/edit`}
           startIcon={
             <SvgIcon fontSize="small">
               <EditIcon />
@@ -73,6 +130,19 @@ const Header = ({ className, document, ...rest }) => {
         >
           Edit
         </Button>
+        <Button
+          className={classes.error}
+          variant="contained"
+          onClick={handleDelete}
+          startIcon={
+            <SvgIcon fontSize="small">
+              <EditIcon />
+            </SvgIcon>
+          }
+        >
+          Delete
+        </Button></>
+      ) : false }
       </Grid>
     </Grid>
   );
@@ -80,7 +150,7 @@ const Header = ({ className, document, ...rest }) => {
 
 Header.propTypes = {
   className: PropTypes.string,
-  document: PropTypes.object
+  document: PropTypes.object.isRequired
 };
 
 export default Header;

@@ -211,7 +211,7 @@ const ApexChartsView = ({ className, ...rest }) => {
               </Typography>
             </Breadcrumbs>
             <Typography variant="h3" color="textPrimary">
-              Sold Leads
+              Monthly Leads
             </Typography>
           </Grid>
           <Grid item>

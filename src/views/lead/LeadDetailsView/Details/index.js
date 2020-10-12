@@ -5,17 +5,24 @@ import { Grid, makeStyles } from '@material-ui/core';
 import CustomerInfo from './CustomerInfo';
 import StatusLead  from './StatusLead';
 import Appointments from './Appointments';
+import CallUser from './CallUser';
 import AddAgent from './AddAgent';
 import PostAdd from 'src/components/PostAdd';
 import Reviews from 'src/views/project/ProjectDetailsView/Reviews';
 import useComment from 'src/hooks/useComment';
 import { useParams } from 'react-router-dom';
 import useAuth from 'src/hooks/useAuth';
+import CallUserPhone from './CallUserPhone';
 import SendEmail from './SendEmail';
 import ModalMail from './ModalMail';
 
-const useStyles = makeStyles(() => ({
-  root: {}
+const useStyles = makeStyles((theme) => ({
+  root: {},
+  call: {
+    [theme.breakpoints.up('sm')]: {
+    display: 'none'
+    }
+  }
 }));
 
 const Details = ({ customer, className, ...rest }) => {
@@ -51,7 +58,8 @@ const Details = ({ customer, className, ...rest }) => {
           <StatusLead lead={route.id} style={{ marginBottom: '1em' }} />
           <SendEmail setMailOpen={setMailOpen} style={{ marginBottom: '1em' }} />
           <Appointments style={{ marginBottom: '1em' }} />
-          {/* <CallUser user={user} customer={customer} style={{ marginBottom: '1em' }} /> */}
+          <CallUser user={user} customer={customer} style={{ marginBottom: '1em' }} />
+          <CallUserPhone user={user} customer={customer} style={{ marginBottom: '1em' }} className={classes.call}/>
           <ModalMail isMailOpen={isMailOpen} setMailOpen={setMailOpen} style={{ marginBottom: '1em' }} />
           {user.role === 'rockstar' || user.role === 'admin' || user.role === 'super admin' ? (
           <AddAgent style={{ marginBottom: '1em' }} />

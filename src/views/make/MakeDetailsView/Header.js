@@ -2,26 +2,66 @@ import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
+import SimpleDialog from 'src/components/SimpleDialog'
+
+import { useHistory, useParams } from 'react-router';
 import {
   Breadcrumbs,
   Button,
   Grid,
-  Link,
   SvgIcon,
   Typography,
-  makeStyles
+  makeStyles,
+  Link
 } from '@material-ui/core';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import { Edit as EditIcon } from 'react-feather';
+import { ArrowLeft as BackIcon } from 'react-feather';
 
-const useStyles = makeStyles(() => ({
-  root: {}
+import useAuth from 'src/hooks/useAuth';
+import useMake from 'src/hooks/useMake';
+import { useSnackbar } from 'notistack';
+
+const useStyles = makeStyles((theme) => ({
+  root: {},
+  error: {
+    color: theme.palette.common.white,
+    backgroundColor: theme.palette.error.main,
+    "&:hover": {
+      backgroundColor: "#d0392e"
+    },
+    marginLeft: 15
+  },
 }));
 
 const Header = ({ className, make, ...rest }) => {
   const classes = useStyles();
+  const { user } = useAuth();
+  const { deleteMake, getMakes } = useMake();
+  const { enqueueSnackbar } = useSnackbar();  
+  const history = useHistory();
+  const route = useParams();
 
+  const [open, setOpen] = React.useState(false);
+  const handleClose = async (value) => {
+    setOpen(false);
+    if(value === 'yes'){      
+      deleteMake(route.id);
+      getMakes();
+      enqueueSnackbar('Make deleted', {
+        variant: 'error'
+      });
+      history.push("/app/management/makes");
+    }
+  };
+
+
+  const handleDelete = () =>{
+    setOpen(true);    
+  }
+  
   return (
+    
     <Grid
       container
       spacing={3}
@@ -30,22 +70,17 @@ const Header = ({ className, make, ...rest }) => {
       {...rest}
     >
       <Grid item>
+      <SimpleDialog open={open} onClose={handleClose} />
+
         <Breadcrumbs
           separator={<NavigateNextIcon fontSize="small" />}
           aria-label="breadcrumb"
         >
+                   
           <Link
             variant="body1"
             color="inherit"
-            to="/app"
-            component={RouterLink}
-          >
-            Dashboard
-          </Link>
-          <Link
-            variant="body1"
-            color="inherit"
-            to="/app/management"
+            to="/app/management/makes"
             component={RouterLink}
           >
             Management
@@ -65,11 +100,28 @@ const Header = ({ className, make, ...rest }) => {
         </Typography>
       </Grid>
       <Grid item>
-        <Button
+
+      <Button
+          color="secondary"
+          variant="contained"
+          startIcon={
+            <SvgIcon fontSize="small">
+              <BackIcon />
+            </SvgIcon>
+          }
+          component={RouterLink}
+          to="/app/management/makes"
+        >
+        
+            Go Back
+        </Button>
+      { user && user.role === 'rockstar' ? (
+       <> <Button
+          style={{marginLeft: 15}}
           color="secondary"
           variant="contained"
           component={RouterLink}
-          to={`/app/management/makes/${make ? make._id : ''}/edit`}
+          to={`/app/management/makes/${make && make._id}/edit`}
           startIcon={
             <SvgIcon fontSize="small">
               <EditIcon />
@@ -78,6 +130,19 @@ const Header = ({ className, make, ...rest }) => {
         >
           Edit
         </Button>
+        <Button
+          className={classes.error}
+          variant="contained"
+          onClick={handleDelete}
+          startIcon={
+            <SvgIcon fontSize="small">
+              <EditIcon />
+            </SvgIcon>
+          }
+        >
+          Delete
+        </Button></>
+      ) : false }
       </Grid>
     </Grid>
   );
@@ -85,6 +150,7 @@ const Header = ({ className, make, ...rest }) => {
 
 Header.propTypes = {
   className: PropTypes.string,
+  make: PropTypes.object.isRequired
 };
 
 export default Header;

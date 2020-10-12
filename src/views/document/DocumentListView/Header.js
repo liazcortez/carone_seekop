@@ -41,12 +41,7 @@ const Header = ({ className, ...rest }) => {
           separator={<NavigateNextIcon fontSize="small" />}
           aria-label="breadcrumb"
         >
-          <Typography
-            variant="body1"
-            color="textPrimary"
-          >
-            Dashboard
-          </Typography>
+          
           <Typography
             variant="body1"
             color="textPrimary"

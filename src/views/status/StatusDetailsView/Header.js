@@ -2,26 +2,66 @@ import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
+import SimpleDialog from 'src/components/SimpleDialog'
+
+import { useHistory, useParams } from 'react-router';
 import {
   Breadcrumbs,
   Button,
   Grid,
-  Link,
   SvgIcon,
   Typography,
-  makeStyles
+  makeStyles,
+  Link
 } from '@material-ui/core';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import { Edit as EditIcon } from 'react-feather';
+import { ArrowLeft as BackIcon } from 'react-feather';
 
-const useStyles = makeStyles(() => ({
-  root: {}
+import useAuth from 'src/hooks/useAuth';
+import useLead from 'src/hooks/useLead';
+import { useSnackbar } from 'notistack';
+
+const useStyles = makeStyles((theme) => ({
+  root: {},
+  error: {
+    color: theme.palette.common.white,
+    backgroundColor: theme.palette.error.main,
+    "&:hover": {
+      backgroundColor: "#d0392e"
+    },
+    marginLeft: 15
+  },
 }));
 
 const Header = ({ className, status, ...rest }) => {
   const classes = useStyles();
+  const { user } = useAuth();
+  const { deleteLead, getLeads } = useLead();
+  const { enqueueSnackbar } = useSnackbar();  
+  const history = useHistory();
+  const route = useParams();
 
+  const [open, setOpen] = React.useState(false);
+  const handleClose = async (value) => {
+    setOpen(false);
+    if(value === 'yes'){      
+      deleteLead(route.id);
+      getLeads();
+      enqueueSnackbar('Status deleted', {
+        variant: 'error'
+      });
+      history.push("/app/management/status");
+    }
+  };
+
+
+  const handleDelete = () =>{
+    setOpen(true);    
+  }
+  
   return (
+    
     <Grid
       container
       spacing={3}
@@ -30,22 +70,17 @@ const Header = ({ className, status, ...rest }) => {
       {...rest}
     >
       <Grid item>
+      <SimpleDialog open={open} onClose={handleClose} />
+
         <Breadcrumbs
           separator={<NavigateNextIcon fontSize="small" />}
           aria-label="breadcrumb"
         >
+                   
           <Link
             variant="body1"
             color="inherit"
-            to="/app"
-            component={RouterLink}
-          >
-            Dashboard
-          </Link>
-          <Link
-            variant="body1"
-            color="inherit"
-            to="/app/management"
+            to="/app/management/status"
             component={RouterLink}
           >
             Management
@@ -54,7 +89,7 @@ const Header = ({ className, status, ...rest }) => {
             variant="body1"
             color="textPrimary"
           >
-            Statuses
+            Status
           </Typography>
         </Breadcrumbs>
         <Typography
@@ -65,11 +100,28 @@ const Header = ({ className, status, ...rest }) => {
         </Typography>
       </Grid>
       <Grid item>
-        <Button
+
+      <Button
+          color="secondary"
+          variant="contained"
+          startIcon={
+            <SvgIcon fontSize="small">
+              <BackIcon />
+            </SvgIcon>
+          }
+          component={RouterLink}
+          to="/app/management/status"
+        >
+        
+            Go Back
+        </Button>
+      { user && user.role === 'rockstar' ? (
+       <> <Button
+          style={{marginLeft: 15}}
           color="secondary"
           variant="contained"
           component={RouterLink}
-          to={`/app/management/status/${status ? status._id : ''}/edit`}
+          to={`/app/management/status/${status && status._id}/edit`}
           startIcon={
             <SvgIcon fontSize="small">
               <EditIcon />
@@ -78,6 +130,19 @@ const Header = ({ className, status, ...rest }) => {
         >
           Edit
         </Button>
+        <Button
+          className={classes.error}
+          variant="contained"
+          onClick={handleDelete}
+          startIcon={
+            <SvgIcon fontSize="small">
+              <EditIcon />
+            </SvgIcon>
+          }
+        >
+          Delete
+        </Button></>
+      ) : false }
       </Grid>
     </Grid>
   );
@@ -85,7 +150,7 @@ const Header = ({ className, status, ...rest }) => {
 
 Header.propTypes = {
   className: PropTypes.string,
-  status: PropTypes.object
+  status: PropTypes.object.isRequired
 };
 
 export default Header;

@@ -19,12 +19,20 @@ import {
   GET_LEADS_BY_USER,
   GET_ANALYTICS,
   GET_ANALYTICS_METRICS,
-  CLEAR_METRICS
+  CLEAR_METRICS,
+  SET_VALUE
 
  } from '../types';
 
 export default (state, action) => {
   switch (action.type) {
+    case SET_VALUE:
+      return {
+        ...state,
+        loading: false,
+        value: action.payload,
+        error: null
+      }
     case GET_ANALYTICS:
       return {
         ...state,

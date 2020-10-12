@@ -20,6 +20,7 @@ import {
 } from '@material-ui/core';
 import {
   BarChart as BarChartIcon,
+  Feather as VsIcon,
   PieChart as PieChartIcon,
   Database as DatabaseIcon,
   Coffee as ControlIcon,
@@ -38,7 +39,8 @@ import {
   Key as SocialAccountIcon,
   List as ListIcon,
   Clock as HourIcon,
-  File as DocumentIcon
+  File as DocumentIcon,
+  CloudDrizzle as SettingIcon
 } from 'react-feather';
 import Logo from 'src/components/Logo';
 import useAuth from 'src/hooks/useAuth';
@@ -149,6 +151,17 @@ const sectionsRockstar = [
             icon: PyramidChartIcon,
             href: '/app/extra/charts/pyramid'
           },
+          {
+            title: 'Versus Comparative',
+            icon: VsIcon,
+            href: '/app/extra/charts/vs'
+          },
+          {
+            title: 'Agents Comparative',
+            icon: UserIcon,
+            href: '/app/extra/charts/agents'
+          },
+          
         ]
       },
       {
@@ -191,6 +204,16 @@ const sectionsRockstar = [
             icon: PyramidChartIcon,
             href: '/app/extra/highcharts/pyramid'
           },
+          {
+            title: 'Versus Bar',
+            icon: VsIcon,
+            href: '/app/extra/highcharts/vs'
+          },
+          {
+            title: 'Agents Comparative',
+            icon: UserIcon,
+            href: '/app/extra/highcharts/agents'
+          },
         ]
       }
     ]
@@ -204,6 +227,8 @@ const rockstarSection = [
       {
         title: 'Control Panel',
         icon: ControlIcon,
+        href: '/app/management',
+
         items: [
           {
             title: 'Makes',
@@ -241,16 +266,25 @@ const rockstarSection = [
             icon: DocumentIcon
           },
           {
+            title: 'Temperatures',
+            href: '/app/management/settings',
+            icon: SettingIcon
+          },
+          {
             title: 'Social Accounts',
             href: '/app/management/socialAccounts',
             icon: SocialAccountIcon
+          },
+          {
+            title: 'Alarms',
+            href: '/app/management/alarms',
+            icon: HourIcon
           }
         ]
       }
     ]
   }
 ];
-
 function renderNavItems({ items, pathname, depth = 0 }) {
   return (
     <List disablePadding>

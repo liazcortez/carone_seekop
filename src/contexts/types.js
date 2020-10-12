@@ -16,6 +16,13 @@ export const UPDATE_PASSWORD_ERROR = 'UPDATE_PASSWORD_ERROR';
 export const CHANGE_PASSWORD = 'CHANGE_PASSWORD';
 export const UPDATE_PROFILE = 'UPDATE_PROFILE';
 
+// Setting
+export const GET_SETTINGS = 'GET_SETTINGS';
+export const GET_SETTINGS_BY_STORE = 'GET_SETTINGS_BY_STORE';
+export const GET_SETTING = 'GET_SETTING';
+export const CREATE_SETTING= 'CREATE_SETTING';
+export const DELETE_SETTING = 'DELETE_SETTING';
+export const UPDATE_SETTING = 'UPDATE_SETTING';
 
 // User
 export const UPDATE_USER = 'UPDATE_USER';
@@ -36,6 +43,7 @@ export const UPDATE_DOCUMENT = 'UPDATE_DOCUMENT';
 
 // Leads
 export const GET_LEAD = 'GET_LEAD';
+export const SET_VALUE = 'SET_VALUE';
 export const GET_LEADS = 'GET_LEADS';
 export const GET_LEADS_BY_STORE = 'GET_LEADS_BY_STORE';
 export const GET_LEADS_BY_USER = 'GET_LEADS_BY_USER';

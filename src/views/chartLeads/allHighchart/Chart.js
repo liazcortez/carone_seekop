@@ -418,9 +418,9 @@ const LineChart = ({ leads, setDrill, type}) => {
       },
       series: [
         {
-          name: 'Cold',
-          data: arrayDataColds,
-          color: '#4bb5d7'
+          name: 'Hot',
+          data: arrayDataHots,
+          color: '#e16a6b',
         },
         {
           name: 'Warm',
@@ -428,9 +428,9 @@ const LineChart = ({ leads, setDrill, type}) => {
           color: '#f2a94c'
         },
         {
-          name: 'Hot',
-          data: arrayDataHots,
-          color: '#e16a6b',
+          name: 'Cold',
+          data: arrayDataColds,
+          color: '#4bb5d7'
         },
       ]
     };

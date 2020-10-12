@@ -23,7 +23,8 @@ import {
   GET_LEADS_BY_USER,
   GET_ANALYTICS,
   GET_ANALYTICS_METRICS,
-  CLEAR_METRICS
+  CLEAR_METRICS,
+  SET_VALUE,
 
 } from '../types';
 
@@ -40,7 +41,9 @@ const LeadState = props => {
     analytics: [],
     lastLeads: [],
     labels: null,
-    metrics: null
+    metrics: null,
+    value: []
+
   };
 
   const [state, dispatch] = useReducer(LeadReducer, initialState);
@@ -80,6 +83,22 @@ const LeadState = props => {
       dispatch({ type: SET_ERROR, payload: err.response})
 
     }
+  }
+
+  const GetVsLeads = async(query) =>{
+    const config = {
+      header:{
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`
+      }
+    };
+    try{
+      const res = await api.get(`/leads/chartVs?${query}`, config);
+      dispatch({ type: SET_VALUE, payload: res.data.data});
+    }catch(err){
+      dispatch({ type: SET_ERROR, payload: err.response.data});
+    }
+
   }
 
   //Get Leads
@@ -261,6 +280,22 @@ const LeadState = props => {
     }
   };
 
+   //Get Leads
+   const startCron = async (status) => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`
+      }
+    };
+    try {
+      await api.post(`/leads/status`, {start: status},config);
+    } catch (err) {
+      dispatch({ type: SET_ERROR, payload: err.response.data})
+
+    }
+  };
+
   //Get leads with advanced results
   const getLeadsAR = async (query, type) => {
     const config = {
@@ -377,12 +412,15 @@ const LeadState = props => {
         getLeadsByStore,
         getLeadsAR,
         getLeadsByUser,
+        GetVsLeads,
         getAnalytics,
         analytics: state.analytics,
         labels: state.labels,
         getAnalyticsMetrics,
         metrics: state.metrics,
-        clearMetrics
+        clearMetrics,
+        value: state.value,
+        startCron
       }}
     >
       {props.children}

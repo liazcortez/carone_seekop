@@ -33,6 +33,7 @@ import DocumentState from './contexts/document/DocumentState';
 import CompanyState from './contexts/company/CompanyState';
 import MailMarketingState from './contexts/mailMarketing/MailMarketingState';
 import SocialAccount from './contexts/socialAccount/SocialAccountState';
+import SettingState from './contexts/setting/SettingState';
 
 
 const jss = create({ plugins: [...jssPreset().plugins, rtl()] });
@@ -72,14 +73,16 @@ const App = () => {
                                           <CompanyState>
                                             <MailState>
                                               <MailMarketingState>
-                                                <DocumentState>
-                                                  <GlobalStyles />
-                                                  <ScrollReset />
-                                                  <GoogleAnalytics />
-                                                  <CookiesNotification />
-                                                  <SettingsNotification />
-                                                  {renderRoutes(routes)}
-                                                </DocumentState>
+                                                <SettingState>
+                                                  <DocumentState>
+                                                    <GlobalStyles />
+                                                    <ScrollReset />
+                                                    <GoogleAnalytics />
+                                                    <CookiesNotification />
+                                                    <SettingsNotification />
+                                                    {renderRoutes(routes)}
+                                                  </DocumentState>
+                                                </SettingState>
                                               </MailMarketingState>
                                             </MailState>
                                           </CompanyState>

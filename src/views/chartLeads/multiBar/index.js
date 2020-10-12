@@ -373,10 +373,10 @@ const ApexChartsView = ({ className, ...rest }) => {
               justify="center"
               alignItems="center">
               <ButtonGroup color="primary" size='large' >
-                <Button style={{'textTransform': 'capitalize'}} variant={typeBar === 'sources' ? 'contained' : 'outlined'}  onClick={(e)=>{ 
+                <Button style={{'textTransform': 'capitalize'}} variant={showInfo === 'sources' ? 'contained' : 'outlined'}  onClick={(e)=>{ 
                   setShowInfo('sources') 
                 }}><SourceIcon /><p style={{marginLeft: 5, fontSize: 14}}>Source</p></Button>
-                <Button style={{'textTransform': 'capitalize'}} variant={typeBar === 'statuses' ? 'contained' : 'outlined'}  onClick={(e)=>{
+                <Button style={{'textTransform': 'capitalize'}} variant={showInfo === 'statuses' ? 'contained' : 'outlined'}  onClick={(e)=>{
                   setShowInfo('statuses') 
                 }}><StatusIcon /><p style={{marginLeft: 5, fontSize: 14}}>Status</p></Button>
               </ButtonGroup>

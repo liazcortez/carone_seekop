@@ -9,13 +9,15 @@ import {
   Breadcrumbs,
   Button,
   Grid,
-  Link,
   SvgIcon,
   Typography,
-  makeStyles
+  makeStyles,
+  Link
 } from '@material-ui/core';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import { Edit as EditIcon } from 'react-feather';
+import { ArrowLeft as BackIcon } from 'react-feather';
+
 import useAuth from 'src/hooks/useAuth';
 import useLead from 'src/hooks/useLead';
 import { useSnackbar } from 'notistack';
@@ -49,7 +51,7 @@ const Header = ({ className, customer, ...rest }) => {
       enqueueSnackbar('Lead deleted', {
         variant: 'error'
       });
-      history.push("/app/management/customers");
+      history.push("/app/management/leads");
     }
   };
 
@@ -74,18 +76,11 @@ const Header = ({ className, customer, ...rest }) => {
           separator={<NavigateNextIcon fontSize="small" />}
           aria-label="breadcrumb"
         >
+                   
           <Link
             variant="body1"
             color="inherit"
-            to="/app"
-            component={RouterLink}
-          >
-            Dashboard
-          </Link>
-          <Link
-            variant="body1"
-            color="inherit"
-            to="/app/management"
+            to="/app/management/leads"
             component={RouterLink}
           >
             Management
@@ -94,7 +89,7 @@ const Header = ({ className, customer, ...rest }) => {
             variant="body1"
             color="textPrimary"
           >
-            Customers
+            Leads
           </Typography>
         </Breadcrumbs>
         <Typography
@@ -104,9 +99,25 @@ const Header = ({ className, customer, ...rest }) => {
           {customer && customer.name}
         </Typography>
       </Grid>
-      { user && user.role === 'rockstar' ? (
       <Grid item>
-        <Button
+
+      <Button
+          color="secondary"
+          variant="contained"
+          startIcon={
+            <SvgIcon fontSize="small">
+              <BackIcon />
+            </SvgIcon>
+          }
+          component={RouterLink}
+          to="/app/management/leads"
+        >
+        
+            Go Back
+        </Button>
+      { user && user.role === 'rockstar' ? (
+       <> <Button
+          style={{marginLeft: 15}}
           color="secondary"
           variant="contained"
           component={RouterLink}
@@ -130,8 +141,9 @@ const Header = ({ className, customer, ...rest }) => {
           }
         >
           Delete
-        </Button>
-      </Grid>) : false }
+        </Button></>
+      ) : false }
+      </Grid>
     </Grid>
   );
 };

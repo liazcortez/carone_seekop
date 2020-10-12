@@ -52,6 +52,7 @@ const ActivityState = props => {
 
   //Get Activities By lead
   const getActivitiesByLead = async (leadId) => {
+    console.log(leadId)
     clearState();
     setLoading();
     try {
@@ -106,16 +107,7 @@ const ActivityState = props => {
     clearState();
     setLoading();
     try {
-      const res = await api.post(`/activities`, { 
-        title: activity.title,
-        description: activity.description,
-        startDate: activity.startDate,
-        endDate: activity.allDay ? activity.startDate : activity.endDate,
-        allDay: activity.allDay,
-        lead: activity.lead,
-        email: activity.email,
-        action: activity.action
-      }, config);
+      const res = await api.post(`/activities`, {...activity}, config);
       dispatch({ type: CREATE_ACTIVITY, payload: res.data.data });
     } catch (err) {
       dispatch({ type: SET_ERROR, payload: err.response.data})
