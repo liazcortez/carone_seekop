@@ -15,6 +15,7 @@ import useAuth from 'src/hooks/useAuth';
 import CallUserPhone from './CallUserPhone';
 import SendEmail from './SendEmail';
 import ModalMail from './ModalMail';
+import SendWsp from './sendWsp';
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -59,6 +60,7 @@ const Details = ({ customer, className, ...rest }) => {
           <SendEmail setMailOpen={setMailOpen} style={{ marginBottom: '1em' }} />
           <Appointments style={{ marginBottom: '1em' }} />
           <CallUser user={user} customer={customer} style={{ marginBottom: '1em' }} />
+          <SendWsp user={user} customer={customer} style={{ marginBottom: '1em' }} />
           <CallUserPhone user={user} customer={customer} style={{ marginBottom: '1em' }} className={classes.call}/>
           <ModalMail isMailOpen={isMailOpen} setMailOpen={setMailOpen} style={{ marginBottom: '1em' }} />
           {user.role === 'rockstar' || user.role === 'admin' || user.role === 'super admin' ? (

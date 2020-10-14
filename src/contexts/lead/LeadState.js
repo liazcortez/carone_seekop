@@ -48,6 +48,22 @@ const LeadState = props => {
 
   const [state, dispatch] = useReducer(LeadReducer, initialState);
 
+  const sendWsp = async (msg) => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`
+      }
+    };
+    setLoading();
+    try {
+      const res = await api.post(`/leads/whatsapp`, { ...msg }, config);
+    } catch (err) {
+      dispatch({ type: SET_ERROR, payload: err.response.data})
+
+    }
+  }
+
   const getAnalytics = async(startDate,endDate, account)=>{
     setLoading();
     try {
@@ -425,6 +441,7 @@ const LeadState = props => {
         createLead,
         getLeadsChart,
         getLeadsByStatus,
+        sendWsp,
         clearState,
         setLoading,
         getLeadsByStore,
