@@ -118,8 +118,7 @@ const LatestProjects = ({ className, ...rest }) => {
                     </TableCell>
                     <TableCell>   
                         {lead && lead.downPayment ? 
-                          <NumberFormat value={lead.downPayment} displayType={'text'} thousandSeparator={true} prefix={'$'}/> : 'None'
-                           : 'None'}                
+                          <NumberFormat value={lead.downPayment} displayType={'text'} thousandSeparator={true} prefix={'$'}/> : 'None'}                
                     </TableCell>
                     <TableCell>   
                         {/*lead && lead.timeFrame ? moment(lead.timeFrame).format('ll') : 'None'*/}   
@@ -160,7 +159,7 @@ const LatestProjects = ({ className, ...rest }) => {
         <Button
           component={RouterLink}
           size="small"
-          to="/app/management/customers"
+          to="/app/management/leads"
           endIcon={<NavigateNextIcon />}
         >
           See all

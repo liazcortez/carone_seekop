@@ -70,7 +70,7 @@ const MailReply = ({ className, ...rest }) => {
       <Avatar
         alt="Person"
         className={classes.avatar}
-        src={user.avatar}
+        src={`https://automotive-api.s3.us-east-2.amazonaws.com/${user.image}`}
       />
       <Paper
         className={classes.textareaContainer}

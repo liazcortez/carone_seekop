@@ -51,7 +51,7 @@ const ResetPassword = ({ className, ...rest }) => {
  
   if (localStorage.getItem('token')) {
   
-    return <Redirect to="app/management/customers" />
+    return <Redirect to="app/management/leads" />
   }else {
   return (
     <Formik

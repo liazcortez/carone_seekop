@@ -98,6 +98,7 @@ const AddEditEvent = forwardRef((props, ref) => {
   const [submitedForm, setSubmitedForm] = useState(false);
 
   useEffect(() => {
+
     if (submitedForm) {
       if (!error) {
         enqueueSnackbar('Appointment updated', {
@@ -139,20 +140,20 @@ const AddEditEvent = forwardRef((props, ref) => {
     <Card {...rest} className={clsx(classes.root, className)} ref={ref}>
       <Formik
         initialValues={{
-          startDate: moment(appointmentA.start),
-          endDate: moment(appointmentA.end),
+          startDate: appointmentA.start,
+          endDate: appointmentA.end,
           title: appointmentA.title,
           description: appointmentA._def.extendedProps.description
         }}
         validationSchema={Yup.object().shape({
           description: Yup.string().max(5000),
-          end: Yup.date().when(
+          endDate: Yup.date().when(
             'start',
             (start, schema) =>
               start &&
               schema.min(start, 'End date must be later than start date')
           ),
-          start: Yup.date(),
+          startDate: Yup.date(),
           title: Yup.string()
             .max(255)
             .required('Title is required')
@@ -162,7 +163,7 @@ const AddEditEvent = forwardRef((props, ref) => {
           { resetForm, setErrors, setStatus, setSubmitting }
         ) => {
           try {
-            await updateAppointment(values, appointmentA.id);
+             await updateAppointment(values, appointmentA.id);
               if(user.role === 'rockstar' || user.role === 'super admin'){
               await getAppointments();
                 
@@ -269,7 +270,9 @@ const AddEditEvent = forwardRef((props, ref) => {
                     label="Start date"
                     name="startDate"
                     onClick={() => setFieldTouched('end')}
-                    onChange={date => setFieldValue('startDate', date)}
+                    onChange={date => {
+                      setFieldValue('startDate', date)
+                      setFieldValue('endDate', moment(date).add(1, 'hours'))}}
                     value={values.startDate}
                   />
                 </Box>

@@ -46,6 +46,14 @@ const VehicleInfo = ({ vehicle, className, ...rest }) => {
             </TableCell>
           </TableRow>
           <TableRow>
+            <TableCell className={classes.fontWeightMedium}>Mode Description</TableCell>
+            <TableCell>
+              <Typography variant="body2" color="textSecondary">
+                {vehicle && vehicle.modeDescription ? vehicle.modeDescription : 'No Mode Description'}
+              </Typography>
+            </TableCell>
+          </TableRow>
+          <TableRow>
             <TableCell className={classes.fontWeightMedium}>Year</TableCell>
             <TableCell>
               <Typography variant="body2" color="textSecondary">

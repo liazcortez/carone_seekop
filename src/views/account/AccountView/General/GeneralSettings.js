@@ -68,7 +68,7 @@ const GeneralSettings = ({ className, user, ...rest }) => {
       }) => {
         try {
           
-          await updateProfile(values);
+          await updateProfile(values, 'info');
           setSubmitedForm(true);
           
         } catch (err) {

@@ -51,7 +51,7 @@ const OrderInfo = ({ className, order, ...rest }) => {
             <TableCell>
               <Link
                 component={RouterLink}
-                to="/app/management/customers/1"
+                to="/app/management/leads/1"
               >
                 {order.customer.name}
               </Link>

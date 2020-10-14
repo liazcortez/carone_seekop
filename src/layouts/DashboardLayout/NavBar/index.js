@@ -58,7 +58,7 @@ const sectionsAdmin = [
       {
         title: 'Leads',
         icon: DatabaseIcon,
-        href: '/app/management/customers'
+        href: '/app/management/leads'
       },
       {
         title: 'Calendar',
@@ -81,7 +81,7 @@ const sectionsUser = [
       {
         title: 'Leads',
         icon: DatabaseIcon,
-        href: '/app/management/customers'
+        href: '/app/management/leads'
       },
       {
         title: 'Calendar',
@@ -104,7 +104,7 @@ const sectionsRockstar = [
       {
         title: 'Leads',
         icon: DatabaseIcon,
-        href: '/app/management/customers'
+        href: '/app/management/leads'
       },
       {
         title: 'Calendar',
@@ -439,7 +439,7 @@ const NavBar = ({ onMobileClose, openMobile, ...rest }) => {
               <Avatar
                 alt="User"
                 className={classes.avatar}
-                src={user ? user.image : ''}
+                src={user ? `https://automotive-api.s3.us-east-2.amazonaws.com/${user.image}` : ''}
               />
             </RouterLink>
           </Box>

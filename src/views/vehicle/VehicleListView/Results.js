@@ -67,7 +67,7 @@ const applyFilters = (vehicles, query, filters) => {
     let matches = true;
 
     if (query) {
-      const properties = ['model','description', 'modelType', 'year', 'make', 'serie', 'key', 'color', 'inventory'];
+      const properties = ['model','description','modeDescription', 'modelType', 'year', 'make', 'serie', 'key', 'color', 'inventory'];
       let containsQuery = false;
 
       properties.forEach(property => {
@@ -349,6 +349,7 @@ const Results = ({ className, vehicles, ...rest }) => {
                 <TableCell>Model</TableCell>
                 <TableCell>Year</TableCell>
                 <TableCell>Model Type</TableCell>
+                <TableCell>Mode Description</TableCell>
                 <TableCell>Serie</TableCell>
                 <TableCell>Key</TableCell>
                 <TableCell>Color</TableCell>
@@ -395,6 +396,7 @@ const Results = ({ className, vehicles, ...rest }) => {
                     </TableCell>
                     <TableCell>{vehicle && vehicle.year}</TableCell>
                     <TableCell>{vehicle && vehicle.modelType}</TableCell>
+                    <TableCell>{vehicle && vehicle.modeDescription}</TableCell>
                     <TableCell>{vehicle && vehicle.serie}</TableCell>
                     <TableCell>{vehicle && vehicle.key}</TableCell>
                     <TableCell>{vehicle && vehicle.color}</TableCell>

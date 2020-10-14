@@ -10,13 +10,10 @@ import {
   Typography,
   TextField,
   Button,
-  IconButton,
-  TableBody,
   Divider,
   FormControlLabel,
   FormHelperText,
   Switch,
-  SvgIcon,
   makeStyles
 } from '@material-ui/core';
 import { DateTimePicker } from '@material-ui/pickers';
@@ -238,7 +235,12 @@ const AddEditEventForm = ({
                 label="Start date"
                 name="start"
                 onClick={() => setFieldTouched('end')}
-                onChange={(date) => setFieldValue('start', date)}
+                onChange={(date) => {
+                  console.log(date)
+                  setFieldValue('start', date)
+                  setFieldValue('end', moment(date).add(1, 'hours'))
+              }
+              }
                 value={values.start}
               />
             </Box>

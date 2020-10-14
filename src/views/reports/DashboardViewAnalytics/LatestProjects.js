@@ -159,7 +159,7 @@ const LatestProjects = ({ className, ...rest }) => {
         <Button
           component={RouterLink}
           size="small"
-          to="/app/management/customers"
+          to="/app/management/leads"
           endIcon={<NavigateNextIcon />}
         >
           See all

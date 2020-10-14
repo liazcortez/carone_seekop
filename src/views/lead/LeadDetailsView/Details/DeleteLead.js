@@ -47,7 +47,7 @@ import {
         enqueueSnackbar('Lead deleted', {
           variant: 'error'
         });
-        history.push("/app/management/customers");
+        history.push("/app/management/leads");
     }
     
     return (

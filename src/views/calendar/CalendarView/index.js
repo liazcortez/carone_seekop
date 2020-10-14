@@ -224,9 +224,10 @@ const CalendarView = () => {
 
   const handleEventDrop = async ({ event }) => {
     try {
+      //checar esto arthurmoment(date).add(1, 'hours')
       await updateAppointment({
         startDate: moment(event.start).format(),
-        endDate: event.allDay ? moment(event.start).format() : moment(event.end).format(),
+        endDate:  moment(event.start).add(1, 'hours').format(),
       }, event.id)
     } catch (err) {
       console.error(err);

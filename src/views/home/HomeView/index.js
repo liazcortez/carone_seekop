@@ -28,7 +28,7 @@ const HomeView = () => {
       <FAQS />
     </Page>
   );}else{
-    return <Redirect to="/app/management/customers" />;
+    return <Redirect to="/app/management/leads" />;
   }
 };
 

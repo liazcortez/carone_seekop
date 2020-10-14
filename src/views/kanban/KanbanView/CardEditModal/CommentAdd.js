@@ -56,7 +56,7 @@ const CommentAdd = ({ cardId, className, ...rest }) => {
     >
       <Avatar
         alt="Person"
-        src={user.avatar}
+        src={`https://automotive-api.s3.us-east-2.amazonaws.com/${user.image}`}
       />
       <TextField
         fullWidth

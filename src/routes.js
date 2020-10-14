@@ -236,7 +236,7 @@ const routes = [
       },
       {
         exact: true,
-        path: '/app/management/customers',
+        path: '/app/management/leads',
         component: lazy(() => import('src/views/lead/LeadListView'))
       },
       {
@@ -492,7 +492,7 @@ const routes = [
       {
         exact: true,
         path: '/app/management',
-        component: () => <Redirect to="/app/management/customers" />
+        component: () => <Redirect to="/app/management/leads" />
       },
       {
         exact: true,

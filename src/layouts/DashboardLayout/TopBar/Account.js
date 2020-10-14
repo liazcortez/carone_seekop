@@ -54,7 +54,7 @@ const Account = () => {
         <Avatar
           alt="User"
           className={classes.avatar}
-          src={user ? user.image : ''}
+          src={user ? `https://automotive-api.s3.us-east-2.amazonaws.com/${user.image}` : ''}
         />
         <Hidden smDown>
           <Typography variant="h6" color="inherit">

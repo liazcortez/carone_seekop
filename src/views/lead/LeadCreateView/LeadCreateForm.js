@@ -56,7 +56,7 @@ const LeadCreateForm = ({
         enqueueSnackbar('Lead created', {
           variant: 'success'
         });
-        history.push('/app/management/customers');
+        history.push('/app/management/leads');
       }
       setSubmitedForm(false)
     }

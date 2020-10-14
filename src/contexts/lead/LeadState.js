@@ -120,12 +120,18 @@ const LeadState = props => {
     setLoading();
     try {
       let res;
-      if(status !== ''){
-        res = await api.get(`/stores/${storeId}/leads?status=${status}`);
+      if(status.includes('temperature')){
+        let rating = status.split('.')
+        res = await api.get(`/stores/${storeId}/leads?rating=${rating[1]}`);
 
       }else{
-        res = await api.get(`/stores/${storeId}/leads`);
-
+        if(status !== ''){
+          res = await api.get(`/stores/${storeId}/leads?status=${status}`);
+  
+        }else{
+          res = await api.get(`/stores/${storeId}/leads`);
+  
+        }
       }
 
       dispatch({ type: GET_LEADS_BY_STORE, payload: res.data.data });
@@ -141,12 +147,17 @@ const LeadState = props => {
     setLoading();
     try {
       let res;
-      if(status !== ''){
-        res = await api.get(`/users/${userId}/leads?status=${status}`);
+
+      if(status.includes('temperature')){
+        let rating = status.split('.')
+        res = await api.get(`/users/${userId}/leads?rating=${rating[1]}`);
 
       }else{
-        res = await api.get(`/users/${userId}/leads`);
-
+        if(status !== ''){
+          res = await api.get(`/users/${userId}/leads?status=${status}`);
+        }else{
+          res = await api.get(`/users/${userId}/leads`);
+        }
       }
 
       dispatch({ type: GET_LEADS_BY_USER, payload: res.data.data });
@@ -273,7 +284,14 @@ const LeadState = props => {
     clearState();
     setLoading();
     try {
-      const res = await api.get(`/leads?status=${status}`, config);
+      let res;
+      if(status.includes('temperature')){
+        let rating = status.split('.');
+        res = await api.get(`/leads?rating=${rating[1]}`, config);
+
+      }else{
+        res = await api.get(`/leads?status=${status}`, config);
+      }
       dispatch({ type: GET_LEADS_BY_STATUS, payload: res.data.data});
     }catch(err){
       dispatch({ type: SET_ERROR, payload: err.response.data});

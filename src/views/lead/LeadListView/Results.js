@@ -67,11 +67,11 @@ const applyFilters = (leads, query, filters) => {
     let matches = true;
 
     if (query) {
-      const properties = ['name', 'vehicle', 'email', 'source', 'createdAt'];
+      const properties = ['name', 'vehicle', 'email', 'source', 'createdAt', 'rating', 'status'];
       let containsQuery = false;
 
       properties.forEach(property => {
-      if(property !== 'vehicle' && property !== 'source' && property !== 'createdAt'){
+      if(property !== 'vehicle' && property !== 'source' && property !== 'createdAt' && property !== 'status'){
 
         if (lead[property].toString().toLowerCase().includes(query.toString().toLowerCase())) {
           containsQuery = true;
@@ -94,6 +94,11 @@ const applyFilters = (leads, query, filters) => {
           }
         }
         if(property === 'source'){
+          if (lead[property].name.toString().toLowerCase().includes(query.toString().toLowerCase())) {
+            containsQuery = true;
+          }
+        }
+        if(property === 'status'){
           if (lead[property].name.toString().toLowerCase().includes(query.toString().toLowerCase())) {
             containsQuery = true;
           }
@@ -392,6 +397,10 @@ const Results = ({ className, leads, ...rest }) => {
           status.name === 'sold' ?
             <Tab key={status._id} value={status._id} label={status.name} /> : false
         ))}
+
+        <Tab key={'hot'} value={'temperature.hot'} label={'Hot'} /> 
+        <Tab key={'warm'} value={'temperature.warm'} label={'Warm'} />
+        <Tab key={'cold'} value={'temperature.cold'} label={'Cold'} />
       </Tabs>  
     
       <Divider />

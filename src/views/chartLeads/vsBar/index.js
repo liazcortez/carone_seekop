@@ -42,9 +42,10 @@ const useStyles = makeStyles((theme) => ({
     width: 48
   }
 }));
-let string = '';
-let arrCat = [];
+
 const DashboardView = ({className, ...rest}) => {
+  let string = '';
+let arrCat = [];
   const classes = useStyles();
   const [arrayLeads, setArrayLeads] = useState([]);
   const [categories, setCategories] = useState([]);

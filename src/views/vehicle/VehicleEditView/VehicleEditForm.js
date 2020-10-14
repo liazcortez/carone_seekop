@@ -62,6 +62,7 @@ const VehicleEditForm = ({
         key: vehicle.key || '',
         color: vehicle.color || '',
         inventory: vehicle.inventory|| '',
+        modeDescription: vehicle.modeDescription || '',
         submit: null
       }}
       validationSchema={Yup.object().shape({
@@ -145,6 +146,25 @@ const VehicleEditForm = ({
                     variant="outlined"
                   />
                 </Grid> 
+                <Grid
+                  item
+                  md={6}
+                  xs={12}
+                >
+                  <TextField
+                    error={Boolean(touched.modeDescription && errors.modeDescription)}
+                    fullWidth
+                    helperText={touched.modeDescription && errors.modeDescription}
+                    label="Mode Description"
+                    name="modeDescription"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    required
+                    value={values.modeDescription}
+                    variant="outlined"
+                    
+                  />
+                </Grid>  
                 <Grid
                   item
                   md={6}

@@ -45,7 +45,7 @@ const MessageItem = ({
   const sender = thread.participants.find((_participant) => _participant.id === message.senderId);
   const senderDetails = message.senderId === '5e86809283e28b96d2d38537'
     ? {
-      avatar: user.avatar,
+      image: user.image,
       name: 'Me',
       type: 'user'
     } : {

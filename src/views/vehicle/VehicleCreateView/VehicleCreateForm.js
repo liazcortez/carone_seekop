@@ -107,6 +107,7 @@ const VehicleCreateForm = ({
             make: '',
             price: '',
             user: user._id,
+            modeDescription: '',
             serie: '',
             key: '',
             color: '',
@@ -222,6 +223,24 @@ const VehicleCreateForm = ({
                         </TextField>
 
                     </Grid>    
+                    <Grid
+                      item
+                      md={6}
+                      xs={12}
+                    >
+                      <TextField
+                        error={Boolean(touched.modeDescription && errors.modeDescription)}
+                        fullWidth
+                        helperText={touched.modeDescription && errors.modeDescription}
+                        label="Mode Description"
+                        name="modeDescription"
+                        onBlur={handleBlur}
+                        onChange={handleChange}
+                        value={values.modeDescription}
+                        variant="outlined"
+                        
+                      />
+                    </Grid>  
                     <Grid
                       item
                       md={6}

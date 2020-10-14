@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
+import Spinner from 'src/components/Spinner';
+import FilesDropzone from '../FilesDropzone';
+import useAuth from 'src/hooks/useAuth';
 import {
   Avatar,
   Box,
@@ -27,6 +30,19 @@ const useStyles = makeStyles((theme) => ({
 
 const ProfileDetails = ({ className, user, ...rest}) => {
   const classes = useStyles();
+  const [attachments, setAttachment] = useState(null);
+  const { updateProfile, loading } = useAuth();
+
+  const removePhoto = async() =>{
+    await updateProfile({image: ''}, 'info')
+  }
+  
+  useEffect(()=>{
+    if(attachments){
+      updateProfile(attachments, 'photo');
+    }
+    //eslint-disable-next-line
+  },[attachments])
   return (
     <Card
       className={clsx(classes.root, className)}
@@ -39,10 +55,20 @@ const ProfileDetails = ({ className, user, ...rest}) => {
           flexDirection="column"
           textAlign="center"
         >
-          <Avatar
-            className={classes.avatar}
-            src={user.avatar ? user.avatar : '/app/account'}
-          />
+          {
+            loading ? 
+            (
+            <div style={{padding: '25%'}}>
+              <Spinner width={25}/>
+            </div>
+              ) : (
+              <FilesDropzone 
+              setAttachment={setAttachment}
+              image={ user && user.image ? `https://automotive-api.s3.us-east-2.amazonaws.com/${user.image}` : '/app/account'}
+            />
+            )
+          }
+            
           <Typography
             className={classes.name}
             color="textPrimary"
@@ -64,17 +90,26 @@ const ProfileDetails = ({ className, user, ...rest}) => {
               {user.role ? user.role : ''}
             </Link>
           </Typography>
+          <CardActions>
+            <Button
+              fullWidth
+              variant="text"
+              onClick={removePhoto}
+            >
+              Remove picture
+            </Button>
+          </CardActions>
         </Box>
       </CardContent>
-
+{/* 
       {rest.removeimagebutton ? (<CardActions>
         <Button
           fullWidth
           variant="text"
         >
-          Remove picture
+          Change Picture
         </Button>
-      </CardActions>) : ''}
+      </CardActions>) : ''} */}
       
     </Card>
   );
