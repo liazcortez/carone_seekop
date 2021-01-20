@@ -27,7 +27,7 @@ const StatusState = props => {
   const getStatuses = async () => {
     setLoading();
     try {
-      const res = await api.get(`/status`);
+      const res = await api.get(`/status?sort=name`);
       dispatch({ type: GET_STATUSES, payload: res.data.data });
     } catch (err) {
       dispatch({ type: SET_ERROR, payload: err.response.data})

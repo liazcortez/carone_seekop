@@ -28,7 +28,7 @@ const DocumentState = props => {
   const getDocuments = async () => {
     setLoading();
     try {
-      const res = await api.get(`/documents`);
+      const res = await api.get(`/documents?sort=title`);
       dispatch({ type: GET_DOCUMENTS, payload: res.data.data });
     } catch (err) {
       dispatch({ type: SET_ERROR, payload: err.response.data})

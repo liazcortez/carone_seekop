@@ -28,7 +28,7 @@ const MakeState = props => {
     clearState();
     setLoading();
     try {
-      const res = await api.get(`/makes`);
+      const res = await api.get(`/makes?sort=name`);
       dispatch({ type: GET_MAKES, payload: res.data.data });
     } catch (err) {
       dispatch({ type: SET_ERROR, payload: err.response.data})

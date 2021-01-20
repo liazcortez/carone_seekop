@@ -13,9 +13,7 @@ import useStore from 'src/hooks/useStore';
 import { CapitalizeNames } from 'src/utils/capitalize';
 import FilesDropzone from '../FilesDropzone';
 import Spinner from 'src/components/Spinner';
-import useUtils from 'src/hooks/useUtils';
 import StoreContext from 'src/contexts/store/storeContext'
-
 
 import {
   Box,
@@ -42,7 +40,6 @@ const DocumentCreateForm = ({
 }) => {
   const classes = useStyles();
   const { t } = useTranslation()
-  const { uploadCsv } = useUtils();
   const { enqueueSnackbar } = useSnackbar();  
   const storeContext = useContext(StoreContext);
   const { user } = useAuth();
@@ -116,7 +113,6 @@ const DocumentCreateForm = ({
             try {
               if(attachments !== null){
                 await createDocument(values, attachments);
-                await uploadCsv(attachments)
                 setSubmitedForm(true)
               }else{
                 setErrors({submit: t('Errors.File')})

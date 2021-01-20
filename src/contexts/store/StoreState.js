@@ -29,7 +29,7 @@ const StoreState = props => {
     clearState();
     setLoading();
     try {
-      const res = await api.get(`/stores`);
+      const res = await api.get(`/stores?sort=make`);
       dispatch({ type: GET_STORES, payload: res.data.data });
     } catch (err) {
       dispatch({ type: SET_ERROR, payload: err.response.data})

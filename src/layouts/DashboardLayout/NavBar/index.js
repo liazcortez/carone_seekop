@@ -426,9 +426,10 @@ const NavBar = ({ onMobileClose, openMobile, ...rest }) => {
         </Box>
         <Divider />
        
-        {user
-          ? user.role === 'rockstar' || user.role === 'super admin'
-            ? rockstarSection.map(section => (
+        {
+          user
+            ? user.role === 'user'
+              ? userSection.map(section => (
                 <Box p={2} key={Math.random()}>
                   <List
                     key={section.subheader + Math.random()}
@@ -437,7 +438,7 @@ const NavBar = ({ onMobileClose, openMobile, ...rest }) => {
                         {section.subheader}
                       </ListSubheader>
                     }
-                  >
+                    >
                     {renderNavItems({
                       items: section.items,
                       pathname: location.pathname
@@ -445,12 +446,36 @@ const NavBar = ({ onMobileClose, openMobile, ...rest }) => {
                   </List>
                 </Box>
               ))
-            : false
-          : false}
-
-        {user
+          : false
+          : false
+        }
+        {
+          user
           ? user.role === 'admin' || user.role === 'rockstar' || user.role === 'super admin'
-            ? adminSection.map(section => (
+          ? adminSection.map(section => (
+            <Box p={2} key={Math.random()}>
+                  <List
+                    key={section.subheader + Math.random()}
+                    subheader={
+                      <ListSubheader disableGutters disableSticky>
+                        {section.subheader}
+                      </ListSubheader>
+                    }
+                    >
+                    {renderNavItems({
+                      items: section.items,
+                      pathname: location.pathname
+                    })}
+                  </List>
+                </Box>
+              ))
+          : false
+          : false
+        }
+        {
+          user
+            ? user.role === 'rockstar' || user.role === 'super admin'
+              ? rockstarSection.map(section => (
                 <Box p={2} key={Math.random()}>
                   <List
                     key={section.subheader + Math.random()}
@@ -467,34 +492,15 @@ const NavBar = ({ onMobileClose, openMobile, ...rest }) => {
                   </List>
                 </Box>
               ))
-            : false
-          : false}
+          : false
+          : false
+        }
 
-        {user
-          ? user.role === 'user' || user.role === 'rockstar' || user.role === 'super admin'
-            ? userSection.map(section => (
-                <Box p={2} key={Math.random()}>
-                  <List
-                    key={section.subheader + Math.random()}
-                    subheader={
-                      <ListSubheader disableGutters disableSticky>
-                        {section.subheader}
-                      </ListSubheader>
-                    }
-                  >
-                    {renderNavItems({
-                      items: section.items,
-                      pathname: location.pathname
-                    })}
-                  </List>
-                </Box>
-              ))
-            : false
-          : false}
+        
       </PerfectScrollbar>
     </Box>
   );
-
+  
   return (
     <>
       <Hidden lgUp>
