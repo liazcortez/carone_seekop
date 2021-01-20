@@ -19,6 +19,7 @@ import {
     Delete as DeleteIcon
   
   } from 'react-feather';
+import { useTranslation } from 'react-i18next';
   
   const useStyles = makeStyles((theme) => ({
     root: {},
@@ -42,6 +43,7 @@ import {
     const history = useHistory();
     const { enqueueSnackbar } = useSnackbar();  
     const [open, setOpen] = React.useState(false);
+    const { t } = useTranslation();
 
     const handleClose = async (value) => {
       setOpen(false);
@@ -66,7 +68,7 @@ import {
       >
         <SimpleDialog open={open} onClose={handleClose} />
         
-        <CardHeader title="Delete" />
+        <CardHeader title={t("Titles.Delete")} />
         <Divider />
         <CardContent>
             <Box
@@ -81,7 +83,7 @@ import {
                     onClick={handleDelete}
                     className={classes.error}
                     >
-                    Delete Company
+                    {t("Titles.Delete")} {t("Companies.Company")}
                 </Button>
             </Box>
         </CardContent>

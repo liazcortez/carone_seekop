@@ -15,7 +15,9 @@ import {
   RESET_PASSWORD_FAIL,
   SET_ERROR,
   UPDATE_PROFILE,
-  UPDATE_PASSWORD
+  UPDATE_PASSWORD,
+  SET_LOADING,
+  CLEAR_STATE
 } from '../types';
 
 const AuthState = props => {
@@ -25,25 +27,26 @@ const AuthState = props => {
     user: {},
     loading: false,
     error: null
-    };
+  };
 
   const [state, dispatch] = useReducer(AuthReducer, initialState);
 
-  const register = async values => {
+  const clearState = () => dispatch({ type: CLEAR_STATE });
 
+
+  const register = async values => {
     const config = {
       headers: {
-        "Content-Type": "application/json"
+        'Content-Type': 'application/json'
       }
     };
+
     try {
-      const res = await api.post("/auth/register", values, config);
+      const res = await api.post('/auth/register', values, config);
       dispatch({ type: REGISTER_SUCCESS, payload: res.data });
 
       loadUser();
-
     } catch (err) {
-
       dispatch({
         type: REGISTER_FAIL,
         payload: err.response.data
@@ -55,8 +58,8 @@ const AuthState = props => {
   const loadUser = async () => {
     const config = {
       headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('token')}`
       }
     };
 
@@ -67,8 +70,7 @@ const AuthState = props => {
         payload: res.data.data
       });
     } catch (err) {
-      dispatch({ type: LOGIN_FAIL, payload: err.response.data})
-
+      dispatch({ type: LOGIN_FAIL, payload: err.response.data });
     }
   };
 
@@ -76,12 +78,13 @@ const AuthState = props => {
   const login = async values => {
     const config = {
       headers: {
-        "Content-Type": "application/json"
+        'Content-Type': 'application/json'
       }
     };
+    setLoading();
 
     try {
-      const res = await api.post("/auth/login", values, config);
+      const res = await api.post('/auth/login', values, config);
       dispatch({
         type: LOGIN_SUCCESS,
         payload: res.data
@@ -97,17 +100,37 @@ const AuthState = props => {
   };
 
   //Update profile
-  const updateProfile = async values => {
+  const updateProfile = async (values, type) => {
     const config = {
       headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`
-
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('token')}`
       }
     };
+    setLoading();
 
+    let res;
     try {
-      const res = await api.put("/auth/updatedetails", values, config);
+      if (type === 'photo') {
+        const uploadConfig = await api.post(
+          '/uploads/image',
+          { type: values.type, fileName: values.name },
+          config
+        );
+
+        await api.put(uploadConfig.data.url, values, {
+          headers: {
+            headers: { 'Content-Type': values ? values.type : null }
+          }
+        });
+
+        const dataKey = uploadConfig.data.key;
+
+        res = await api.put(`/auth/updatedetails`, { image: dataKey }, config);
+      } else {
+        res = await api.put('/auth/updatedetails', values, config);
+      }
+
       dispatch({
         type: UPDATE_PROFILE,
         payload: res.data
@@ -129,12 +152,12 @@ const AuthState = props => {
   const forgotPassword = async email => {
     const config = {
       headers: {
-        "Content-Type": "application/json"
+        'Content-Type': 'application/json'
       }
     };
 
     try {
-      const res = await api.post("/auth/forgotpassword", {...email}, config);
+      const res = await api.post('/auth/forgotpassword', { ...email }, config);
       dispatch({ type: FORGOT_PASSWORD, payload: res.data });
     } catch (err) {
       dispatch({ type: FORGOT_PASSWORD_FAIL, payload: err.response.data });
@@ -145,13 +168,14 @@ const AuthState = props => {
   const updatePassword = async values => {
     const config = {
       headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('token')}`
       }
     };
+    setLoading();
 
     try {
-      const res = await api.put("/auth/updatepassword", {...values}, config);
+      const res = await api.put('/auth/updatepassword', { ...values }, config);
       dispatch({ type: UPDATE_PASSWORD, payload: res.data });
     } catch (err) {
       dispatch({ type: SET_ERROR, payload: err.response.data });
@@ -159,10 +183,10 @@ const AuthState = props => {
   };
 
   //Reset Password
-  const resetPassword = async (values) => {
+  const resetPassword = async values => {
     const config = {
       headers: {
-        "Content-Type": "application/json"
+        'Content-Type': 'application/json'
       }
     };
     try {
@@ -176,6 +200,8 @@ const AuthState = props => {
       dispatch({ type: RESET_PASSWORD_FAIL, payload: err.response.data });
     }
   };
+
+  const setLoading = () => dispatch({ type: SET_LOADING });
 
   return (
     <AuthContext.Provider
@@ -192,7 +218,8 @@ const AuthState = props => {
         forgotPassword,
         resetPassword,
         updateProfile,
-        updatePassword
+        updatePassword,
+        clearState
       }}
     >
       {props.children}

@@ -110,7 +110,6 @@ const StoreState = props => {
         Authorization: `Bearer ${localStorage.getItem("token")}`
       }
     };
-    clearState();
     setLoading();
     try {
       const res = await api.put(`/stores/${storeId}`, {...store} ,config);

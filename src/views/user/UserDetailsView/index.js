@@ -32,10 +32,6 @@ const CustomerDetailsView = () => {
     // eslint-disable-next-line
   }, []);
 
-  // if (!user) {
-  //   return null;
-  // }
-
   return (
     <Page className={classes.root} title="Customer Details">
       <Container maxWidth={false}>

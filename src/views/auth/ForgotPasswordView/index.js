@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import {
   Box,
@@ -13,6 +13,8 @@ import {
 import Page from 'src/components/Page';
 import Logo from 'src/components/Logo';
 import ForgotPassword from './ForgotPassword';
+import { useTranslation } from 'react-i18next'
+import i18next from 'src/utils/i18next';
 
 const methodIcons = {
   'Auth0': '/static/images/auth0.svg',
@@ -65,6 +67,17 @@ const useStyles = makeStyles((theme) => ({
 
 const ForgotView = () => {
   const classes = useStyles();
+  const { t } = useTranslation();
+
+  useEffect(()=>{
+    let language;
+    if(localStorage.getItem("i18nextLng")){
+      language = localStorage.getItem("i18nextLng")
+    }else{
+      language = 'en'
+    }
+      i18next.changeLanguage(language);
+  },[]);
 
   return (
     <Page
@@ -98,13 +111,14 @@ const ForgotView = () => {
                   gutterBottom
                   variant="h2"
                 >
-                  Forgot password
+                  {t("ForgotPassword.ForgotPassword")}
                 </Typography>
                 <Typography
                   variant="body2"
                   color="textSecondary"
                 >
-                  Did you forget your password?
+                  {t("ForgotPassword.Subtitle")}
+
                 </Typography>
               </div>
               <div className={classes.currentMethodIcon}>
@@ -131,7 +145,7 @@ const ForgotView = () => {
               variant="body2"
               color="textSecondary"
             >
-              Go back
+              {t("Buttons.GoBack")}
             </Link>
           </CardContent>
         </Card>

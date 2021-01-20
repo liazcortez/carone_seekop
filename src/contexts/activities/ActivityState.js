@@ -13,7 +13,9 @@ import {
   SET_LOADING,
   GET_ACTIVITIES_BY_USER,
   GET_ACTIVITIES_BY_LEAD,
-  GET_ACTIVITIES_AR
+  GET_ACTIVITIES_AR,
+  GET_ACTIVITIES_BY_OMSGLOBAL,
+  GET_ACTIVITIES_BY_QUESTLEAD
 } from '../types';
 
 const ActivityState = props => {
@@ -62,6 +64,28 @@ const ActivityState = props => {
     }
   };
 
+  const getActivitiesByOmsGlobal = async (omsGlobalId) =>{
+    clearState();
+    setLoading();
+    try {
+      const res = await api.get(`omsGlobals/${omsGlobalId}/activities`);
+      dispatch({ type: GET_ACTIVITIES_BY_OMSGLOBAL, payload: res.data.data });
+    } catch (err) {
+      dispatch({ type: SET_ERROR, payload: err.response.data})
+    }
+  };
+
+  const getActivitiesByQuestLead = async (questLeadId) =>{
+    clearState();
+    setLoading();
+    try {
+      const res = await api.get(`questLeads/${questLeadId}/activities`);
+      dispatch({ type: GET_ACTIVITIES_BY_QUESTLEAD, payload: res.data.data });
+    } catch (err) {
+      dispatch({ type: SET_ERROR, payload: err.response.data})
+    }
+  };
+
    //Get Activity
    const getActivity = async (activityId) => {
     setLoading();
@@ -94,7 +118,6 @@ const ActivityState = props => {
     }
   };
 
-
   //Create Activity
   const createActivity = async (activity) => {
     const config = {
@@ -106,16 +129,7 @@ const ActivityState = props => {
     clearState();
     setLoading();
     try {
-      const res = await api.post(`/activities`, { 
-        title: activity.title,
-        description: activity.description,
-        startDate: activity.startDate,
-        endDate: activity.allDay ? activity.startDate : activity.endDate,
-        allDay: activity.allDay,
-        lead: activity.lead,
-        email: activity.email,
-        action: activity.action
-      }, config);
+      const res = await api.post(`/activities`, {...activity}, config);
       dispatch({ type: CREATE_ACTIVITY, payload: res.data.data });
     } catch (err) {
       dispatch({ type: SET_ERROR, payload: err.response.data})
@@ -181,7 +195,9 @@ const ActivityState = props => {
         setLoading,
         getActivitiesByUser,
         getActivitiesByLead,
-        getActivitiesAR
+        getActivitiesAR,
+        getActivitiesByOmsGlobal,
+        getActivitiesByQuestLead
       }}
     >
       {props.children}

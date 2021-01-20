@@ -11,11 +11,26 @@ import {
   RESET_PASSWORD,
   UPDATE_PROFILE,
   UPDATE_PASSWORD,
-  SET_ERROR
+  SET_ERROR,
+  SET_LOADING,
+  CLEAR_STATE
 } from "../types";
 
 export default (state, action) => {
   switch (action.type) {
+    case CLEAR_STATE: 
+    return {
+      ...state,
+      loading: false,
+      error: null,
+      user: null,
+      isAuthenticated: false
+    }
+    case SET_LOADING:
+      return {
+        ...state,
+        loading: true
+      }
     case USER_LOADED:
       return {
         ...state,

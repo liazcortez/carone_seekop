@@ -1,6 +1,3 @@
-/*eslint no-unused-vars: 0*/
-
-
 import React, { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import clsx from 'clsx';
@@ -11,6 +8,7 @@ import useSource from 'src/hooks/useSource';
 import wait from 'src/utils/wait';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSync } from '@fortawesome/free-solid-svg-icons'
+import {Capitalize, CapitalizeNames} from 'src/utils/capitalize';
 
 import {
   Box,
@@ -35,32 +33,8 @@ import {
 import {
   Search as SearchIcon
 } from 'react-feather';
-
-const tabs = [
-  {
-    value: 'all',
-    label: 'All'
-  }
-];
-
-const sortOptions = [
-  {
-    value: 'updatedAt|desc',
-    label: 'Last update (newest first)'
-  },
-  {
-    value: 'updatedAt|asc',
-    label: 'Last update (oldest first)'
-  },
-  {
-    value: 'orders|desc',
-    label: 'Total orders (high to low)'
-  },
-  {
-    value: 'orders|asc',
-    label: 'Total orders (low to high)'
-  }
-];
+import { useTranslation } from 'react-i18next';
+import moment from 'moment'
 
 const applyFilters = (sources, query, filters) => {
   return sources.filter(source => {
@@ -81,54 +55,12 @@ const applyFilters = (sources, query, filters) => {
       }
     }
 
-    Object.keys(filters).forEach(key => {
-      const value = filters[key];
-
-      if (value && source[key] !== value) {
-        matches = false;
-      }
-    });
-
     return matches;
   });
 };
 
 const applyPagination = (sources, page, limit) => {
   return sources.slice(page * limit, page * limit + limit);
-};
-
-const descendingComparator = (a, b, orderBy) => {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-
-  return 0;
-};
-
-const getComparator = (order, orderBy) => {
-  return order === 'desc'
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
-};
-
-const applySort = (sources, sort) => {
-  const [orderBy, order] = sort.split('|');
-  const comparator = getComparator(order, orderBy);
-  const stabilizedThis = sources.map((el, index) => [el, index]);
-
-  stabilizedThis.sort((a, b) => {
-    const order = comparator(a[0], b[0]);
-
-    if (order !== 0) return order;
-
-    return a[1] - b[1];
-  });
-
-  return stabilizedThis.map(el => el[0]);
 };
 
 const useStyles = makeStyles(theme => ({
@@ -172,20 +104,15 @@ const useStyles = makeStyles(theme => ({
 const Results = ({ className, sources, ...rest }) => {
 
   const classes = useStyles();
-  const [currentTab, setCurrentTab] = useState('all');
   const [selectedSources, setSelectedSources] = useState([]);
   const [page, setPage] = useState(0);
   const [limit, setLimit] = useState(10);
   const [query, setQuery] = useState('');
-  const [sort, setSort] = useState(sortOptions[0].value);
+  const [deletedSources, setDeletedSources] = useState(false)
   const { getSources, deleteSource, loading } = useSource();
   const [open, setOpen] = React.useState(false);
   const [selectedValue, setSelectedValue] = React.useState();
-  const [filters, setFilters] = useState({
-    hasAcceptedMarketing: null,
-    isProspect: null,
-    isReturning: null
-  });
+  const { t } = useTranslation()
 
   const handleClose = async (value) => {
     setOpen(false);
@@ -194,6 +121,7 @@ const Results = ({ className, sources, ...rest }) => {
       await selectedSources.map(async source => await deleteSource(source));
       await wait(1000);
       await getSources();
+      setSelectedSources([])
     }
   };
 
@@ -222,24 +150,8 @@ const Results = ({ className, sources, ...rest }) => {
     selectedSources.length > 0 && selectedSources.length < sources.length;
   const selectedAllSources = selectedSources.length === sources.length;
 
-  const handleTabsChange = (event, value) => {
-    const updatedFilters = {
-      ...filters,
-      hasAcceptedMarketing: null,
-      isProspect: null,
-      isReturning: null
-    };
-
-    if (value !== 'all') {
-      updatedFilters[value] = true;
-    }
-
-    setFilters(updatedFilters);
-    setSelectedSources([]);
-    setCurrentTab(value);
-  };
-
   const handleQueryChange = event => {
+    setPage(0)
     event.persist();
     setQuery(event.target.value);
   };
@@ -247,18 +159,17 @@ const Results = ({ className, sources, ...rest }) => {
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
   };
-
+  
   const handleLimitChange = event => {
     setLimit(parseInt(event.target.value));
   };
 
-  const filteredSources = applyFilters(sources, query, filters);
-  const sortedSources = applySort(filteredSources, sort);
-  const paginatedSources = applyPagination(sortedSources, page, limit);
+  const filteredSources = applyFilters(sources, query);
+  const paginatedSources = applyPagination(filteredSources, page, limit);
   
   return (
     <Card className={clsx(classes.root, className)} {...rest}>
-      <SimpleDialog selectedValue={selectedValue} open={open} onClose={handleClose} />
+      <SimpleDialog selectedValue={selectedValue} open={open} onClose={handleClose} all={deletedSources}/>
       <div p={2} display="flex" className={classes.containerSync}>
       {
         loading === true ? (
@@ -272,15 +183,13 @@ const Results = ({ className, sources, ...rest }) => {
 
       </div>    
       <Tabs
-        onChange={handleTabsChange}
         scrollButtons="auto"
         textColor="secondary"
-        value={currentTab}
+        value='all'
         variant="scrollable"
       >
-        {tabs.map(tab => (
-          <Tab key={tab.value} value={tab.value} label={tab.label} />
-        ))}
+        
+          <Tab key={0} value={'all'} label={t("Tabs.All")} />
         
       </Tabs>
       <Divider />
@@ -297,7 +206,7 @@ const Results = ({ className, sources, ...rest }) => {
             )
           }}
           onChange={handleQueryChange}
-          placeholder="Search sources"
+          placeholder={t("Sources.Search")}
           value={query}
           variant="outlined"
         />
@@ -311,7 +220,7 @@ const Results = ({ className, sources, ...rest }) => {
               onChange={handleSelectAllSources}
             />
             <Button variant="outlined" className={classes.bulkAction} onClick={handleDelete}>
-              Delete
+              {t("Buttons.Delete")}
             </Button>
            
           </div>
@@ -327,10 +236,15 @@ const Results = ({ className, sources, ...rest }) => {
                     checked={selectedAllSources}
                     indeterminate={selectedSomeSources}
                     onChange={handleSelectAllSources}
+                    onClick={(e)=>{setDeletedSources(true)}}
+
                   />
                 </TableCell>
-                <TableCell>Name</TableCell>
-                <TableCell>Description</TableCell>
+                <TableCell>ID</TableCell>
+                <TableCell>{t("Sources.Name")}</TableCell>
+                <TableCell>{t("Sources.Description")}</TableCell>
+                <TableCell>{t("Sources.CreatedAt")}</TableCell>
+
               </TableRow>
             </TableHead>
             <TableBody>
@@ -352,6 +266,8 @@ const Results = ({ className, sources, ...rest }) => {
                           handleSelectOneSource(event, source._id)
                         }
                         value={isSourceSelected}
+                        onClick={(e)=>{setDeletedSources(false)}}
+
                       />
                     </TableCell>
                     <TableCell>
@@ -363,12 +279,27 @@ const Results = ({ className, sources, ...rest }) => {
                             to={`/app/management/sources/${source._id}`}
                             variant="h6"
                           >
-                            {source.name}
+                            {source._id}
                           </Link>
                         </div>
                       </Box>
                     </TableCell>
-                    <TableCell>{source && source.description}</TableCell>
+                    <TableCell>
+                      <Box display="flex" alignItems="center">
+                        <div>
+                          <Link
+                            color="inherit"
+                            component={RouterLink}
+                            to={`/app/management/sources/${source._id}`}
+                            variant="h6"
+                          >
+                            {CapitalizeNames(source.name)}
+                          </Link>
+                        </div>
+                      </Box>
+                    </TableCell>
+                    <TableCell>{source && source.description ? Capitalize(source.description) : '- - -'}</TableCell>
+                    <TableCell>{source && moment(source.createdAt).format('ll')}</TableCell>
                   
                   </TableRow>
                 );

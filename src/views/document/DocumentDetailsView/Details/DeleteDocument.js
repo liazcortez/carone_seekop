@@ -19,6 +19,7 @@ import {
     Delete as DeleteIcon
   
   } from 'react-feather';
+import { useTranslation } from 'react-i18next';
   
   const useStyles = makeStyles((theme) => ({
     root: {},
@@ -36,7 +37,7 @@ import {
   
   const DeleteDocument = ({ className, ...rest }) => {
     const classes = useStyles();
-
+    const { t } = useTranslation()
     const { deleteDocument, getDocuments } = useDocument();
     const route = useParams();
     const history = useHistory();
@@ -48,7 +49,7 @@ import {
       if(value === 'yes'){      
         deleteDocument(route.id);
         getDocuments();
-        enqueueSnackbar('Document deleted', {
+        enqueueSnackbar(t("SnackBar.DocumentDeleted"), {
           variant: 'error'
         });
         history.push("/app/management/documents");
@@ -66,7 +67,7 @@ import {
       >
         <SimpleDialog open={open} onClose={handleClose} />
         
-        <CardHeader title="Delete" />
+        <CardHeader title={t("Buttons.Delete")} />
         <Divider />
         <CardContent>
             <Box
@@ -81,7 +82,7 @@ import {
                     onClick={handleDelete}
                     className={classes.error}
                     >
-                    Delete Document
+                    {t("Buttons.Delete")} {t("Documents.Document")}
                 </Button>
             </Box>
         </CardContent>

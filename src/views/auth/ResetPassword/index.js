@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import {
   Box,
@@ -11,6 +11,8 @@ import {
 import Page from 'src/components/Page';
 import Logo from 'src/components/Logo';
 import ResetPassword from './ResetPassword';
+import { useTranslation } from 'react-i18next';
+import i18next from 'src/utils/i18next';
 
 const methodIcons = {
   'Auth0': '/static/images/auth0.svg',
@@ -63,6 +65,17 @@ const useStyles = makeStyles((theme) => ({
 
 const ResetView = () => {
   const classes = useStyles();
+  const { t } = useTranslation();
+
+  useEffect(()=>{
+    let language;
+    if(localStorage.getItem("i18nextLng")){
+      language = localStorage.getItem("i18nextLng")
+    }else{
+      language = 'en'
+    }
+      i18next.changeLanguage(language);
+  },[]);
 
   return (
     <Page
@@ -96,13 +109,13 @@ const ResetView = () => {
                   gutterBottom
                   variant="h2"
                 >
-                  Reset Password
+                  {t("ResetPassword.ResetPassword")}
                 </Typography>
                 <Typography
                   variant="body2"
                   color="textSecondary"
                 >
-                  Complete the fields below
+                  {t("ResetPassword.Subtitle")}
                 </Typography>
               </div>
               <div className={classes.currentMethodIcon}>

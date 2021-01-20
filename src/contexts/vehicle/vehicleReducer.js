@@ -36,7 +36,6 @@ export default (state, action) => {
     case CREATE_VEHICLE:
       return {
         ...state,
-        vehicles: [action.payload, ...state.vehicles],
         loading: false,
         error: null
       };

@@ -25,10 +25,10 @@ const SourceState = props => {
 
   //Get Sources
   const getSources = async () => {
-    clearState();
     setLoading();
     try {
       const res = await api.get(`/sources`);
+
       dispatch({ type: GET_SOURCES, payload: res.data.data });
     } catch (err) {
       dispatch({ type: SET_ERROR, payload: err.response.data})

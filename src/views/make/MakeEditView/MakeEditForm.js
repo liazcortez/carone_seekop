@@ -5,8 +5,10 @@ import * as Yup from 'yup';
 import { Formik } from 'formik';
 import { useSnackbar } from 'notistack';
 import useMake from 'src/hooks/useMake';
+import{ CapitalizeNames, Capitalize } from 'src/utils/capitalize';
 import { useHistory } from 'react-router-dom';
 import AlertP from 'src/components/Alert';
+import Spinner from 'src/components/Spinner';
 
 import {
   Box,
@@ -18,9 +20,11 @@ import {
   Grid,
   TextField,
   makeStyles,
-  FormHelperText,
+  FormHelperText, 
+  Typography
 
 } from '@material-ui/core';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles(() => ({
   root: {}
@@ -33,15 +37,16 @@ const MakeEditForm = ({
 }) => {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
-  const { updateMake, error } = useMake();
+  const { updateMake, error, loading } = useMake();
   const history = useHistory();
   const [submitedForm, setSubmitedForm] = useState(false);
+  const { t } = useTranslation()
 
   useEffect(() => {
     
     if(submitedForm){
       if(!error){
-        enqueueSnackbar('Make updated', {
+        enqueueSnackbar(t("SnackBar.MakeUpdated"), {
           variant: 'success'
         });
         history.push(`/app/management/makes/${make.id}`);
@@ -55,8 +60,8 @@ const MakeEditForm = ({
   return (
     <Formik
       initialValues={{
-        name: make.name || '',
-        description: make.description || '',
+        name: CapitalizeNames(make.name) || '',
+        description: Capitalize(make.description) || '',
         submit: null
       }}
       validationSchema={Yup.object().shape({
@@ -97,7 +102,7 @@ const MakeEditForm = ({
           {...rest}
         >
           <Card>
-            <CardHeader title="Make" />
+            <CardHeader title={t("Makes.Make")} />
             <Divider />
             <CardContent>
               <Grid
@@ -113,7 +118,7 @@ const MakeEditForm = ({
                     error={Boolean(touched.name && errors.name)}
                     fullWidth
                     helperText={touched.name && errors.name}
-                    label="Name"
+                    label={t("Forms.Name")}
                     name="name"
                     onBlur={handleBlur}
                     onChange={handleChange}
@@ -131,7 +136,7 @@ const MakeEditForm = ({
                     error={Boolean(touched.description && errors.description)}
                     fullWidth
                     helperText={touched.description && errors.description}
-                    label="Description"
+                    label={t("Forms.Description")}
                     name="description"
                     onBlur={handleBlur}
                     onChange={handleChange}
@@ -153,14 +158,23 @@ const MakeEditForm = ({
                   mt={2}
                   display="flex"
                   justifyContent="flex-end">
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  type="submit"
-                  disabled={isSubmitting}
-                >
-                  Update Make
-                </Button>
+                 { loading ? 
+                    (
+                      <>
+                          <Typography style={{marginTop: 10}} variant='h5'>{t("Buttons.Updating")}</Typography><Spinner style={{paddingRight: 10}} width={45}/>
+                      </>
+                    ) : 
+                    (
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      type="submit"
+                      disabled={isSubmitting}
+                    >
+                      {t("Buttons.Update")} {t("Makes.Make")}
+                    </Button>
+                )
+                }
               </Box>
             </CardContent>
           </Card>

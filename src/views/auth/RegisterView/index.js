@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import {
   Box,
@@ -13,6 +13,8 @@ import {
 import Page from 'src/components/Page';
 import Logo from 'src/components/Logo';
 import JWTRegister from './JWTRegister';
+import { useTranslation } from 'react-i18next';
+import i18next from 'src/utils/i18next'
 
 const methodIcons = {
   'Auth0': '/static/images/auth0.svg',
@@ -62,6 +64,17 @@ const useStyles = makeStyles((theme) => ({
 
 const RegisterView = () => {
   const classes = useStyles();
+  const { t } = useTranslation();
+
+  useEffect(()=>{
+    let language;
+    if(localStorage.getItem("i18nextLng")){
+      language = localStorage.getItem("i18nextLng")
+    }else{
+      language = 'en'
+    }
+      i18next.changeLanguage(language);
+  },[]);
 
   return (
     <Page
@@ -95,13 +108,13 @@ const RegisterView = () => {
                   gutterBottom
                   variant="h2"
                 >
-                  Register
+                  {t("Register.Register")}
                 </Typography>
                 <Typography
                   variant="body2"
                   color="textSecondary"
                 >
-                  Register on the internal platform
+                  {t("Register.Register2")}
                 </Typography>
               </div>
               <div className={classes.currentMethodIcon}>

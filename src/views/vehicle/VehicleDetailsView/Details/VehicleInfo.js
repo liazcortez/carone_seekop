@@ -13,7 +13,9 @@ import {
   Typography,
   makeStyles
 } from '@material-ui/core';
-import NumberFormat from 'react-number-format';
+import {Capitalize, CapitalizeNames} from 'src/utils/capitalize';
+import { useTranslation } from 'react-i18next';
+import moment from 'moment'
 const useStyles = makeStyles(theme => ({
   root: {},
   fontWeightMedium: {
@@ -23,91 +25,58 @@ const useStyles = makeStyles(theme => ({
 
 const VehicleInfo = ({ vehicle, className, ...rest }) => {
   const classes = useStyles();
+  const { t } = useTranslation()
   return (
     <Card className={clsx(classes.root, className)} {...rest}>
-      <CardHeader title="Vehicle info" />
+      <CardHeader title={t("Vehicles.Info")} />
       <Divider />
       <Table>
         <TableBody>
-          <TableRow>
-            <TableCell className={classes.fontWeightMedium}>Model</TableCell>
+        <TableRow>
+            <TableCell className={classes.fontWeightMedium}>ID</TableCell>
             <TableCell>
               <Typography variant="body2" color="textSecondary">
-                {vehicle && vehicle.model ? vehicle.model : 'No Model'}
+                {vehicle && vehicle._id ? vehicle._id : '- - -'}
               </Typography>
             </TableCell>
           </TableRow>
           <TableRow>
-            <TableCell className={classes.fontWeightMedium}>Model Type</TableCell>
+            <TableCell className={classes.fontWeightMedium}>{t("Vehicles.Model")}</TableCell>
             <TableCell>
               <Typography variant="body2" color="textSecondary">
-                {vehicle && vehicle.modelType ? vehicle.modelType.charAt(0).toUpperCase() + vehicle.modelType.slice(1) : 'No Model Type'}
+                {vehicle && vehicle.model ? CapitalizeNames(vehicle.model) : '- - -'}
               </Typography>
             </TableCell>
           </TableRow>
           <TableRow>
-            <TableCell className={classes.fontWeightMedium}>Year</TableCell>
+            <TableCell className={classes.fontWeightMedium}>{t("Vehicles.ModelType")}</TableCell>
             <TableCell>
               <Typography variant="body2" color="textSecondary">
-                {vehicle && vehicle.year ? vehicle.year : 'No Year'}
+                {vehicle && vehicle.modelType ? Capitalize(vehicle.modelType) : '- - -'}
               </Typography>
             </TableCell>
           </TableRow>
           <TableRow>
-            <TableCell className={classes.fontWeightMedium}>Description</TableCell>
+            <TableCell className={classes.fontWeightMedium}>{t("Vehicles.Description")}</TableCell>
             <TableCell>
               <Typography variant="body2" color="textSecondary">
-                {vehicle && vehicle.description ? vehicle.description : 'No Description'}
+                {vehicle && vehicle.description ? Capitalize(vehicle.description) : '- - -'}
               </Typography>
             </TableCell>
           </TableRow>
           <TableRow>
-            <TableCell className={classes.fontWeightMedium}>Make</TableCell>
+            <TableCell className={classes.fontWeightMedium}>{t("Vehicles.Make")}</TableCell>
             <TableCell>
               <Typography variant="body2" color="textSecondary">
-                {vehicle && vehicle.make ? vehicle.make.name : 'No Make'}
+                {vehicle && vehicle.make ? Capitalize(vehicle.make.name) : '- - -'}
               </Typography>
             </TableCell>
           </TableRow>
           <TableRow>
-            <TableCell className={classes.fontWeightMedium}>Serie</TableCell>
+            <TableCell className={classes.fontWeightMedium}>{t("Vehicles.CreatedAt")}</TableCell>
             <TableCell>
               <Typography variant="body2" color="textSecondary">
-                {vehicle && vehicle.serie ? vehicle.serie : 'No Serie'}
-              </Typography>
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell className={classes.fontWeightMedium}>Key</TableCell>
-            <TableCell>
-              <Typography variant="body2" color="textSecondary">
-                {vehicle && vehicle.key ? vehicle.key : 'No Key'}
-              </Typography>
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell className={classes.fontWeightMedium}>Color</TableCell>
-            <TableCell>
-              <Typography variant="body2" color="textSecondary">
-                {vehicle && vehicle.color ? vehicle.color : 'No Color'}
-              </Typography>
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell className={classes.fontWeightMedium}>Inventory</TableCell>
-            <TableCell>
-              <Typography variant="body2" color="textSecondary">
-                {vehicle && vehicle.inventory ? vehicle.inventory : 'No Inventory'}
-              </Typography>
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell className={classes.fontWeightMedium}>Price</TableCell>
-            <TableCell>
-              <Typography variant="body2" color="textSecondary">
-                {vehicle && vehicle.price ? 
-                  <NumberFormat value={vehicle.price} displayType={'text'} thousandSeparator={true} prefix={'$'}/> : 'No Price'
-                }
+                {vehicle && vehicle.createdAt ? moment(vehicle.createdAt).format('ll') : '- - -'}
               </Typography>
             </TableCell>
           </TableRow>

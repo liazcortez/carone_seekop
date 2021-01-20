@@ -2,26 +2,66 @@ import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
+import SimpleDialog from 'src/components/SimpleDialog'
+
+import { useHistory, useParams } from 'react-router';
 import {
   Breadcrumbs,
   Button,
   Grid,
-  Link,
   SvgIcon,
   Typography,
-  makeStyles
+  makeStyles,
+  Link
 } from '@material-ui/core';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import { Edit as EditIcon } from 'react-feather';
+import { ArrowLeft as BackIcon } from 'react-feather';
+import { CapitalizeNames } from 'src/utils/capitalize';
 
-const useStyles = makeStyles(() => ({
-  root: {}
+import useAuth from 'src/hooks/useAuth';
+import useCompany from 'src/hooks/useCompany';
+import { useSnackbar } from 'notistack';
+import { useTranslation } from 'react-i18next';
+
+const useStyles = makeStyles((theme) => ({
+  root: {},
+  error: {
+    color: theme.palette.common.white,
+    backgroundColor: theme.palette.error.main,
+    "&:hover": {
+      backgroundColor: "#d0392e"
+    },
+    marginLeft: 15
+  },
 }));
 
 const Header = ({ className, company, ...rest }) => {
   const classes = useStyles();
+  const { t } = useTranslation()
+  const { user } = useAuth();
+  const { deleteCompany, getCompanies } = useCompany();
+  const { enqueueSnackbar } = useSnackbar();  
+  const history = useHistory();
+  const route = useParams();
 
+  const [open, setOpen] = React.useState(false);
+  const handleClose = async (value) => {
+    setOpen(false);
+    if(value === 'yes'){      
+      await deleteCompany(route.id);
+      await getCompanies();
+      enqueueSnackbar(t("SnackBar.CompanyDeleted"), {
+        variant: 'error'
+      });
+      history.push("/app/management/companies");
+    }
+  };
+
+
+  
   return (
+    
     <Grid
       container
       spacing={3}
@@ -30,54 +70,68 @@ const Header = ({ className, company, ...rest }) => {
       {...rest}
     >
       <Grid item>
+      <SimpleDialog open={open} onClose={handleClose} />
+
         <Breadcrumbs
           separator={<NavigateNextIcon fontSize="small" />}
           aria-label="breadcrumb"
         >
-          <Link
-            variant="body1"
-            color="inherit"
-            to="/app"
-            component={RouterLink}
-          >
-            Dashboard
-          </Link>
+                   
           <Link
             variant="body1"
             color="inherit"
             to="/app/management/companies"
             component={RouterLink}
           >
-            Management
+            {t("BreadCumbs.Management")}
           </Link>
           <Typography
             variant="body1"
             color="textPrimary"
           >
-            Companies
+            {t("BreadCumbs.Companies")}
           </Typography>
         </Breadcrumbs>
         <Typography
           variant="h3"
           color="textPrimary"
         >
-          {company && company.name}
+          {company && CapitalizeNames(company.name)}
         </Typography>
       </Grid>
       <Grid item>
-        <Button
+
+      <Button
+          color="secondary"
+          variant="contained"
+          startIcon={
+            <SvgIcon fontSize="small">
+              <BackIcon />
+            </SvgIcon>
+          }
+          component={RouterLink}
+          to="/app/management/companies"
+        >
+        
+        {t("Buttons.GoBack")}
+        </Button>
+      { user && (user.role === 'rockstar'|| user.role === 'super admin') ? (
+       <> <Button
+          style={{marginLeft: 15}}
           color="secondary"
           variant="contained"
           component={RouterLink}
-          to={`/app/management/companies/${company ? company._id : ''}/edit`}
+          to={`/app/management/companies/${company && company._id}/edit`}
           startIcon={
             <SvgIcon fontSize="small">
               <EditIcon />
             </SvgIcon>
           }
         >
-          Edit
+          {t("Buttons.Edit")}
         </Button>
+        </>
+      ) : false }
       </Grid>
     </Grid>
   );

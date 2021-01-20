@@ -19,6 +19,7 @@ import {
   TextField,
   makeStyles,
 } from '@material-ui/core';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles(() => ({
   root: {}
@@ -29,12 +30,13 @@ const GeneralSettings = ({ className, user, ...rest }) => {
   const { enqueueSnackbar } = useSnackbar();
   const { error, updateProfile } = useAuth();
   const [submitedForm, setSubmitedForm] = useState(false);
+  const { t } = useTranslation()
 
   useEffect(() => {
     
     if(submitedForm){
       if(!error){
-        enqueueSnackbar('User updated', {
+        enqueueSnackbar(t("SnackBar.UserUpdated"), {
           variant: 'success'
         });
       }
@@ -57,7 +59,7 @@ const GeneralSettings = ({ className, user, ...rest }) => {
 
       }}
       validationSchema={Yup.object().shape({
-        email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
+        email: Yup.string().email(t("Yup.Email")).max(255).required(t("Yup.EmailReq")),
         name: Yup.string().max(255).required('Name is required'),
       })}
       onSubmit={async (values, {
@@ -68,7 +70,7 @@ const GeneralSettings = ({ className, user, ...rest }) => {
       }) => {
         try {
           
-          await updateProfile(values);
+          await updateProfile(values, 'info');
           setSubmitedForm(true);
           
         } catch (err) {
@@ -93,7 +95,7 @@ const GeneralSettings = ({ className, user, ...rest }) => {
             className={clsx(classes.root, className)}
             {...rest}
           >
-            <CardHeader title="Profile" />
+            <CardHeader title={t("Titles.Profile")} />
             <Divider />
             <CardContent>
               <Grid
@@ -109,7 +111,7 @@ const GeneralSettings = ({ className, user, ...rest }) => {
                     error={Boolean(touched.name && errors.name)}
                     fullWidth
                     helperText={touched.name && errors.name}
-                    label="Name"
+                    label={t("Users.Name")}
                     name="name"
                     onBlur={handleBlur}
                     onChange={handleChange}
@@ -125,7 +127,7 @@ const GeneralSettings = ({ className, user, ...rest }) => {
                   <TextField
                     error={Boolean(touched.email && errors.email)}
                     fullWidth
-                    label="Email Address"
+                    label={t("Forms.Email")}
                     name="email"
                     onBlur={handleBlur}
                     onChange={handleChange}
@@ -143,7 +145,7 @@ const GeneralSettings = ({ className, user, ...rest }) => {
                   <TextField
                     error={Boolean(touched.phone && errors.phone)}
                     fullWidth
-                    label="Phone"
+                    label={t("Users.Phone")}
                     name="phone"
                     onBlur={handleBlur}
                     onChange={handleChange}
@@ -159,7 +161,7 @@ const GeneralSettings = ({ className, user, ...rest }) => {
                   <TextField
                     error={Boolean(touched.job && errors.job)}
                     fullWidth
-                    label="Job"
+                    label={t("Users.Job")}
                     name="job"
                     onBlur={handleBlur}
                     onChange={handleChange}
@@ -190,7 +192,7 @@ const GeneralSettings = ({ className, user, ...rest }) => {
                 type="submit"
                 variant="contained"
               >
-                Save Changes
+                {t("Buttons.Save")}
               </Button>
             </Box>
           </Card>

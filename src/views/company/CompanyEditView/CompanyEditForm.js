@@ -7,6 +7,7 @@ import { useSnackbar } from 'notistack';
 import useCompany from 'src/hooks/useCompany';
 import { useHistory } from 'react-router-dom';
 import AlertP from 'src/components/Alert';
+import { CapitalizeNames } from 'src/utils/capitalize';
 
 import {
   Box,
@@ -20,6 +21,7 @@ import {
   Divider,
   CardHeader
 } from '@material-ui/core';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles(() => ({
   root: {}
@@ -35,12 +37,12 @@ const CompanyEditForm = ({
   const { updateCompany, error } = useCompany();
   const history = useHistory();
   const [submitedForm, setSubmitedForm] = useState(false);
-
+  const { t } = useTranslation()
   useEffect(() => {
     
     if(submitedForm){
       if(!error){
-        enqueueSnackbar('Company updated', {
+        enqueueSnackbar(t("SnackBar.CompanyUpdated"), {
           variant: 'success'
         });
         history.push(`/app/management/companies/${company.id}`);
@@ -54,7 +56,7 @@ const CompanyEditForm = ({
   return (
     <Formik
       initialValues={{
-        name: company.name || '',
+        name: CapitalizeNames(company.name) || '',
         submit: null
       }}
       validationSchema={Yup.object().shape({
@@ -94,7 +96,7 @@ const CompanyEditForm = ({
           {...rest}
         >
           <Card>
-            <CardHeader title="Company" />
+            <CardHeader title={t("Titles.EditCompany")} />
             <Divider />
             <CardContent>
               <Grid
@@ -110,7 +112,7 @@ const CompanyEditForm = ({
                     error={Boolean(touched.name && errors.name)}
                     fullWidth
                     helperText={touched.name && errors.name}
-                    label="Name"
+                    label={t("Companies.Name")}
                     name="name"
                     onBlur={handleBlur}
                     onChange={handleChange}
@@ -139,7 +141,7 @@ const CompanyEditForm = ({
                   type="submit"
                   disabled={isSubmitting}
                 >
-                  Update Company
+                  {t("Buttons.Update")} {t("Companies.Company")}
                 </Button>
               </Box>
             </CardContent>

@@ -6,7 +6,7 @@ import { Formik } from 'formik';
 import AlertP from 'src/components/Alert';
 import { Redirect } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
-
+import { useTranslation } from 'react-i18next'
 import {
   Box,
   Button,
@@ -28,15 +28,22 @@ const ForgotPassword = ({ className, ...rest }) => {
   
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();  
-  const { forgotPassword, error } = useAuth();
+  const { t } = useTranslation();
+  const { forgotPassword, error, clearState } = useAuth();
   const isMountedRef = useIsMountedRef();
   const [submitedForm, setSubmitedForm] = useState(false);
+
+  useEffect(() => {
+    clearState()
+    //eslint-disable-next-line
+  }, [])
 
   useEffect(() => {
     
     if(submitedForm){
       if(!error){
-        enqueueSnackbar('Email sent', {
+        enqueueSnackbar(t("SnackBar.EmailSent")
+        , {
           variant: 'success'
         });
       }
@@ -48,7 +55,7 @@ const ForgotPassword = ({ className, ...rest }) => {
  
   if (localStorage.getItem('token')) {
   
-    return <Redirect to="app/management/customers" />
+    return <Redirect to="/app/management/leads" />
   }else {
   return (
     <Formik
@@ -57,7 +64,8 @@ const ForgotPassword = ({ className, ...rest }) => {
         submit: null
       }}
       validationSchema={Yup.object().shape({
-        email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
+        email: Yup.string().email(t("Yup.Email")).max(255).required(t("Yup.EmailReq")),
+
       })}
       onSubmit={async (values, {
         setErrors,
@@ -97,7 +105,7 @@ const ForgotPassword = ({ className, ...rest }) => {
             fullWidth
             autoFocus
             helperText={touched.email && errors.email}
-            label="Email Address"
+            label={t("Forms.Email")}
             margin="normal"
             name="email"
             onBlur={handleBlur}
@@ -125,7 +133,7 @@ const ForgotPassword = ({ className, ...rest }) => {
               type="submit"
               variant="contained"
             >
-              Send email
+              {t("Buttons.SendEmail")}
             </Button>
           </Box>
         </form>

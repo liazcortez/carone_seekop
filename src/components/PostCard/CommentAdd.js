@@ -62,7 +62,7 @@ const CommentAdd = ({ className, ...rest }) => {
     >
       <Avatar
         alt="Person"
-        src={user.avatar}
+        src={`${process.env.REACT_APP_URL_IMAGE_S3_URL}${user.image}`}
       />
       <Paper
         className={classes.inputContainer}

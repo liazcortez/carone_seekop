@@ -1,18 +1,21 @@
-import React from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
+import Spinner from 'src/components/Spinner';
+import FilesDropzone from '../FilesDropzone';
+import useAuth from 'src/hooks/useAuth';
 import {
-  Avatar,
   Box,
   Button,
   Card,
   CardActions,
   CardContent,
-  Link,
+  Avatar,
   Typography,
   makeStyles
 } from '@material-ui/core';
+import { useTranslation } from 'react-i18next';
+import { CapitalizeNames } from 'src/utils/capitalize';
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -22,11 +25,28 @@ const useStyles = makeStyles((theme) => ({
   avatar: {
     height: 100,
     width: 100
+  },
+  primaryColor: {
+    color: theme.palette.primary.main
   }
 }));
 
-const ProfileDetails = ({ className, user, ...rest}) => {
+const ProfileDetails = ({ className, edit, user, ...rest}) => {
   const classes = useStyles();
+  const [attachments, setAttachment] = useState(null);
+  const { updateProfile, loading } = useAuth();
+  const { t } = useTranslation()
+
+  const removePhoto = async() =>{
+    await updateProfile({image: ''}, 'info')
+  }
+  
+  useEffect(()=>{
+    if(attachments){
+      updateProfile(attachments, 'photo');
+    }
+    //eslint-disable-next-line
+  },[attachments])
   return (
     <Card
       className={clsx(classes.root, className)}
@@ -39,10 +59,28 @@ const ProfileDetails = ({ className, user, ...rest}) => {
           flexDirection="column"
           textAlign="center"
         >
-          <Avatar
-            className={classes.avatar}
-            src={user.avatar ? user.avatar : '/app/account'}
-          />
+          
+          {
+            edit ? (
+            loading ? 
+            (
+            <div style={{padding: '25%'}}>
+              <Spinner width={25}/>
+            </div>
+              ) : (
+              <FilesDropzone 
+              setAttachment={setAttachment}
+              image={ user && user.image ? `${process.env.REACT_APP_URL_IMAGE_S3_URL}${user.image}` : '/app/account'}
+            />
+            )
+            ):(
+              <Avatar
+              className={classes.avatar}
+              src={user && user.image ? `${process.env.REACT_APP_URL_IMAGE_S3_URL}${user.image}` : '/app/account'}
+            />
+            )
+          }
+            
           <Typography
             className={classes.name}
             color="textPrimary"
@@ -55,27 +93,30 @@ const ProfileDetails = ({ className, user, ...rest}) => {
             color="textPrimary"
             variant="body1"
           >
-            Your tier:
+            {t("Account.YourTier")}:
             {' '}
-            <Link
-              component={RouterLink}
-              to="/pricing"
-            >
-              {user.role ? user.role : ''}
-            </Link>
+              <span className={classes.primaryColor} variant="body2">
+                {user && user.role
+                  ? ' ' + CapitalizeNames(user.role)
+                  : ''}
+              </span>
           </Typography>
+          {
+            edit ? (
+            <CardActions>
+              <Button
+                fullWidth
+                variant="text"
+                onClick={removePhoto}
+              >
+                {t("Account.RemovePicture")}
+              </Button>
+            </CardActions>
+            ): null
+          }
+          
         </Box>
       </CardContent>
-
-      {rest.removeimagebutton ? (<CardActions>
-        <Button
-          fullWidth
-          variant="text"
-        >
-          Remove picture
-        </Button>
-      </CardActions>) : ''}
-      
     </Card>
   );
 };

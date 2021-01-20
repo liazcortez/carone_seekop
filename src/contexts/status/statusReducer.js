@@ -28,7 +28,6 @@ export default (state, action) => {
     case CREATE_STATUS:
       return {
         ...state,
-        statuses: [action.payload, ...state.statuses],
         loading: false,
         error: null
       };
@@ -54,8 +53,6 @@ export default (state, action) => {
       }
     case CLEAR_STATE:
       return {
-        status: {},
-        statuses: [],
         loading: false,
         error: null
       }

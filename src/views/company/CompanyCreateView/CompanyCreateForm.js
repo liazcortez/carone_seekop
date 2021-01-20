@@ -23,6 +23,7 @@ import {
   FormHelperText,
 
 } from '@material-ui/core';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles(() => ({
   root: {}
@@ -36,6 +37,7 @@ const CompanyCreateForm = ({
   const { enqueueSnackbar } = useSnackbar();  
   const { user } = useAuth();
   const { createCompany, error } = useCompany();
+  const { t } = useTranslation();
   const history = useHistory();
   const [submitedForm, setSubmitedForm] = useState(false);
 
@@ -43,7 +45,7 @@ const CompanyCreateForm = ({
     
     if(submitedForm){
       if(!error){
-        enqueueSnackbar('Company created', {
+        enqueueSnackbar(t("SnackBar.CompanyCreated"), {
           variant: 'success'
         });
         history.push('/app/management/companies');
@@ -118,7 +120,7 @@ const CompanyCreateForm = ({
                 className={clsx(classes.root, className)}
                 {...rest}
               >
-                <CardHeader title="Create Company" />
+                <CardHeader title={t("Titles.CreateCompany")} />
                 <Divider />
                 <CardContent>
                   <Grid
@@ -166,7 +168,7 @@ const CompanyCreateForm = ({
                     type="submit"
                     variant="contained"
                   >
-                    Create Company
+                    {t("Titles.CreateCompany")}
                   </Button>
                 </Box>
               </Card>

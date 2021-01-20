@@ -9,7 +9,9 @@ import {
   SET_LOADING,
   GET_ACTIVITIES_BY_USER,
   GET_ACTIVITIES_BY_LEAD,
-  GET_ACTIVITIES_AR
+  GET_ACTIVITIES_AR,
+  GET_ACTIVITIES_BY_OMSGLOBAL,
+  GET_ACTIVITIES_BY_QUESTLEAD
  } from '../types';
 
 export default (state, action) => {
@@ -29,6 +31,20 @@ export default (state, action) => {
         error: null
       }
     case GET_ACTIVITIES_BY_LEAD:
+      return {
+        ...state,
+        activities: action.payload,
+        loading: false,
+        error: null
+      }
+    case GET_ACTIVITIES_BY_QUESTLEAD:
+      return{
+        ...state,
+        activities: action.payload,
+        loading: false,
+        error: null
+      }
+    case GET_ACTIVITIES_BY_OMSGLOBAL:
       return {
         ...state,
         activities: action.payload,

@@ -8,6 +8,7 @@ import useUser from 'src/hooks/useUser';
 import { useHistory } from 'react-router-dom';
 import AlertP from 'src/components/Alert';
 import { useParams } from 'react-router';
+import { CapitalizeNames } from 'src/utils/capitalize';
 
 import {
   Box,
@@ -21,6 +22,7 @@ import {
   Divider,
   CardHeader
 } from '@material-ui/core';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles(() => ({
   root: {}
@@ -37,11 +39,12 @@ const UserEditForm = ({
   const history = useHistory();
   const [submitedForm, setSubmitedForm] = useState(false);
   const route = useParams();
+  const { t } = useTranslation()
 
   useEffect(() => {
     if(submitedForm){
       if(!error){
-        enqueueSnackbar('User updated', {
+        enqueueSnackbar(t("SnackBar.UserUpdated"), {
           variant: 'success'
         });
         history.push(`/app/management/users/${route.id}`);
@@ -56,13 +59,14 @@ const UserEditForm = ({
   return (
     <Formik
       initialValues={{
-        name: user.name || '',
+        name: CapitalizeNames(user.name) || '',
         email: user.email || '',
         submit: null
       }}
       validationSchema={Yup.object().shape({
         name: Yup.string().max(255),
-        email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
+        email: Yup.string().email(t("Yup.Email")).max(255).required(t("Yup.EmailReq")),
+
       })}
       onSubmit={async (values, {
         resetForm,
@@ -98,7 +102,7 @@ const UserEditForm = ({
           {...rest}
         >
           <Card>
-          <CardHeader title="User" />
+          <CardHeader title= {t("Titles.EditUser")} />
             <Divider />
             <CardContent>
               <Grid
@@ -114,7 +118,7 @@ const UserEditForm = ({
                     error={Boolean(touched.name && errors.name)}
                     fullWidth
                     helperText={touched.name && errors.name}
-                    label="Name"
+                    label={t("Users.Name")}
                     name="name"
                     onBlur={handleBlur}
                     onChange={handleChange}
@@ -132,7 +136,7 @@ const UserEditForm = ({
                     error={Boolean(touched.email && errors.email)}
                     fullWidth
                     helperText={touched.email && errors.email}
-                    label="Email"
+                    label={t("Users.Email")}
                     name="email"
                     onBlur={handleBlur}
                     onChange={handleChange}
@@ -159,7 +163,7 @@ const UserEditForm = ({
                   type="submit"
                   disabled={isSubmitting}
                 >
-                  Update User
+                  {t("Buttons.Edit")} {t("Users.User")} 
                 </Button>
               </Box>
             </CardContent>

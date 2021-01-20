@@ -6,7 +6,6 @@ import {
   Breadcrumbs,
   Button,
   Grid,
-  Link,
   SvgIcon,
   Typography,
   makeStyles
@@ -15,6 +14,7 @@ import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import {
   PlusCircle as PlusCircleIcon
 } from 'react-feather';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Header = ({ className, ...rest }) => {
   const classes = useStyles();
-
+  const { t } = useTranslation()
   return (
     <Grid
       className={clsx(classes.root, className)}
@@ -42,34 +42,25 @@ const Header = ({ className, ...rest }) => {
           separator={<NavigateNextIcon fontSize="small" />}
           aria-label="breadcrumb"
         >
-          <Link
-            variant="body1"
-            color="inherit"
-            to="/app"
-            component={RouterLink}
-          >
-            Dashboard
-          </Link>
-          <Link
-            variant="body1"
-            color="inherit"
-            to="/app/management"
-            component={RouterLink}
-          >
-            Management
-          </Link>
+          
           <Typography
             variant="body1"
             color="textPrimary"
           >
-            Makes
+            {t("BreadCumbs.Management")}
+          </Typography>
+          <Typography
+            variant="body1"
+            color="textPrimary"
+          >
+            {t("BreadCumbs.Makes")}
           </Typography>
         </Breadcrumbs>
         <Typography
           variant="h3"
           color="textPrimary"
         >
-          All Makes
+          {t("BreadCumbs.All2")}{t("BreadCumbs.Makes")}
         </Typography>
       </Grid>
       <Grid item>
@@ -84,7 +75,7 @@ const Header = ({ className, ...rest }) => {
           component={RouterLink}
           to="/app/create/make"
         >
-          New Make
+          {t("Buttons.New")} {t("Makes.Make")}
         </Button>
       </Grid>
     </Grid>

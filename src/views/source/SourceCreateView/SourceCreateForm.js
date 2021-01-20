@@ -9,6 +9,7 @@ import useAuth from 'src/hooks/useAuth';
 import useSource from 'src/hooks/useSource';
 import { useHistory } from 'react-router-dom';
 import AlertP from 'src/components/Alert';
+import Spinner from 'src/components/Spinner';
 
 import {
   Box,
@@ -21,8 +22,10 @@ import {
   CardHeader,
   Divider,
   FormHelperText,
+  Typography
 
 } from '@material-ui/core';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles(() => ({
   root: {}
@@ -35,15 +38,16 @@ const SourceCreateForm = ({
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();  
   const { user } = useAuth();
-  const { createSource, error } = useSource();
+  const { createSource, error, loading } = useSource();
   const history = useHistory();
   const [submitedForm, setSubmitedForm] = useState(false);
+  const { t } = useTranslation()
 
   useEffect(() => {
     
     if(submitedForm){
       if(!error){
-        enqueueSnackbar('Source created', {
+        enqueueSnackbar(t("SnackBar.SourceCreated"), {
           variant: 'success'
         });
         history.push('/app/management/sources');
@@ -119,7 +123,7 @@ const SourceCreateForm = ({
                 className={clsx(classes.root, className)}
                 {...rest}
               >
-                <CardHeader title="Create Source" />
+                <CardHeader title={t("Titles.CreateSource")} />
                 <Divider />
                 <CardContent>
                   <Grid
@@ -135,7 +139,7 @@ const SourceCreateForm = ({
                         error={Boolean(touched.name && errors.name)}
                         fullWidth
                         helperText={touched.name && errors.name}
-                        label="Name"
+                        label={t("Forms.Name")}
                         name="name"
                         onBlur={handleBlur}
                         onChange={handleChange}
@@ -153,7 +157,7 @@ const SourceCreateForm = ({
                         error={Boolean(touched.description && errors.description)}
                         fullWidth
                         helperText={touched.description && errors.description}
-                        label="Description"
+                        label={t("Forms.Description")}
                         name="description"
                         onBlur={handleBlur}
                         onChange={handleChange}
@@ -178,14 +182,22 @@ const SourceCreateForm = ({
                   display="flex"
                   justifyContent="flex-end"
                 >
-                  <Button
-                    color="secondary"
-                    disabled={isSubmitting}
-                    type="submit"
-                    variant="contained"
-                  >
-                    Create Source
-                  </Button>
+                  { loading ? 
+                    (
+                      <>
+                          <Typography style={{marginTop: 10}} variant='h5'>{t("Buttons.Creating")}</Typography><Spinner style={{paddingRight: 10}} width={45}/>
+                      </>
+                    ) : 
+                    (
+                      <Button
+                        color="secondary"
+                        disabled={isSubmitting}
+                        type="submit"
+                        variant="contained"
+                      >
+                        {t("BreadCumbs.Create")}{t("Sources.Source")}
+                      </Button>
+                    )}
                 </Box>
               </Card>
             </form>

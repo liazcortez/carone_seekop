@@ -20,6 +20,7 @@ import {
     Edit as EditIcon
   
   } from 'react-feather';
+import { useTranslation } from 'react-i18next';
   
   const useStyles = makeStyles((theme) => ({
     root: {},
@@ -33,13 +34,14 @@ import {
     const { enqueueSnackbar } = useSnackbar();  
     const { updateVehicle, vehicle, getVehicle } = useVehicle();
     const route = useParams();
+    const { t } = useTranslation();
 
     return (
       <Card
         className={clsx(classes.root, className)}
         {...rest}
       >
-        <CardHeader title="Model Type" />
+        <CardHeader title={t("Vehicles.ModelType")} />
         <Divider />
         <CardContent>
         <Formik
@@ -59,7 +61,7 @@ import {
               resetForm();
               setStatus({ success: true });
               setSubmitting(false);
-              enqueueSnackbar('Vehicle updated', {
+              enqueueSnackbar(t("SnackBar.VehicleUpdated"), {
                 variant: 'success'
               });
             } catch (err) {
@@ -111,7 +113,7 @@ import {
                         color="primary"
                         startIcon={<EditIcon />}
                         >
-                        Update Model Type
+                        {t("Buttons.Update")} {t("Vehicles.ModelType")} 
                     </Button>
                 </Box>
             </form>

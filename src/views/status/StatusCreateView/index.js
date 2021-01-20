@@ -26,7 +26,7 @@ const StatusCreateView = ({ className, ...rest }) => {
   return (
     <Page
       className={classes.root}
-      title="Create Make"
+      title="Create Status"
     >
       <Container maxWidth="lg">
         <Header />

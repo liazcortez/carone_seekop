@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { useSnackbar } from 'notistack';
 import { Formik } from 'formik';
 import clsx from 'clsx';  
+import { CapitalizeNames } from 'src/utils/capitalize';
 import { useParams } from 'react-router';
 import useVehicle from 'src/hooks/useVehicle';
 import useMake from 'src/hooks/useMake';
@@ -21,6 +22,7 @@ import {
     Edit as EditIcon
   
   } from 'react-feather';
+import { useTranslation } from 'react-i18next';
   
   const useStyles = makeStyles((theme) => ({
     root: {},
@@ -35,7 +37,7 @@ import {
     const { makes, getMakes } = useMake();
     const { updateVehicle, vehicle, getVehicle } = useVehicle();
     const route = useParams();
-
+    const { t } = useTranslation()
     useEffect(() => {
       getMakes();
       // eslint-disable-next-line
@@ -46,7 +48,7 @@ import {
         className={clsx(classes.root, className)}
         {...rest}
       >
-        <CardHeader title="Make" />
+        <CardHeader title={t("Vehicles.Make")} />
         <Divider />
         <CardContent>
         <Formik
@@ -66,7 +68,7 @@ import {
               resetForm();
               setStatus({ success: true });
               setSubmitting(false);
-              enqueueSnackbar('Vehicle updated', {
+              enqueueSnackbar(t("SnackBar.MakeUpdated"), {
                 variant: 'success'
               });
             } catch (err) {
@@ -100,7 +102,7 @@ import {
                         key={make._id}
                         value={make._id}
                         >
-                        {make && make.name.charAt(0).toUpperCase() + make.name.slice(1)}
+                        {make && CapitalizeNames(make.name)}
                         </option>
                       ))}
                 </TextField>
@@ -123,7 +125,7 @@ import {
                         color="primary"
                         startIcon={<EditIcon />}
                         >
-                        Update Make
+                        {t("Buttons.Update")} {t("Makes.Make")}
                     </Button>
                 </Box>
             </form>

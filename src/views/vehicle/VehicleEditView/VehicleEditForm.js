@@ -7,6 +7,8 @@ import { useSnackbar } from 'notistack';
 import useVehicle from 'src/hooks/useVehicle';
 import { useHistory } from 'react-router-dom';
 import AlertP from 'src/components/Alert';
+import Spinner from 'src/components/Spinner';
+import { CapitalizeNames, Capitalize } from 'src/utils/capitalize';
 
 import {
   Box,
@@ -18,8 +20,10 @@ import {
   makeStyles,
   FormHelperText,
   Divider,
-  CardHeader
+  CardHeader,
+  Typography
 } from '@material-ui/core';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles(() => ({
   root: {}
@@ -32,15 +36,16 @@ const VehicleEditForm = ({
 }) => {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
-  const { updateVehicle, error } = useVehicle();
+  const { updateVehicle, error, loading } = useVehicle();
   const history = useHistory();
   const [submitedForm, setSubmitedForm] = useState(false);
+  const { t } = useTranslation()
 
   useEffect(() => {
     
     if(submitedForm){
       if(!error){
-        enqueueSnackbar('Vehicle updated', {
+        enqueueSnackbar(t("SnackBar.VehicleUpdated"), {
           variant: 'success'
         });
         history.push(`/app/management/vehicles/${vehicle.id}`);
@@ -54,21 +59,13 @@ const VehicleEditForm = ({
   return (
     <Formik
       initialValues={{
-        model: vehicle.model || '',
-        description: vehicle.description || '',
-        year: vehicle.year || '',
-        price: vehicle.price || '',
-        serie: vehicle.serie || '',
-        key: vehicle.key || '',
-        color: vehicle.color || '',
-        inventory: vehicle.inventory|| '',
+        model: CapitalizeNames(vehicle.model) || '',
+        description: Capitalize(vehicle.description) || '',
         submit: null
       }}
       validationSchema={Yup.object().shape({
         model: Yup.string().max(255),
         description: Yup.string().max(255),
-        year: Yup.number(),
-        price: Yup.number()
       })}
       onSubmit={async (values, {
         resetForm,
@@ -103,7 +100,7 @@ const VehicleEditForm = ({
           {...rest}
         >
           <Card>
-          <CardHeader title="Vehicle" />
+          <CardHeader title={t("Vehicles.Vehicle")} />
             <Divider />
             <CardContent>
               <Grid
@@ -119,7 +116,7 @@ const VehicleEditForm = ({
                     error={Boolean(touched.model && errors.modelType)}
                     fullWidth
                     helperText={touched.model && errors.model}
-                    label="Model"
+                    label={t("Vehicles.Model")}
                     name="model"
                     onBlur={handleBlur}
                     onChange={handleChange}
@@ -137,116 +134,11 @@ const VehicleEditForm = ({
                     error={Boolean(touched.description && errors.description)}
                     fullWidth
                     helperText={touched.description && errors.description}
-                    label="Description"
+                    label={t("Vehicles.Description")}
                     name="description"
                     onBlur={handleBlur}
                     onChange={handleChange}
                     value={values.description}
-                    variant="outlined"
-                  />
-                </Grid> 
-                <Grid
-                  item
-                  md={6}
-                  xs={12}
-                >
-                  <TextField
-                    error={Boolean(touched.year && errors.year)}
-                    fullWidth
-                    helperText={touched.year && errors.year}
-                    label="Year"
-                    name="year"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    required
-                    value={values.year}
-                    variant="outlined"
-                    
-                  />
-                </Grid>  
-                <Grid
-                      item
-                      md={6}
-                      xs={12}
-                    >
-                      <TextField
-                        error={Boolean(touched.serie && errors.serie)}
-                        fullWidth
-                        helperText={touched.serie && errors.serie}
-                        label="Serie"
-                        name="serie"
-                        onBlur={handleBlur}
-                        onChange={handleChange}
-                        value={values.serie}
-                        variant="outlined"
-                      />
-                    </Grid>      
-                    <Grid
-                      item
-                      md={6}
-                      xs={12}
-                    >
-                      <TextField
-                        error={Boolean(touched.key && errors.key)}
-                        fullWidth
-                        helperText={touched.key && errors.key}
-                        label="Key"
-                        name="key"
-                        onBlur={handleBlur}
-                        onChange={handleChange}
-                        value={values.key}
-                        variant="outlined"
-                      />
-                    </Grid>      
-                    <Grid
-                      item
-                      md={6}
-                      xs={12}
-                    >
-                      <TextField
-                        error={Boolean(touched.color && errors.color)}
-                        fullWidth
-                        helperText={touched.color && errors.color}
-                        label="Color"
-                        name="color"
-                        onBlur={handleBlur}
-                        onChange={handleChange}
-                        value={values.color}
-                        variant="outlined"
-                      />
-                    </Grid>      
-                    <Grid
-                      item
-                      md={6}
-                      xs={12}
-                    >
-                      <TextField
-                        error={Boolean(touched.inventory && errors.inventory)}
-                        fullWidth
-                        helperText={touched.inventory && errors.inventory}
-                        label="Inventory"
-                        name="inventory"
-                        onBlur={handleBlur}
-                        onChange={handleChange}
-                        value={values.inventory}
-                        variant="outlined"
-                      />
-                    </Grid>  
-                <Grid
-                  item
-                  md={6}
-                  xs={12}
-                >
-                  <TextField
-                    error={Boolean(touched.price && errors.price)}
-                    fullWidth
-                    helperText={touched.price && errors.price}
-                    label="Price"
-                    name="price"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    required
-                    value={values.price}
                     variant="outlined"
                   />
                 </Grid> 
@@ -263,14 +155,23 @@ const VehicleEditForm = ({
               <Box  mt={2}
                   display="flex"
                   justifyContent="flex-end">
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  type="submit"
-                  disabled={isSubmitting}
-                >
-                  Update Vehicle
-                </Button>
+                { loading ? 
+                    (
+                      <>
+                          <Typography style={{marginTop: 10}} variant='h5'>{t("Buttons.Updating")}</Typography><Spinner style={{paddingRight: 10}} width={45}/>
+                      </>
+                    ) : 
+                    (
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      type="submit"
+                      disabled={isSubmitting}
+                    >
+                      {t("Buttons.Update")} {t("Vehicles.Vehicle")}
+                    </Button>
+                )
+                }
               </Box>
             </CardContent>
           </Card>

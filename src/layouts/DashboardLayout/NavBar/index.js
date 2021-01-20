@@ -1,11 +1,12 @@
-/* eslint-disable no-use-before-define */
 import React, { useEffect } from 'react';
 import { useLocation, matchPath } from 'react-router-dom';
 import { Link as RouterLink } from 'react-router-dom';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import PropTypes from 'prop-types';
 import { colors } from '@material-ui/core';
-
+import { CapitalizeNames } from 'src/utils/capitalize';
+import { useTranslation } from 'react-i18next';
+import i18next from 'src/utils/i18next';
 import {
   Avatar,
   Box,
@@ -16,7 +17,7 @@ import {
   List,
   ListSubheader,
   Typography,
-  makeStyles,
+  makeStyles
 } from '@material-ui/core';
 import {
   BarChart as BarChartIcon,
@@ -32,224 +33,16 @@ import {
   Calendar as CalendarIcon,
   Activity as PyramidChartIcon,
   DollarSign as SoldChartIcon,
-  Globe as AllChartIcon,
   Triangle as ModelChartIcon,
   Sidebar as MultiBarIcon,
-  Key as SocialAccountIcon,
-  List as ListIcon,
   Clock as HourIcon,
-  File as DocumentIcon
+  File as DocumentIcon,
+  MessageCircle as WhatsappIcon,
+  UploadCloud as LoadIcon
 } from 'react-feather';
 import Logo from 'src/components/Logo';
 import useAuth from 'src/hooks/useAuth';
 import NavItem from './NavItem';
-
-const sectionsAdmin = [
-  {
-    subheader: 'Main',
-    items: [
-      {
-        title: 'Dashboard',
-        icon: PieChartIcon,
-        href: '/app/reports/dashboardAdmin'
-      },
-      {
-        title: 'Leads',
-        icon: DatabaseIcon,
-        href: '/app/management/customers'
-      },
-      {
-        title: 'Calendar',
-        icon: CalendarIcon,
-        href: '/app/calendar'
-      }
-    ]
-  }
-];
-
-const sectionsUser = [
-  {
-    subheader: 'Main',
-    items: [
-      {
-        title: 'Dashboard',
-        icon: PieChartIcon,
-        href: '/app/reports/dashboard'
-      },
-      {
-        title: 'Leads',
-        icon: DatabaseIcon,
-        href: '/app/management/customers'
-      },
-      {
-        title: 'Calendar',
-        icon: CalendarIcon,
-        href: '/app/calendar'
-      }
-    ]
-  }
-];
-
-const sectionsRockstar = [
-  {
-    subheader: 'Main',
-    items: [
-      {
-        title: 'Dashboard',
-        icon: PieChartIcon,
-        href: '/app/reports/dashboardRockstar'
-      },
-      {
-        title: 'Leads',
-        icon: DatabaseIcon,
-        href: '/app/management/customers'
-      },
-      {
-        title: 'Calendar',
-        icon: CalendarIcon,
-        href: '/app/calendar'
-      }
-    ]
-  },
-  {
-    subheader: 'Charts',
-    items: [
-      {
-        title: 'Charts',
-        href: '/app/extra/charts',
-        icon: BarChartIcon,
-        items: [
-          {
-            title: 'Global Report',
-            icon: AllChartIcon,
-            href: '/app/extra/charts/all'
-          },
-          {
-            title: 'Monthly Comparative',
-            icon: SoldChartIcon,
-            href: '/app/extra/charts/linear'
-          },
-          {
-            title: 'Stores Report',
-            icon: StoreIcon,
-            href: '/app/extra/charts/stores'
-          },
-          {
-            title: 'Models Comparative',
-            icon: MultiBarIcon,
-            href: '/app/extra/charts/multiple'
-          },
-          {
-            title: 'Leads By Models',
-            icon: ModelChartIcon,
-            href: '/app/extra/charts/models'
-          },
-          {
-            title: 'Leads By Status',
-            icon: PyramidChartIcon,
-            href: '/app/extra/charts/pyramid'
-          },
-        ]
-      },
-      {
-        title: 'Charts Highcharts',
-        href: '/app/extra/highcharts',
-        icon: BarChartIcon,
-        items: [
-          {
-            title: 'Global Report',
-            icon: StoreIcon,
-            href: '/app/extra/highcharts/all'
-          },
-          {
-            title: 'Monthly Comparative',
-            icon: SoldChartIcon,
-            href: '/app/extra/highcharts/linear'
-          },
-          {
-            title: 'Daily Monthly Comparative',
-            icon: CalendarIcon,
-            href: '/app/extra/highcharts/daily'
-          },
-          {
-            title: 'Models Comparative',
-            icon: MultiBarIcon,
-            href: '/app/extra/highcharts/multiple'
-          },
-          {
-            title: 'Hours Comparative',
-            icon: HourIcon,
-            href: '/app/extra/highcharts/hours'
-          },
-          {
-            title: 'Leads By Models',
-            icon: ModelChartIcon,
-            href: '/app/extra/highcharts/models'
-          },
-          {
-            title: 'Leads By Status',
-            icon: PyramidChartIcon,
-            href: '/app/extra/highcharts/pyramid'
-          },
-        ]
-      }
-    ]
-
-  }
-];
-const rockstarSection = [
-  {
-    subheader: 'Control Panel',
-    items: [
-      {
-        title: 'Control Panel',
-        icon: ControlIcon,
-        items: [
-          {
-            title: 'Makes',
-            href: '/app/management/makes',
-            icon: MakeIcon
-          },
-          {
-            title: 'Stores',
-            href: '/app/management/stores',
-            icon: StoreIcon
-          },
-          {
-            title: 'Sources',
-            href: '/app/management/sources',
-            icon: SourceIcon
-          },
-          {
-            title: 'Vehicle',
-            href: '/app/management/vehicles',
-            icon: VehicleIcon
-          },
-          {
-            title: 'Status',
-            href: '/app/management/status',
-            icon: StatusIcon
-          },
-          {
-            title: 'Users',
-            href: '/app/management/users',
-            icon: UserIcon
-          },
-          {
-            title: 'Documents',
-            href: '/app/management/documents',
-            icon: DocumentIcon
-          },
-          {
-            title: 'Social Accounts',
-            href: '/app/management/socialAccounts',
-            icon: SocialAccountIcon
-          }
-        ]
-      }
-    ]
-  }
-];
 
 function renderNavItems({ items, pathname, depth = 0 }) {
   return (
@@ -379,8 +172,221 @@ const NavBar = ({ onMobileClose, openMobile, ...rest }) => {
   const classes = useStyles();
   const location = useLocation();
   const { user } = useAuth();
- 
+  const { t } = useTranslation();
+  const loc = useLocation();
 
+  useEffect(() => {
+    let language;
+    if (localStorage.getItem('i18nextLng')) {
+      language = localStorage.getItem('i18nextLng');
+    } else {
+      language = 'en';
+    }
+    i18next.changeLanguage(language);
+  }, []);
+
+  const rockstarSection = [
+    {
+      subheader: t('Navbar.Control'),
+      items: [
+        {
+          title: t('Navbar.Control'),
+          icon: ControlIcon,
+          href:
+            loc.pathname === '/app/management/leads'
+              ? '/none'
+              : '/app/management',
+
+          items: [
+            {
+              title: t('Navbar.Makes'),
+              href: '/app/management/makes',
+              icon: MakeIcon
+            },
+            {
+              title: t('Navbar.Stores'),
+              href: '/app/management/stores',
+              icon: StoreIcon
+            },
+            {
+              title: t('Navbar.Sources'),
+              href: '/app/management/sources',
+              icon: SourceIcon
+            },
+            {
+              title: t('Navbar.Vehicles'),
+              href: '/app/management/vehicles',
+              icon: VehicleIcon
+            },
+            {
+              title: t('Navbar.Status'),
+              href: '/app/management/status',
+              icon: StatusIcon
+            },
+            {
+              title: t('Navbar.Users'),
+              href: '/app/management/users',
+              icon: UserIcon
+            },
+            {
+              title: t('Navbar.Documents'),
+              href: '/app/management/documents',
+              icon: DocumentIcon
+            },
+            {
+              title: t('Navbar.Companies'),
+              href: '/app/management/companies',
+              icon: ModelChartIcon
+            },
+            {
+              title: t('Navbar.LoadLeads'),
+              href: '/app/management/loadLeads',
+              icon: LoadIcon
+            }
+          ]
+        }
+      ]
+    }
+  ];
+
+  const sectionsUser = [
+    {
+      subheader: t('Navbar.Main'),
+      items: [
+        {
+          title: t('Navbar.Leads'),
+          icon: DatabaseIcon,
+          href: '/app/management/leads'
+        },
+        {
+          title: t('Chat.Title'),
+          icon: WhatsappIcon,
+          href: '/conversations'
+        }
+      ]
+    }
+  ];
+
+  const sectionsRockstar = [
+    {
+      subheader: t('Navbar.Oms'),
+      items: [
+        {
+          title: t('Navbar.Leads'),
+          icon: DatabaseIcon,
+          href: '/app/management/omsLeads'
+        },
+        {
+          title: t('Navbar.ChartsH'),
+          href: '/app/extra/GHighcharts',
+          icon: BarChartIcon,
+          items: [
+            {
+              title: t('Navbar.Monthly'),
+              icon: SoldChartIcon,
+              href: '/app/extra/GHighcharts/GlobalLinear'
+            },
+            {
+              title: t('Navbar.Daily'),
+              icon: CalendarIcon,
+              href: '/app/extra/GHighcharts/GlobalDaily'
+            },
+            {
+              title: t('Navbar.Hours'),
+              icon: HourIcon,
+              href: '/app/extra/GHighcharts/GlobalHours'
+            },
+            {
+              title: t('Navbar.Lbs'),
+              icon: PyramidChartIcon,
+              href: '/app/extra/GHighcharts/GlobalPyramid'
+            }
+          ]
+        }
+      ]
+    },
+    {
+      subheader: t('Navbar.QuestLeads'),
+      items: [
+        {
+          title: t('Navbar.Leads'),
+          icon: DatabaseIcon,
+          href: '/app/management/questLeads'
+        },
+        {
+          title: t('Navbar.ChartsH'),
+          href: '/app/extra/QHighcharts',
+          icon: BarChartIcon,
+          items: [
+           
+            {
+              title: t('Navbar.Monthly'),
+              icon: SoldChartIcon,
+              href: '/app/extra/QHighcharts/linear'
+            },
+            {
+              title: t('Navbar.Daily'),
+              icon: CalendarIcon,
+              href: '/app/extra/QHighcharts/daily'
+            },
+            {
+              title: t('Navbar.Models'),
+              icon: MultiBarIcon,
+              href: '/app/extra/QHighcharts/multiple'
+            },
+            {
+              title: t('Navbar.Hours'),
+              icon: HourIcon,
+              href: '/app/extra/QHighcharts/hours'
+            },
+            {
+              title: t('Navbar.Lbm'),
+              icon: ModelChartIcon,
+              href: '/app/extra/QHighcharts/models'
+            },
+            {
+              title: t("Navbar.Lbs"),
+              icon: PyramidChartIcon,
+              href: '/app/extra/QHighcharts/Pyramid'
+            }
+          ]
+        }
+      ]
+    },
+  ];
+
+  const sectionsAdmin = [
+    {
+      subheader: t('Navbar.Main'),
+      items: [
+        {
+          title: t('Navbar.Dashboard'),
+          icon: PieChartIcon,
+          href: '/app/reports/dashboardAdmin'
+        },
+        {
+          title: t('Navbar.Leads'),
+          icon: DatabaseIcon,
+          href: '/app/management/leads'
+        },
+        {
+          title: t('Navbar.Calendar'),
+          icon: CalendarIcon,
+          href: '/app/calendar'
+        },
+        {
+          title: t('Chat.Title'),
+          icon: WhatsappIcon,
+          href: '/conversations'
+        },
+        {
+          title: t('Navbar.LoadLeads'),
+          href: '/app/management/loadLeads',
+          icon: LoadIcon
+        },
+      ]
+    }
+  ];
 
   useEffect(() => {
     if (openMobile && onMobileClose) {
@@ -405,7 +411,11 @@ const NavBar = ({ onMobileClose, openMobile, ...rest }) => {
               <Avatar
                 alt="User"
                 className={classes.avatar}
-                src={user ? user.image : ''}
+                src={
+                  user && user.image
+                    ? `${process.env.REACT_APP_URL_IMAGE_S3_URL}${user.image}`
+                    : ''
+                }
               />
             </RouterLink>
           </Box>
@@ -417,30 +427,31 @@ const NavBar = ({ onMobileClose, openMobile, ...rest }) => {
               color="textPrimary"
               underline="none"
             >
-              {user && user.name ? user.name : 'None'}
+              {user && user.name ? CapitalizeNames(user.name) : 'None'}
             </Link>
             <Typography variant="body2" color="textSecondary">
-              Your tier:
+              {t('Account.YourTier')}:
               <span className={classes.primaryColor} variant="body2">
-                {user && user.role
-                  ? ' ' + user.role.charAt(0).toUpperCase() + user.role.slice(1)
-                  : ''}
+                {user && user.role ? ' ' + CapitalizeNames(user.role) : ''}
               </span>
             </Typography>
-            {
-              user  ? (
-                  <Typography 
-                  pt={4}
-                  variant="body2"
-                  style={{textTransform: 'capitalize'}}>
-                 
-                      {user.role === 'rockstar' || user.role === 'super admin' ? 'Global' : 
-                      user && user.store && user.store.make ? user.store.make.name + " " + user.store.name : ''}
-                  </Typography>
-              ) : false
-            }
-
-          
+            {user ? (
+              <Typography
+                pt={4}
+                variant="body2"
+                style={{ textTransform: 'capitalize' }}
+              >
+                {user.role === 'rockstar' || user.role === 'super admin'
+                  ? 'Global'
+                  : user && user.store && user.store.make
+                  ? CapitalizeNames(user.store.make.name) +
+                    ' ' +
+                    CapitalizeNames(user.store.name)
+                  : ''}
+              </Typography>
+            ) : (
+              false
+            )}
           </Box>
         </Box>
         <Divider />
@@ -461,7 +472,6 @@ const NavBar = ({ onMobileClose, openMobile, ...rest }) => {
                       pathname: location.pathname
                     })}
                   </List>
-                  {/* <Divider /> */}
                 </Box>
               ))
             : false
@@ -470,7 +480,7 @@ const NavBar = ({ onMobileClose, openMobile, ...rest }) => {
         {user
           ? user.role === 'admin'
             ? sectionsAdmin.map(section => (
-                <Box p={2}>
+                <Box p={2} key={Math.random() + Math.random() + Math.random()}>
                   <List
                     key={section.subheader + Math.random()}
                     subheader={
@@ -492,7 +502,7 @@ const NavBar = ({ onMobileClose, openMobile, ...rest }) => {
         {user
           ? user.role === 'user'
             ? sectionsUser.map(section => (
-                <Box p={2}>
+                <Box p={2} key={Math.random() + Math.random() + Math.random()}>
                   <List
                     key={section.subheader + Math.random()}
                     subheader={
@@ -511,9 +521,8 @@ const NavBar = ({ onMobileClose, openMobile, ...rest }) => {
             : false
           : false}
 
-        {/* <Divider /> */}
         {user
-          ? user.role === 'rockstar'
+          ? user.role === 'rockstar' || user.role === 'super admin'
             ? rockstarSection.map(section => (
                 <Box p={2} key={Math.random()}>
                   <List

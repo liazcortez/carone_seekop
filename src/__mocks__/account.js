@@ -48,7 +48,7 @@ mock.onPost('/api/account/login').reply(async (config) => {
       accessToken,
       user: {
         id: user.id,
-        avatar: user.avatar,
+        image: user.image,
         email: user.email,
         name: user.name,
         tier: user.tier

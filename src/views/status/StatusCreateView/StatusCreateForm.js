@@ -9,6 +9,7 @@ import useAuth from 'src/hooks/useAuth';
 import useStatus from 'src/hooks/useStatus';
 import { useHistory } from 'react-router-dom';
 import AlertP from 'src/components/Alert';
+import Spinner from 'src/components/Spinner';
 
 
 import {
@@ -22,8 +23,9 @@ import {
   CardHeader,
   Divider,
   FormHelperText,
-
+  Typography
 } from '@material-ui/core';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles(() => ({
   root: {}
@@ -36,15 +38,16 @@ const StatusCreateForm = ({
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();  
   const { user } = useAuth();
-  const { createStatus, error } = useStatus();
+  const { createStatus, error, loading, clearState } = useStatus();
   const history = useHistory();
+  const { t } = useTranslation();
   const [submitedForm, setSubmitedForm] = useState(false);
 
   useEffect(() => {
     
     if(submitedForm){
       if(!error){
-        enqueueSnackbar('Status created', {
+        enqueueSnackbar(t("SnackBar.StatusCreated"), {
           variant: 'success'
         });
         history.push('/app/management/status');
@@ -54,6 +57,11 @@ const StatusCreateForm = ({
 
     // eslint-disable-next-line
   }, [submitedForm]);
+
+  useEffect(() => {
+    clearState()
+    // eslint-disable-next-line
+  }, [])
 
   return (
     <Grid
@@ -124,7 +132,7 @@ const StatusCreateForm = ({
                 className={clsx(classes.root, className)}
                 {...rest}
               >
-                <CardHeader title="Create Status" />
+                <CardHeader title={t("Titles.CreateStatus")} />
                 <Divider />
                 <CardContent>
                   <Grid
@@ -140,7 +148,7 @@ const StatusCreateForm = ({
                         error={Boolean(touched.name && errors.name)}
                         fullWidth
                         helperText={touched.name && errors.name}
-                        label="Name"
+                        label={t("Forms.Name")}
                         name="name"
                         onBlur={handleBlur}
                         onChange={handleChange}
@@ -157,7 +165,7 @@ const StatusCreateForm = ({
                       <TextField
                         error={Boolean(touched.description && errors.description)}
                         fullWidth
-                        label="Description"
+                        label={t("Forms.Description")}
                         name="description"
                         onBlur={handleBlur}
                         onChange={handleChange}
@@ -182,14 +190,22 @@ const StatusCreateForm = ({
                   display="flex"
                   justifyContent="flex-end"
                 >
-                  <Button
-                    color="secondary"
-                    disabled={isSubmitting}
-                    type="submit"
-                    variant="contained"
-                  >
-                    Create Status
-                  </Button>
+                   { loading ? 
+                    (
+                      <>
+                          <Typography style={{marginTop: 10}} variant='h5'>{t("Buttons.Creating")}</Typography><Spinner style={{paddingRight: 10}} width={45}/>
+                      </>
+                    ) : 
+                    (
+                      <Button
+                        color="secondary"
+                        disabled={isSubmitting}
+                        type="submit"
+                        variant="contained"
+                      >
+                        {t("BreadCumbs.Create")}{t("Status.Status")}
+                      </Button>
+                    )}
                 </Box>
               </Card>
             </form>

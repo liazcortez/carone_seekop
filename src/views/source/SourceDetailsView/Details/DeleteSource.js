@@ -19,6 +19,7 @@ import {
     Delete as DeleteIcon
   
   } from 'react-feather';
+import { useTranslation } from 'react-i18next';
   
   const useStyles = makeStyles((theme) => ({
     root: {},
@@ -36,7 +37,7 @@ import {
   
   const DeleteSource = ({ className, ...rest }) => {
     const classes = useStyles();
-
+    const { t } = useTranslation()
     const { deleteSource, getSources } = useSource();
     const route = useParams();
     const history = useHistory();
@@ -48,7 +49,7 @@ import {
       if(value === 'yes'){      
         deleteSource(route.id);
         getSources();
-        enqueueSnackbar('Source deleted', {
+        enqueueSnackbar(t("SnackBar.SourceDeleted"), {
           variant: 'error'
         });
         history.push("/app/management/sources");
@@ -66,7 +67,7 @@ import {
       >
         <SimpleDialog open={open} onClose={handleClose} />
         
-        <CardHeader title="Delete" />
+        <CardHeader title={t("Buttons.Delete")}/>
         <Divider />
         <CardContent>
             <Box
@@ -81,7 +82,7 @@ import {
                     onClick={handleDelete}
                     className={classes.error}
                     >
-                    Delete Source
+                    {t("Buttons.Delete")} {t("Sources.Source")}
                 </Button>
             </Box>
         </CardContent>

@@ -19,6 +19,7 @@ import {
     Delete as DeleteIcon
   
   } from 'react-feather';
+import { useTranslation } from 'react-i18next';
   
   const useStyles = makeStyles((theme) => ({
     root: {},
@@ -36,7 +37,7 @@ import {
   
   const DeleteStatus = ({ className, ...rest }) => {
     const classes = useStyles();
-
+    const { t } = useTranslation()
     const { deleteStatus, getStatuses } = useStatus();
     const route = useParams();
     const history = useHistory();
@@ -48,7 +49,7 @@ import {
       if(value === 'yes'){      
         deleteStatus(route.id);
         getStatuses();
-        enqueueSnackbar('Status deleted', {
+        enqueueSnackbar(t("SnackBar.StatusDeleted"), {
           variant: 'error'
         });
         history.push("/app/management/status");
@@ -81,7 +82,7 @@ import {
                     onClick={handleDelete}
                     className={classes.error}
                     >
-                    Delete Status
+                    {t("Buttons.Delete")} {t("Status.Status")}
                 </Button>
             </Box>
         </CardContent>

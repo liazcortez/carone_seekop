@@ -6,7 +6,6 @@ import {
   Breadcrumbs,
   Button,
   Grid,
-  Link,
   SvgIcon,
   Typography,
   makeStyles
@@ -15,6 +14,7 @@ import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import {
   PlusCircle as PlusCircleIcon,
 } from 'react-feather';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -28,6 +28,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Header = ({ className, ...rest }) => {
   const classes = useStyles();
+  const { t } = useTranslation()
 
   return (
     <Grid
@@ -42,34 +43,25 @@ const Header = ({ className, ...rest }) => {
           separator={<NavigateNextIcon fontSize="small" />}
           aria-label="breadcrumb"
         >
-          <Link
-            variant="body1"
-            color="inherit"
-            to="/app"
-            component={RouterLink}
-          >
-            Dashboard
-          </Link>
-          <Link
-            variant="body1"
-            color="inherit"
-            to="/app/management"
-            component={RouterLink}
-          >
-            Management
-          </Link>
+          
           <Typography
             variant="body1"
             color="textPrimary"
           >
-            Vehicles
+            {t("BreadCumbs.Management")}
+          </Typography>
+          <Typography
+            variant="body1"
+            color="textPrimary"
+          >
+            {t("BreadCumbs.Vehicles")}
           </Typography>
         </Breadcrumbs>
         <Typography
           variant="h3"
           color="textPrimary"
         >
-          All Vehicles
+          {t("BreadCumbs.All")} {t("BreadCumbs.Vehicles")}
         </Typography>
       </Grid>
       <Grid item>
@@ -84,7 +76,7 @@ const Header = ({ className, ...rest }) => {
           component={RouterLink}
           to="/app/create/vehicle"
         >
-          New Vehicle
+          {t("Buttons.New2")} {t("Vehicles.Vehicle")}
         </Button>
       </Grid>
     </Grid>

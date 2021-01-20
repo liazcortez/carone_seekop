@@ -19,6 +19,7 @@ import {
     Delete as DeleteIcon
   
   } from 'react-feather';
+import { useTranslation } from 'react-i18next';
   
   const useStyles = makeStyles((theme) => ({
     root: {},
@@ -36,7 +37,7 @@ import {
   
   const DeleteMake = ({ className, ...rest }) => {
     const classes = useStyles();
-
+    const { t } = useTranslation()
     const { deleteMake, getMakes } = useMake();
     const route = useParams();
     const history = useHistory();
@@ -49,7 +50,7 @@ import {
       if(value === 'yes'){      
         deleteMake(route.id);
         getMakes();
-        enqueueSnackbar('Make deleted', {
+        enqueueSnackbar(t("SnackBar.MakeDeleted"), {
           variant: 'error'
         });
         history.push("/app/management/makes");
@@ -67,7 +68,7 @@ import {
       >
       <SimpleDialog open={open} onClose={handleClose} />
 
-        <CardHeader title="Delete" />
+        <CardHeader title={t("Buttons.Delete")} />
         <Divider />
         <CardContent>
             <Box
@@ -82,7 +83,7 @@ import {
                     onClick={handleDelete}
                     className={classes.error}
                     >
-                    Delete Make
+                      {t("Buttons.Delete")} {t("Makes.Make")}
                 </Button>
             </Box>
         </CardContent>

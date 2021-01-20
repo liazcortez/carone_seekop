@@ -21,6 +21,8 @@ import {
     Edit as EditIcon
   
   } from 'react-feather';
+import { useTranslation } from 'react-i18next';
+import { CapitalizeNames } from 'src/utils/capitalize';
   
   const useStyles = makeStyles((theme) => ({
     root: {},
@@ -35,6 +37,7 @@ import {
     const { makes, getMakes } = useMake();
     const { updateStore, store, getStore } = useStore();
     const route = useParams();
+    const { t } = useTranslation()
 
     useEffect(() => {
       getMakes();
@@ -46,7 +49,7 @@ import {
         className={clsx(classes.root, className)}
         {...rest}
       >
-        <CardHeader title="Make" />
+        <CardHeader title={t("Makes.Make")} />
         <Divider />
         <CardContent>
         <Formik
@@ -66,7 +69,7 @@ import {
               resetForm();
               setStatus({ success: true });
               setSubmitting(false);
-              enqueueSnackbar('Store updated', {
+              enqueueSnackbar(t("SnackBar.MakeUpdated"), {
                 variant: 'success'
               });
             } catch (err) {
@@ -100,7 +103,7 @@ import {
                         key={make._id}
                         value={make._id}
                         >
-                        {make && make.name.charAt(0).toUpperCase() + make.name.slice(1)}
+                        {make && CapitalizeNames(make.name)}
                         </option>
                       ))}
                 </TextField>
@@ -123,7 +126,7 @@ import {
                         color="primary"
                         startIcon={<EditIcon />}
                         >
-                        Update Make
+                        {t("Buttons.Update")} {t("Makes.Make")}
                     </Button>
                 </Box>
             </form>

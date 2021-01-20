@@ -1,6 +1,3 @@
-/*eslint no-unused-vars: 0*/
-
-
 import React, { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import clsx from 'clsx';
@@ -11,6 +8,7 @@ import useCompany from 'src/hooks/useCompany';
 import wait from 'src/utils/wait';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSync } from '@fortawesome/free-solid-svg-icons'
+import { CapitalizeNames } from 'src/utils/capitalize'
 
 import {
   Box,
@@ -35,34 +33,9 @@ import {
 import {
   Search as SearchIcon
 } from 'react-feather';
+import { useTranslation } from 'react-i18next';
 
-const tabs = [
-  {
-    value: 'all',
-    label: 'All'
-  }
-];
-
-const sortOptions = [
-  {
-    value: 'updatedAt|desc',
-    label: 'Last update (newest first)'
-  },
-  {
-    value: 'updatedAt|asc',
-    label: 'Last update (oldest first)'
-  },
-  {
-    value: 'orders|desc',
-    label: 'Total orders (high to low)'
-  },
-  {
-    value: 'orders|asc',
-    label: 'Total orders (low to high)'
-  }
-];
-
-const applyFilters = (companies, query, filters) => {
+const applyFilters = (companies, query) => {
   return companies.filter(company => {
     let matches = true;
 
@@ -81,54 +54,12 @@ const applyFilters = (companies, query, filters) => {
       }
     }
 
-    Object.keys(filters).forEach(key => {
-      const value = filters[key];
-
-      if (value && company[key] !== value) {
-        matches = false;
-      }
-    });
-
     return matches;
   });
 };
 
 const applyPagination = (companies, page, limit) => {
   return companies.slice(page * limit, page * limit + limit);
-};
-
-const descendingComparator = (a, b, orderBy) => {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-
-  return 0;
-};
-
-const getComparator = (order, orderBy) => {
-  return order === 'desc'
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
-};
-
-const applySort = (companies, sort) => {
-  const [orderBy, order] = sort.split('|');
-  const comparator = getComparator(order, orderBy);
-  const stabilizedThis = companies.map((el, index) => [el, index]);
-
-  stabilizedThis.sort((a, b) => {
-    const order = comparator(a[0], b[0]);
-
-    if (order !== 0) return order;
-
-    return a[1] - b[1];
-  });
-
-  return stabilizedThis.map(el => el[0]);
 };
 
 const useStyles = makeStyles(theme => ({
@@ -172,20 +103,15 @@ const useStyles = makeStyles(theme => ({
 const Results = ({ className, companies, ...rest }) => {
 
   const classes = useStyles();
-  const [currentTab, setCurrentTab] = useState('all');
   const [selectedCompanies, setSelectedCompanies] = useState([]);
   const [page, setPage] = useState(0);
   const [limit, setLimit] = useState(10);
   const [query, setQuery] = useState('');
-  const [sort, setSort] = useState(sortOptions[0].value);
+  const { t } = useTranslation();
   const { getCompanies, deleteCompany, loading } = useCompany();
+  const [deletedCompanies, setDeletedCompanies] = useState(false);
   const [open, setOpen] = React.useState(false);
   const [selectedValue, setSelectedValue] = React.useState();
-  const [filters, setFilters] = useState({
-    hasAcceptedMarketing: null,
-    isProspect: null,
-    isReturning: null
-  });
 
   const handleClose = async (value) => {
     setOpen(false);
@@ -194,6 +120,7 @@ const Results = ({ className, companies, ...rest }) => {
       await selectedCompanies.map(async company => await deleteCompany(company));
       await wait(1000);
       await getCompanies();
+      setSelectedCompanies([])
     }
   };
 
@@ -222,23 +149,6 @@ const Results = ({ className, companies, ...rest }) => {
     selectedCompanies.length > 0 && selectedCompanies.length < companies.length;
   const selectedAllCompanies = selectedCompanies.length === companies.length;
 
-  const handleTabsChange = (event, value) => {
-    const updatedFilters = {
-      ...filters,
-      hasAcceptedMarketing: null,
-      isProspect: null,
-      isReturning: null
-    };
-
-    if (value !== 'all') {
-      updatedFilters[value] = true;
-    }
-
-    setFilters(updatedFilters);
-    setSelectedCompanies([]);
-    setCurrentTab(value);
-  };
-
   const handleQueryChange = event => {
     event.persist();
     setQuery(event.target.value);
@@ -252,13 +162,12 @@ const Results = ({ className, companies, ...rest }) => {
     setLimit(parseInt(event.target.value));
   };
 
-  const filteredCompanies = applyFilters(companies, query, filters);
-  const sortedCompanies = applySort(filteredCompanies, sort);
-  const paginatedCompanies = applyPagination(sortedCompanies, page, limit);
+  const filteredCompanies = applyFilters(companies, query);
+  const paginatedCompanies = applyPagination(filteredCompanies, page, limit);
   
   return (
     <Card className={clsx(classes.root, className)} {...rest}>
-      <SimpleDialog selectedValue={selectedValue} open={open} onClose={handleClose} />
+      <SimpleDialog selectedValue={selectedValue} open={open} onClose={handleClose} all={deletedCompanies}/>
       <div p={2} display="flex" className={classes.containerSync}>
       {
         loading === true ? (
@@ -272,15 +181,12 @@ const Results = ({ className, companies, ...rest }) => {
 
       </div>    
       <Tabs
-        onChange={handleTabsChange}
         scrollButtons="auto"
         textColor="secondary"
-        value={currentTab}
+        value={'all'}
         variant="scrollable"
       >
-        {tabs.map(tab => (
-          <Tab key={tab.value} value={tab.value} label={tab.label} />
-        ))}
+          <Tab key={'all'} value={'all'} label={t("Tabs.All")} />
         
       </Tabs>
       <Divider />
@@ -297,7 +203,7 @@ const Results = ({ className, companies, ...rest }) => {
             )
           }}
           onChange={handleQueryChange}
-          placeholder="Search companies"
+          placeholder={t("Companies.Search")}
           value={query}
           variant="outlined"
         />
@@ -327,9 +233,11 @@ const Results = ({ className, companies, ...rest }) => {
                     checked={selectedAllCompanies}
                     indeterminate={selectedSomeCompanies}
                     onChange={handleSelectAllCompanies}
+                    onClick={(e)=>{setDeletedCompanies(true)}}
+
                   />
                 </TableCell>
-                <TableCell>Name</TableCell>
+                <TableCell>{t("Companies.Name")}</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -351,6 +259,8 @@ const Results = ({ className, companies, ...rest }) => {
                           handleSelectOneCompany(event, company._id)
                         }
                         value={isCompanySelected}
+                        onClick={(e)=>{setDeletedCompanies(false)}}
+
                       />
                     </TableCell>
                     <TableCell>
@@ -362,7 +272,7 @@ const Results = ({ className, companies, ...rest }) => {
                             to={`/app/management/companies/${company._id}`}
                             variant="h6"
                           >
-                            {company.name}
+                            {CapitalizeNames(company.name)}
                           </Link>
                         </div>
                       </Box>

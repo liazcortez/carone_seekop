@@ -10,6 +10,8 @@ import useUser from 'src/hooks/useUser';
 import { useHistory } from 'react-router-dom';
 import AlertP from 'src/components/Alert';
 import useStore from 'src/hooks/useStore';
+import { CapitalizeNames } from 'src/utils/capitalize';
+import Spinner from 'src/components/Spinner';
 
 import {
   Box,
@@ -22,8 +24,10 @@ import {
   CardHeader,
   Divider,
   FormHelperText,
+  Typography
 
 } from '@material-ui/core';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles(() => ({
   root: {}
@@ -50,16 +54,17 @@ const UserCreateForm = ({
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();  
   const { user } = useAuth();
-  const { createUser, error } = useUser();
+  const { createUser, error, loading, clearState } = useUser();
   const { getStores, stores } = useStore();
   const history = useHistory();
   const [submitedForm, setSubmitedForm] = useState(false);
+  const { t } = useTranslation()
 
   useEffect(() => {
     
     if(submitedForm){
       if(!error){
-        enqueueSnackbar('User created', {
+        enqueueSnackbar(t("SnackBar.UserCreated"), {
           variant: 'success'
         });
         history.push('/app/management/users');
@@ -72,7 +77,7 @@ const UserCreateForm = ({
 
   useEffect(()=>{
     getStores();
-
+    clearState()
     // eslint-disable-next-line
   }, []);
 
@@ -114,7 +119,8 @@ const UserCreateForm = ({
           }}
           validationSchema={Yup.object().shape({
             name: Yup.string().max(255),
-            email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
+            email: Yup.string().email(t("Yup.Email")).max(255).required(t("Yup.EmailReq")),
+
           })}
           onSubmit={async (values, {
             resetForm,
@@ -128,7 +134,7 @@ const UserCreateForm = ({
                 await createUser(values);
                 setSubmitedForm(true);
               }else{
-                setErrors({ submit: 'Passwords do not match' });
+                setErrors({ submit: t("Errors.Passwords") });
               }
 
             } catch (err) {
@@ -152,7 +158,7 @@ const UserCreateForm = ({
                 className={clsx(classes.root, className)}
                 {...rest}
               >
-                <CardHeader title="Create User" />
+                <CardHeader title={t("Titles.CreateUser")} />
                 <Divider />
                 <CardContent>
                   <Grid
@@ -168,7 +174,7 @@ const UserCreateForm = ({
                         error={Boolean(touched.name && errors.name)}
                         fullWidth
                         helperText={touched.name && errors.name}
-                        label="Name"
+                        label={t("Users.Name")}
                         name="name"
                         onBlur={handleBlur}
                         onChange={handleChange}
@@ -185,7 +191,7 @@ const UserCreateForm = ({
                       <TextField
                         error={Boolean(touched.email && errors.email)}
                         fullWidth
-                        label="Email"
+                        label={t("Users.Email")}
                         name="email"
                         onBlur={handleBlur}
                         onChange={handleChange}
@@ -203,7 +209,7 @@ const UserCreateForm = ({
                         error={Boolean(touched.password && errors.password)}
                         fullWidth
                         helperText={touched.password && errors.password}
-                        label="Password"
+                        label={t("Users.Password1")}
                         name="password"
                         onBlur={handleBlur}
                         onChange={handleChange}
@@ -223,7 +229,7 @@ const UserCreateForm = ({
                         error={Boolean(touched.password2 && errors.password2)}
                         fullWidth
                         helperText={touched.password2 && errors.password2}
-                        label="Confirm Password"
+                        label={t("Users.Password2")}
                         name="password2"
                         onBlur={handleBlur}
                         onChange={handleChange}
@@ -242,7 +248,7 @@ const UserCreateForm = ({
                         error={Boolean(touched.store && errors.store)}
                         fullWidth
                         helperText={touched.store && errors.store}
-                        label="Store"
+                        label={t("Users.Store")}
                         name="store"
                         onBlur={handleBlur}
                         onChange={handleChange}
@@ -257,7 +263,7 @@ const UserCreateForm = ({
 
                         {stores && stores.map(store => (
                           <option key={store._id} value={store._id}>
-                            {store.make.name + " "+ store.name}
+                            {CapitalizeNames(store.make.name) + " "+ CapitalizeNames(store.name)}
                           </option>
                         ))}
                       </TextField>
@@ -271,7 +277,7 @@ const UserCreateForm = ({
                         error={Boolean(touched.role && errors.role)}
                         fullWidth
                         helperText={touched.role && errors.role}
-                        label="Role"
+                        label={t("Users.Role")}
                         name="role"
                         onBlur={handleBlur}
                         onChange={handleChange}
@@ -285,7 +291,7 @@ const UserCreateForm = ({
 
                         {roleOptions.map(role => (
                           <option key={role.id} value={role.value}>
-                            {role.value.charAt(0).toUpperCase() + role.value.slice(1)}
+                            {CapitalizeNames(role.value)}
                           </option>
                         ))}
                       </TextField>
@@ -308,14 +314,22 @@ const UserCreateForm = ({
                   display="flex"
                   justifyContent="flex-end"
                 >
-                  <Button
-                    color="secondary"
-                    disabled={isSubmitting}
-                    type="submit"
-                    variant="contained"
-                  >
-                    Create User
-                  </Button>
+                   { loading ? 
+                    (
+                      <>
+                          <Typography style={{marginTop: 10}} variant='h5'>{t("Buttons.Creating")}</Typography><Spinner style={{paddingRight: 10}} width={45}/>
+                      </>
+                    ) : 
+                    (
+                      <Button
+                        color="secondary"
+                        disabled={isSubmitting}
+                        type="submit"
+                        variant="contained"
+                      >
+                        {t("BreadCumbs.Create")}{t("Users.User")}
+                      </Button>
+                    )}
                 </Box>
               </Card>
             </form>

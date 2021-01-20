@@ -6,7 +6,6 @@ import {
   Breadcrumbs,
   Button,
   Grid,
-  Link,
   SvgIcon,
   Typography,
   makeStyles
@@ -15,6 +14,7 @@ import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import {
   PlusCircle as PlusCircleIcon,
 } from 'react-feather';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Header = ({ className, ...rest }) => {
   const classes = useStyles();
-
+  const { t } = useTranslation()
   return (
     <Grid
       className={clsx(classes.root, className)}
@@ -42,34 +42,24 @@ const Header = ({ className, ...rest }) => {
           separator={<NavigateNextIcon fontSize="small" />}
           aria-label="breadcrumb"
         >
-          <Link
-            variant="body1"
-            color="inherit"
-            to="/app"
-            component={RouterLink}
-          >
-            Dashboard
-          </Link>
-          <Link
-            variant="body1"
-            color="inherit"
-            to="/app/management"
-            component={RouterLink}
-          >
-            Management
-          </Link>
           <Typography
             variant="body1"
             color="textPrimary"
           >
-            Users
+            {t("BreadCumbs.Management")}
+          </Typography>
+          <Typography
+            variant="body1"
+            color="textPrimary"
+          >
+            {t("BreadCumbs.Users")}
           </Typography>
         </Breadcrumbs>
         <Typography
           variant="h3"
           color="textPrimary"
         >
-          All Users
+          {t("BreadCumbs.All")} {t("BreadCumbs.Users")}
         </Typography>
 
       </Grid>
@@ -86,7 +76,7 @@ const Header = ({ className, ...rest }) => {
           to="/app/create/user"
         >
         
-            New User
+        {t("Buttons.New2")} {t("Users.User")}
         </Button>
       </Grid>
     </Grid>

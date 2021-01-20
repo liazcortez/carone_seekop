@@ -22,17 +22,7 @@ const useStyles = makeStyles((theme) => ({
 
 const AccountView = () => {
 
-  
-
   const classes = useStyles();
-
-/*  const tabs = [
-    { value: 'general', label: 'General' },
-    { value: 'subscription', label: 'Subscription' },
-    { value: 'notifications', label: 'Notifications' },
-    { value: 'security', label: 'Security' }
-  ];*/
-
 
   return (
     <Page

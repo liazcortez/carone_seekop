@@ -19,7 +19,6 @@ export default (state, action) => {
     case CREATE_MAKE:
       return {
         ...state,
-        makes: [action.payload, ...state.makes],
         loading: false,
         error: null
       };

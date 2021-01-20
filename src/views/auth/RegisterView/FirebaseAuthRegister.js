@@ -91,7 +91,8 @@ const FirebaseAuthRegister = ({ className, ...rest }) => {
           submit: null
         }}
         validationSchema={Yup.object().shape({
-          email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
+          email: Yup.string().email(t("Yup.Email")).max(255).required(t("Yup.EmailReq")),
+
           password: Yup.string().min(7).max(255).required('Password is required'),
           policy: Yup.boolean().oneOf([true], 'This field must be checked')
         })}

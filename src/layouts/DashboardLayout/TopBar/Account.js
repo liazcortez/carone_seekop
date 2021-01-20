@@ -1,4 +1,5 @@
 import React, { useRef, useState } from 'react';
+import { Redirect } from 'react-router-dom';
 import { Link as RouterLink } from 'react-router-dom';
 import {
   Avatar,
@@ -11,6 +12,8 @@ import {
   makeStyles
 } from '@material-ui/core';
 import useAuth from 'src/hooks/useAuth';
+import { CapitalizeNames } from 'src/utils/capitalize';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles(theme => ({
   avatar: {
@@ -26,6 +29,7 @@ const useStyles = makeStyles(theme => ({
 const Account = () => {
   const classes = useStyles();
   const ref = useRef(null);
+  const { t } = useTranslation()
   const { user } = useAuth();
   const [isOpen, setOpen] = useState(false);
 
@@ -42,6 +46,10 @@ const Account = () => {
     logout();
   };
 
+  if (!localStorage.getItem('token')) {
+    return <Redirect to="/login" />;
+  }
+
   return (
     <>
       <Box
@@ -54,11 +62,11 @@ const Account = () => {
         <Avatar
           alt="User"
           className={classes.avatar}
-          src={user ? user.image : ''}
+          src={user && user.image ? `${process.env.REACT_APP_URL_IMAGE_S3_URL}${user.image}` : ''}
         />
         <Hidden smDown>
           <Typography variant="h6" color="inherit">
-            {user ? user.name : ''}
+            {user ? CapitalizeNames(user.name) : ''}
           </Typography>
         </Hidden>
       </Box>
@@ -76,9 +84,9 @@ const Account = () => {
       >
        
         <MenuItem component={RouterLink} to="/app/account">
-          Account
+        {t("Account.Account")}
         </MenuItem>
-        <MenuItem onClick={handleLogout}>Logout</MenuItem>
+        <MenuItem onClick={handleLogout}>{t("Account.Logout")}</MenuItem>
       </Menu>
     </>
   );
