@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import SimpleDialog from 'src/components/SimpleDialog'
+import AuthContext from 'src/contexts/auth/authContext'
 
 import { useHistory, useParams } from 'react-router';
 import {
@@ -17,10 +18,10 @@ import {
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import { Edit as EditIcon } from 'react-feather';
 import { ArrowLeft as BackIcon } from 'react-feather';
-
-import useAuth from 'src/hooks/useAuth';
-import useLead from 'src/hooks/useLead';
+import { CapitalizeNames } from 'src/utils/capitalize';
+import useUser from 'src/hooks/useUser';
 import { useSnackbar } from 'notistack';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -36,29 +37,26 @@ const useStyles = makeStyles((theme) => ({
 
 const Header = ({ className, user, ...rest }) => {
   const classes = useStyles();
-  const { deleteLead, getLeads } = useLead();
+  const { deteleUser, getUsers } = useUser();
   const { enqueueSnackbar } = useSnackbar();  
   const history = useHistory();
+  const authContext = useContext(AuthContext);
   const route = useParams();
+  const { t } = useTranslation()
 
   const [open, setOpen] = React.useState(false);
   const handleClose = async (value) => {
     setOpen(false);
     if(value === 'yes'){      
-      deleteLead(route.id);
-      getLeads();
-      enqueueSnackbar('User deleted', {
+      deteleUser(route.id);
+      getUsers();
+      enqueueSnackbar(t("SnackBar.UserDeleted"), {
         variant: 'error'
       });
       history.push("/app/management/users");
     }
   };
 
-
-  const handleDelete = () =>{
-    setOpen(true);    
-  }
-  
   return (
     
     <Grid
@@ -82,20 +80,20 @@ const Header = ({ className, user, ...rest }) => {
             to="/app/management/users"
             component={RouterLink}
           >
-            Management
+            {t("BreadCumbs.Management")}
           </Link>
           <Typography
             variant="body1"
             color="textPrimary"
           >
-            Users
+            {t("BreadCumbs.Users")}
           </Typography>
         </Breadcrumbs>
         <Typography
           variant="h3"
           color="textPrimary"
         >
-          {user && user.name}
+          {user && CapitalizeNames(user.name)}
         </Typography>
       </Grid>
       <Grid item>
@@ -112,9 +110,9 @@ const Header = ({ className, user, ...rest }) => {
           to="/app/management/users"
         >
         
-            Go Back
+        {t("Buttons.GoBack")}
         </Button>
-      { user && user.role === 'rockstar' ? (
+      { authContext.user && (authContext.user.role === 'rockstar'|| user.role === 'super admin') ? (
        <> <Button
           style={{marginLeft: 15}}
           color="secondary"
@@ -127,21 +125,10 @@ const Header = ({ className, user, ...rest }) => {
             </SvgIcon>
           }
         >
-          Edit
+          {t("Buttons.Edit")}
         </Button>
-        <Button
-          className={classes.error}
-          variant="contained"
-          onClick={handleDelete}
-          startIcon={
-            <SvgIcon fontSize="small">
-              <EditIcon />
-            </SvgIcon>
-          }
-        >
-          Delete
-        </Button></>
-      ) : false }
+        </>
+      ) : null }
       </Grid>
     </Grid>
   );

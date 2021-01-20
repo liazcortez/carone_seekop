@@ -8,20 +8,17 @@ import React, {
   import PropTypes from 'prop-types';
   import {
     Box,
-    Button,
-    IconButton,
     Link,
     List,
     ListItem,
     ListItemIcon,
     ListItemText,
-    Tooltip,
     Typography,
     makeStyles
   } from '@material-ui/core';
   import FileCopyIcon from '@material-ui/icons/FileCopy';
-  import MoreIcon from '@material-ui/icons/MoreVert';
   import bytesToSize from 'src/utils/bytesToSize';
+import { useTranslation } from 'react-i18next';
   
   const useStyles = makeStyles((theme) => ({
     root: {},
@@ -64,11 +61,13 @@ import React, {
   
   const FilesDropzone = ({ className, setAttachment, ...rest }) => {
     const classes = useStyles();
+    const { t } = useTranslation()
     const [files, setFiles] = useState([]);
   
     const handleDrop = useCallback((acceptedFiles) => {
       setFiles(acceptedFiles);
       setAttachment(acceptedFiles[0])
+    //eslint-disable-next-line
     }, []);
   
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -100,18 +99,20 @@ import React, {
               gutterBottom
               variant="h3"
             >
-              Select files
+              {t("Documents.Select")}
+
             </Typography>
             <Box mt={2}>
               <Typography
                 color="textPrimary"
                 variant="body1"
               >
-                Drop files here or click
+                {t("DropzoneInput.Drop")}
                 {' '}
-                <Link underline="always">browse</Link>
+                <Link underline="always">{t("DropzoneInput.Browse")}</Link>
                 {' '}
-                thorough your machine
+                {t("DropzoneInput.Thorough")}
+                
               </Typography>
             </Box>
           </div>

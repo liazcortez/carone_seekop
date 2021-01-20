@@ -70,15 +70,21 @@ const DocumentState = props => {
     };
     setLoading();
     try {
-      const uploadConfig = await api.post("/uploads/image", { type: file.type, fileName: file.name },config);
+      const uploadConfig = await api.post("/uploads/image", { type: file.type, fileName: file.name }, config);
 
       await api.put(uploadConfig.data.url, file, {
         headers: {
-          headers: { "Content-Type": file ? file.type : null }
+          headers: { 
+            "Content-Type": file ? file.type : null,
+            'Access-Control-Allow-Origin': '*' 
+          }
         }
       });
 
+
       const dataKey = uploadConfig.data.key;
+
+
 
       const res = await api.post(`/documents`, { ...document, file: dataKey }, config);
       dispatch({ type: CREATE_DOCUMENT, payload: res.data.data });

@@ -9,13 +9,12 @@ import {
   IconButton,
   Toolbar,
   makeStyles,
-  SvgIcon
+  SvgIcon,
 } from '@material-ui/core';
 import { Menu as MenuIcon } from 'react-feather';
 import Logo from 'src/components/Logo';
 import { THEMES } from 'src/constants';
 import Account from './Account';
-//import Search from './Search';
 import Settings from './Settings';
 
 const useStyles = makeStyles(theme => ({
@@ -35,7 +34,14 @@ const useStyles = makeStyles(theme => ({
   },
   toolbar: {
     minHeight: 64
-  }
+  },
+  badge: {
+    height: 10,
+    width: 10,
+    borderRadius: 5,
+    marginTop: 10,
+    marginRight: 5
+  },
 }));
 
 const TopBar = ({ className, onMobileNavOpen, ...rest }) => {
@@ -57,8 +63,8 @@ const TopBar = ({ className, onMobileNavOpen, ...rest }) => {
           </RouterLink>
         </Hidden>
         <Box ml={2} flexGrow={1} />
-        {/*<Search />*/}
         <Settings />
+
         <Box ml={2}>
           <Account />
         </Box>

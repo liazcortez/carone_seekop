@@ -5,12 +5,12 @@ import {
 } from '@material-ui/core';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogActions from '@material-ui/core/DialogActions';
-
+import { useTranslation } from 'react-i18next'
 import Dialog from '@material-ui/core/Dialog';
 
 function SimpleDialog(props) {
-  const { onClose, selectedValue, open } = props;
-
+  const { onClose, selectedValue, open, all } = props;
+  const{ t } = useTranslation();
   const handleClose = () => {
     onClose(selectedValue);
   };
@@ -21,13 +21,13 @@ function SimpleDialog(props) {
 
   return (
     <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={open}>
-      <DialogTitle id="simple-dialog-title">Are you sure you want to delete?</DialogTitle>
+      <DialogTitle id="simple-dialog-title">{all ? t("Modals.DeleteAll") : t("Modals.DeleteQuestion")}</DialogTitle>
         <DialogActions>
           <Button autoFocus onClick={() => handleListItemClick('no')} key={'no'} color="primary">
-            Disagree
+          {t("Buttons.Disagree")}
           </Button>
           <Button onClick={() => handleListItemClick('yes')} key={'yes'} color="primary" autoFocus>
-            Agree
+          {t("Buttons.Agree")}
           </Button>
         </DialogActions>
        

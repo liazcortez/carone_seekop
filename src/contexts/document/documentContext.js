@@ -1,3 +1,3 @@
 import { createContext } from 'react';
-const CommentContext = createContext();
-export default CommentContext;
+const DocumentContext = createContext();
+export default DocumentContext;

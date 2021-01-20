@@ -6,6 +6,7 @@ import { Formik } from 'formik';
 import { useSnackbar } from 'notistack';
 import ProfileDetails from '../../account/AccountView/General/ProfileDetails';
 import useAuth from 'src/hooks/useAuth';
+import { CapitalizeNames } from 'src/utils/capitalize'
 import useMake from 'src/hooks/useMake';
 import { useHistory } from 'react-router-dom';
 import AlertP from 'src/components/Alert';
@@ -21,9 +22,11 @@ import {
   CardHeader,
   Divider,
   FormHelperText,
-
+  Typography
 } from '@material-ui/core';
 import useStore from 'src/hooks/useStore';
+import { useTranslation } from 'react-i18next';
+import Spinner from 'src/components/Spinner';
 
 const useStyles = makeStyles(() => ({
   root: {}
@@ -37,8 +40,9 @@ const StoreCreateForm = ({
   const { enqueueSnackbar } = useSnackbar();  
   const { user } = useAuth();
   const { makes, getMakes } = useMake();
-  const { createStore, error } = useStore();
+  const { createStore, error, loading, clearState } = useStore();
   const history = useHistory();
+  const { t } = useTranslation()
 
   const [submitedForm, setSubmitedForm] = useState(false);
 
@@ -46,7 +50,7 @@ const StoreCreateForm = ({
     
     if(submitedForm){
       if(!error){
-        enqueueSnackbar('Store created', {
+        enqueueSnackbar(t("SnackBar.StoreCreated"), {
           variant: 'success'
         });
         history.push('/app/management/stores');
@@ -57,9 +61,9 @@ const StoreCreateForm = ({
     // eslint-disable-next-line
   }, [submitedForm]);
 
-  useEffect(() => {
-
+  useEffect(() => { 
     getMakes();
+    clearState()
     // eslint-disable-next-line 
   }, [])
 
@@ -101,7 +105,7 @@ const StoreCreateForm = ({
           validationSchema={Yup.object().shape({
             name: Yup.string().max(255),
             description: Yup.string().max(255),
-            phone: Yup.number()
+            phone: Yup.number().typeError(t("Yup.Number"))
 
           })}
           onSubmit={async (values, {
@@ -136,7 +140,7 @@ const StoreCreateForm = ({
                 className={clsx(classes.root, className)}
                 {...rest}
               >
-                <CardHeader title="Create Store" />
+                <CardHeader title={t("Titles.CreateStore")} />
                 <Divider />
                 <CardContent>
                   <Grid
@@ -152,7 +156,7 @@ const StoreCreateForm = ({
                         error={Boolean(touched.name && errors.name)}
                         fullWidth
                         helperText={touched.name && errors.name}
-                        label="Name"
+                        label={t("Forms.Name")}
                         name="name"
                         onBlur={handleBlur}
                         onChange={handleChange}
@@ -170,7 +174,7 @@ const StoreCreateForm = ({
                         error={Boolean(touched.address && errors.address)}
                         fullWidth
                         helperText={touched.address && errors.address}
-                        label="Address"
+                        label={t("Forms.Address")}
                         name="address"
                         onBlur={handleBlur}
                         onChange={handleChange}
@@ -187,7 +191,7 @@ const StoreCreateForm = ({
                         error={Boolean(touched.phone && errors.phone)}
                         fullWidth
                         helperText={touched.phone && errors.phone}
-                        label="Phone"
+                        label={t("Forms.Phone")}
                         name="phone"
                         onBlur={handleBlur}
                         onChange={handleChange}
@@ -204,7 +208,7 @@ const StoreCreateForm = ({
                         error={Boolean(touched.make && errors.make)}
                         fullWidth
                         helperText={touched.make && errors.make}
-                        label="Make"
+                        label={t("Forms.Make")}
                         name="make"
                         onBlur={handleBlur}
                         onChange={handleChange}
@@ -217,7 +221,7 @@ const StoreCreateForm = ({
 
                         {makes && makes.map(make => (
                           <option key={make._id} value={make._id}>
-                            {make.name}
+                            {CapitalizeNames(make.name)}
                           </option>
                         ))}
                       </TextField>
@@ -231,7 +235,7 @@ const StoreCreateForm = ({
                         error={Boolean(touched.description && errors.description)}
                         fullWidth
                         helperText={touched.description && errors.description}
-                        label="Description"
+                        label={t("Forms.Description")}
                         name="description"
                         onBlur={handleBlur}
                         onChange={handleChange}
@@ -257,14 +261,22 @@ const StoreCreateForm = ({
                   display="flex"
                   justifyContent="flex-end"
                 >
-                  <Button
-                    color="secondary"
-                    disabled={isSubmitting}
-                    type="submit"
-                    variant="contained"
-                  >
-                    Create Store
-                  </Button>
+                 { loading ? 
+                    (
+                      <>
+                          <Typography style={{marginTop: 10}} variant='h5'>{t("Buttons.Creating")}</Typography><Spinner style={{paddingRight: 10}} width={45}/>
+                      </>
+                    ) : 
+                    (
+                      <Button
+                        color="secondary"
+                        disabled={isSubmitting}
+                        type="submit"
+                        variant="contained"
+                      >
+                        {t("BreadCumbs.Create")}{t("Stores.Store")}
+                      </Button>
+                    )}
                 </Box>
               </Card>
             </form>

@@ -8,8 +8,10 @@ import ProfileDetails from '../../account/AccountView/General/ProfileDetails';
 import useAuth from 'src/hooks/useAuth';
 import useVehicle from 'src/hooks/useVehicle';
 import { useHistory } from 'react-router-dom';
+import { CapitalizeNames } from 'src/utils/capitalize';
 import useMake from 'src/hooks/useMake';
 import AlertP from 'src/components/Alert';
+import Spinner from 'src/components/Spinner';
 
 import {
   Box,
@@ -20,8 +22,9 @@ import {
   TextField,
   makeStyles,
   FormHelperText,
-
+  Typography
 } from '@material-ui/core';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles(() => ({
   root: {}
@@ -48,16 +51,17 @@ const VehicleCreateForm = ({
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();  
   const { user } = useAuth();
-  const { createVehicle, error } = useVehicle();
+  const { createVehicle, error, loading, clearState } = useVehicle();
   const history = useHistory();
   const { makes, getMakes } = useMake();
   const [submitedForm, setSubmitedForm] = useState(false);
+  const { t } = useTranslation()
 
   useEffect(() => {
     
     if(submitedForm){
       if(!error){
-        enqueueSnackbar('Vehicle created', {
+        enqueueSnackbar(t("SnackBar.VehicleCreated"), {
           variant: 'success'
         });
         history.push('/app/management/vehicles');
@@ -69,7 +73,7 @@ const VehicleCreateForm = ({
   }, [submitedForm]);
 
   useEffect(() => {
-    
+    clearState()
     getMakes();
     // eslint-disable-next-line
   }, [])
@@ -103,22 +107,15 @@ const VehicleCreateForm = ({
             model: '',
             description: '',
             modelType: '',
-            year: '',
             make: '',
             price: '',
             user: user._id,
-            modeDescription: '',
-            serie: '',
-            key: '',
-            color: '',
-            inventory: '',
             submit: null
           }}
           validationSchema={Yup.object().shape({
             model: Yup.string().max(255),
             description: Yup.string().max(255),
-            year: Yup.number(),
-            price: Yup.number()
+            price: Yup.number().typeError(t("Yup.Number"))
           })}
           onSubmit={async (values, {
             resetForm,
@@ -167,7 +164,7 @@ const VehicleCreateForm = ({
                         error={Boolean(touched.model && errors.modelType)}
                         fullWidth
                         helperText={touched.model && errors.model}
-                        label="Model"
+                        label={t("Forms.Model")}
                         name="model"
                         onBlur={handleBlur}
                         onChange={handleChange}
@@ -185,7 +182,7 @@ const VehicleCreateForm = ({
                         error={Boolean(touched.description && errors.description)}
                         fullWidth
                         helperText={touched.description && errors.description}
-                        label="Description"
+                        label={t("Forms.Description")}
                         name="description"
                         onBlur={handleBlur}
                         onChange={handleChange}
@@ -202,7 +199,7 @@ const VehicleCreateForm = ({
                         error={Boolean(touched.modelType && errors.modelType)}
                         fullWidth
                         helperText={touched.modelType && errors.modelType}
-                        label="Model Type"
+                        label={t("Forms.ModelType")}
                         name="modelType"
                         onBlur={handleBlur}
                         onChange={handleChange}
@@ -213,11 +210,10 @@ const VehicleCreateForm = ({
                         SelectProps={{ native: true }}
 
                       >
-                        <option key={0} value={'option.value'}>
-                        </option>
+                        <option key={0} value={''}></option>
                         {modelTypeOptions && modelTypeOptions.map(option => (
                             <option key={option.id} value={option.value}>
-                              {option.value.charAt(0).toUpperCase() + option.value.slice(1)}
+                              {CapitalizeNames(option.value)}
                             </option>
                           ))}
                         </TextField>
@@ -229,150 +225,27 @@ const VehicleCreateForm = ({
                       xs={12}
                     >
                       <TextField
-                        error={Boolean(touched.modeDescription && errors.modeDescription)}
-                        fullWidth
-                        helperText={touched.modeDescription && errors.modeDescription}
-                        label="Mode Description"
-                        name="modeDescription"
-                        onBlur={handleBlur}
-                        onChange={handleChange}
-                        value={values.modeDescription}
-                        variant="outlined"
-                        
-                      />
-                    </Grid>  
-                    <Grid
-                      item
-                      md={6}
-                      xs={12}
-                    >
-                      <TextField
-                        error={Boolean(touched.year && errors.year)}
-                        fullWidth
-                        helperText={touched.year && errors.year}
-                        label="Year"
-                        name="year"
-                        onBlur={handleBlur}
-                        onChange={handleChange}
-                        value={values.year}
-                        variant="outlined"
-                        
-                      />
-                    </Grid>  
-                    <Grid
-                      item
-                      md={6}
-                      xs={12}
-                    >
-                      <TextField
                         error={Boolean(touched.make && errors.make)}
                         fullWidth
                         helperText={touched.make && errors.make}
-                        name="make"
-                        label='Make'
+                        name='make'
+                        label={t("Forms.Make")}
                         onBlur={handleBlur}
                         onChange={handleChange}
                         select
                         required
                         variant="outlined"
-                        SelectProps={{ native: true }}
-                        value={values.make}                  
-
+                        SelectProps={{ native: true }}            
+                        value={values.make}
                       >
                         <option key={0} value={''}></option>
                         {makes && makes.map(make => (
                           <option key={make._id} value={make._id}>
-                            {make.name}
+                            {CapitalizeNames(make.name)}
                           </option>
                         ))}
                       </TextField>
-                    </Grid> 
-                    <Grid
-                      item
-                      md={6}
-                      xs={12}
-                    >
-                      <TextField
-                        error={Boolean(touched.serie && errors.serie)}
-                        fullWidth
-                        helperText={touched.serie && errors.serie}
-                        label="Serie"
-                        name="serie"
-                        onBlur={handleBlur}
-                        onChange={handleChange}
-                        value={values.serie}
-                        variant="outlined"
-                      />
-                    </Grid>      
-                    <Grid
-                      item
-                      md={6}
-                      xs={12}
-                    >
-                      <TextField
-                        error={Boolean(touched.key && errors.key)}
-                        fullWidth
-                        helperText={touched.key && errors.key}
-                        label="Key"
-                        name="key"
-                        onBlur={handleBlur}
-                        onChange={handleChange}
-                        value={values.key}
-                        variant="outlined"
-                      />
-                    </Grid>      
-                    <Grid
-                      item
-                      md={6}
-                      xs={12}
-                    >
-                      <TextField
-                        error={Boolean(touched.color && errors.color)}
-                        fullWidth
-                        helperText={touched.color && errors.color}
-                        label="Color"
-                        name="color"
-                        onBlur={handleBlur}
-                        onChange={handleChange}
-                        value={values.color}
-                        variant="outlined"
-                      />
-                    </Grid>      
-                    <Grid
-                      item
-                      md={6}
-                      xs={12}
-                    >
-                      <TextField
-                        error={Boolean(touched.inventory && errors.inventory)}
-                        fullWidth
-                        helperText={touched.inventory && errors.inventory}
-                        label="Inventory"
-                        name="inventory"
-                        onBlur={handleBlur}
-                        onChange={handleChange}
-                        value={values.inventory}
-                        variant="outlined"
-                      />
-                    </Grid>       
-                    <Grid
-                      item
-                      md={6}
-                      xs={12}
-                    >
-                      <TextField
-                        error={Boolean(touched.price && errors.price)}
-                        fullWidth
-                        helperText={touched.price && errors.price}
-                        label="Price"
-                        name="price"
-                        onBlur={handleBlur}
-                        onChange={handleChange}
-                        required
-                        value={values.price}
-                        variant="outlined"
-                      />
-                    </Grid> 
+                    </Grid>  
                   </Grid>
                   {error && <AlertP severity="error" msg={error.error}/>}
 
@@ -383,15 +256,24 @@ const VehicleCreateForm = ({
                           </FormHelperText>
                         </Box>
                       )}
-                  <Box mt={2}>
-                    <Button
-                      variant="contained"
-                      color="secondary"
-                      type="submit"
-                      disabled={isSubmitting}
-                    >
-                      Create Vehicle
-                    </Button>
+                  <Box mt={2} display='flex' 
+                  justifyContent="flex-end">
+                  { loading ? 
+                    (
+                      <>
+                          <Typography style={{marginTop: 10}} variant='h5'>{t("Buttons.Creating")}</Typography><Spinner style={{paddingRight: 10}} width={45}/>
+                      </>
+                    ) : 
+                    (
+                      <Button
+                        color="secondary"
+                        disabled={isSubmitting}
+                        type="submit"
+                        variant="contained"
+                      >
+                        {t("BreadCumbs.Create")}{t("Vehicles.Vehicle")}
+                      </Button>
+                    )}
                   </Box>
                 </CardContent>
               </Card>

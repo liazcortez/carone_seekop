@@ -1,6 +1,3 @@
-/*eslint no-unused-vars: 0*/
-
-
 import React, { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import clsx from 'clsx';
@@ -11,6 +8,9 @@ import wait from 'src/utils/wait';
 import SimpleDialog from 'src/components/SimpleDialog'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSync } from '@fortawesome/free-solid-svg-icons'
+import { useTranslation } from 'react-i18next'
+import {Capitalize, CapitalizeNames} from 'src/utils/capitalize';
+
 import {
   Box,
   Card,
@@ -35,33 +35,7 @@ import {
   Search as SearchIcon
 } from 'react-feather';
 
-const tabs = [
-  {
-    value: 'all',
-    label: 'All'
-  }
-];
-
-const sortOptions = [
-  {
-    value: 'updatedAt|desc',
-    label: 'Last update (newest first)'
-  },
-  {
-    value: 'updatedAt|asc',
-    label: 'Last update (oldest first)'
-  },
-  {
-    value: 'orders|desc',
-    label: 'Total orders (high to low)'
-  },
-  {
-    value: 'orders|asc',
-    label: 'Total orders (low to high)'
-  }
-];
-
-
+import moment from 'moment'
 
 const applyFilters = (makes, query, filters) => {
   return makes.filter(make => {
@@ -82,54 +56,12 @@ const applyFilters = (makes, query, filters) => {
       }
     }
 
-    Object.keys(filters).forEach(key => {
-      const value = filters[key];
-
-      if (value && make[key] !== value) {
-        matches = false;
-      }
-    });
-
     return matches;
   });
 };
 
 const applyPagination = (makes, page, limit) => {
   return makes.slice(page * limit, page * limit + limit);
-};
-
-const descendingComparator = (a, b, orderBy) => {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-
-  return 0;
-};
-
-const getComparator = (order, orderBy) => {
-  return order === 'desc'
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
-};
-
-const applySort = (makes, sort) => {
-  const [orderBy, order] = sort.split('|');
-  const comparator = getComparator(order, orderBy);
-  const stabilizedThis = makes.map((el, index) => [el, index]);
-
-  stabilizedThis.sort((a, b) => {
-    const order = comparator(a[0], b[0]);
-
-    if (order !== 0) return order;
-
-    return a[1] - b[1];
-  });
-
-  return stabilizedThis.map(el => el[0]);
 };
 
 const useStyles = makeStyles(theme => ({
@@ -173,20 +105,13 @@ const useStyles = makeStyles(theme => ({
 const Results = ({ className, makes, ...rest }) => {
 
   const classes = useStyles();
-  const [currentTab, setCurrentTab] = useState('all');
   const [selectedMakes, setSelectedMakes] = useState([]);
   const [page, setPage] = useState(0);
   const [limit, setLimit] = useState(10);
+  const { t } = useTranslation();
+  const [deletedMakes, setDeletedMakes] = useState(false)
   const [query, setQuery] = useState('');
-  const [sort, setSort] = useState(sortOptions[0].value);
-  const [filters, setFilters] = useState({
-    hasAcceptedMarketing: null,
-    isProspect: null,
-    isReturning: null
-  });
-
   const { deleteMake, getMakes, loading } = useMake();
-
   const [open, setOpen] = React.useState(false);
   const [selectedValue, setSelectedValue] = React.useState();
 
@@ -197,6 +122,7 @@ const Results = ({ className, makes, ...rest }) => {
       await selectedMakes.map(make => deleteMake(make));
       await wait(1000);
       await getMakes();
+      setSelectedMakes([])
     }
   };
 
@@ -220,31 +146,13 @@ const Results = ({ className, makes, ...rest }) => {
     }
   };
 
-   const enableBulkOperations = selectedMakes.length > 0;
+  const enableBulkOperations = selectedMakes.length > 0;
   const selectedSomeMakes =
     selectedMakes.length > 0 && selectedMakes.length < makes.length;
   const selectedAllMakes = selectedMakes.length === makes.length;
 
-  const handleTabsChange = (event, value) => {
-    setPage(0)
-
-    const updatedFilters = {
-      ...filters,
-      hasAcceptedMarketing: null,
-      isProspect: null,
-      isReturning: null
-    };
-
-    if (value !== 'all') {
-      updatedFilters[value] = true;
-    }
-
-    setFilters(updatedFilters);
-    setSelectedMakes([]);
-    setCurrentTab(value);
-  };
-
   const handleQueryChange = event => {
+    setPage(0)
     event.persist();
     setQuery(event.target.value);
   };
@@ -257,15 +165,14 @@ const Results = ({ className, makes, ...rest }) => {
     setLimit(parseInt(event.target.value));
   };
 
-  const filteredMakes = applyFilters(makes, query, filters);
-  const sortedMakes = applySort(filteredMakes, sort);
-  const paginatedMakes = applyPagination(sortedMakes, page, limit);
-
+  const filteredMakes = applyFilters(makes, query);
+  const paginatedMakes = applyPagination(filteredMakes, page, limit);
+  
   return (
     
     <Card className={clsx(classes.root, className)} {...rest}>
 
-      <SimpleDialog selectedValue={selectedValue} open={open} onClose={handleClose} />
+      <SimpleDialog selectedValue={selectedValue} open={open} onClose={handleClose} all={deletedMakes}/>
       <div p={2} display="flex" className={classes.containerSync}>
       {
         loading === true ? (
@@ -279,15 +186,13 @@ const Results = ({ className, makes, ...rest }) => {
 
       </div>    
       <Tabs
-        onChange={handleTabsChange}
         scrollButtons="auto"
         textColor="secondary"
-        value={currentTab}
+        value='all'
         variant="scrollable"
       >
-        {tabs.map(tab => (
-          <Tab key={tab.value} value={tab.value} label={tab.label} />
-        ))}
+        
+          <Tab key={0} value={'all'} label={t("Tabs.All")} />
       </Tabs>
       <Divider />
       <Box p={2} minHeight={56} display="flex" alignItems="center">
@@ -303,7 +208,7 @@ const Results = ({ className, makes, ...rest }) => {
             )
           }}
           onChange={handleQueryChange}
-          placeholder="Search makes"
+          placeholder={t("Makes.Search")}
           value={query}
           variant="outlined"
         />
@@ -317,9 +222,8 @@ const Results = ({ className, makes, ...rest }) => {
               onChange={handleSelectAllMakes}
             />
             <Button variant="outlined" className={classes.bulkAction} onClick={handleDelete}>
-              Delete
+              {t("Buttons.Delete")}
             </Button>
-          
           </div>
         </div>
       )}
@@ -333,10 +237,13 @@ const Results = ({ className, makes, ...rest }) => {
                     checked={selectedAllMakes}
                     indeterminate={selectedSomeMakes}
                     onChange={handleSelectAllMakes}
+                    onClick={(e)=>{setDeletedMakes(true)}}
                   />
                 </TableCell>
-                <TableCell>Name</TableCell>
-                <TableCell>Description</TableCell>
+                <TableCell>ID</TableCell>
+                <TableCell>{t("Makes.Make")}</TableCell>
+                <TableCell>{t("Makes.Description")}</TableCell>
+                <TableCell>{t("Makes.CreatedAt")}</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -358,6 +265,7 @@ const Results = ({ className, makes, ...rest }) => {
                           handleSelectOneMake(event, make._id)
                         }
                         value={isMakeSelected}
+                        onClick={(e)=>{setDeletedMakes(false)}}
                       />
                     </TableCell>
                     <TableCell>
@@ -369,12 +277,28 @@ const Results = ({ className, makes, ...rest }) => {
                             to={`/app/management/makes/${make && make._id}`}
                             variant="h6"
                           >
-                            {make && make.name}
+                            {make && make._id}
                           </Link>
                         </div>
                       </Box>
                     </TableCell>
-                    <TableCell>{make && make.description}</TableCell>
+                    <TableCell>
+                      <Box display="flex" alignItems="center">
+                        <div>
+                          <Link
+                            color="inherit"
+                            component={RouterLink}
+                            to={`/app/management/makes/${make && make._id}`}
+                            variant="h6"
+                          >
+                            {make && CapitalizeNames(make.name)}
+                          </Link>
+                        </div>
+                      </Box>
+                    </TableCell>
+                    <TableCell>{make && make.description ? Capitalize(make.description) : '- - -'}</TableCell>
+                    <TableCell>{make && moment(make.createdAt).format('ll')}</TableCell>
+
                   </TableRow>
                 );
               })}

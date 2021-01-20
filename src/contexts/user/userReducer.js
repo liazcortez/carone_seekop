@@ -51,7 +51,6 @@ export default (state, action) => {
     case CREATE_USER:
       return {
         ...state,
-        users: [action.payload, ...state.users],
         loading: false,
         error: null
       };

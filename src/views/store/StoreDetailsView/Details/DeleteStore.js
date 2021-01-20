@@ -19,6 +19,7 @@ import {
     Delete as DeleteIcon
   
   } from 'react-feather';
+import { useTranslation } from 'react-i18next';
   
   const useStyles = makeStyles((theme) => ({
     root: {},
@@ -36,7 +37,7 @@ import {
   
   const DeleteStore = ({ className, ...rest }) => {
     const classes = useStyles();
-
+    const { t } = useTranslation()
     const { getStore, deleteStore, getStores } = useStore();
     const route = useParams();
     const history = useHistory();
@@ -48,7 +49,7 @@ import {
       if(value === 'yes'){      
         deleteStore(route.id);
         getStores();
-        enqueueSnackbar('Store deleted', {
+        enqueueSnackbar(t("SnackBar.StoreDeleted"), {
           variant: 'error'
         });
         history.push("/app/management/stores");
@@ -87,7 +88,7 @@ import {
                     onClick={handleDelete}
                     className={classes.error}
                     >
-                    Delete Store
+                    {t("Buttons.Delete")} {t("Stores.Store")}
                 </Button>
             </Box>
         </CardContent>

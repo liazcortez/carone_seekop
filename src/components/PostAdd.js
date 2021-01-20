@@ -1,4 +1,3 @@
-/* eslint no-lone-blocks: 0 */
 import React, {
   useState,
   useRef
@@ -6,6 +5,7 @@ import React, {
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import SimpleDialog from './DialogActionMessage';
+import { useTranslation } from 'react-i18next'
 import {
   Card,
   Box,
@@ -41,12 +41,13 @@ const useStyles = makeStyles((theme) => ({
   menulist: {}
 }));
 
-const PostAdd = ({ className, ...rest } ) => {
+const PostAdd = ({ className, type,...rest } ) => {
   const classes = useStyles();
   const fileInputRef = useRef(null);
   const [value, setValue] = useState('');
+  const { t } = useTranslation();
   const { user } = useAuth();
-  const { createComment, getCommentsByLead } = useComment();
+  const { createComment, getCommentsByLead, getCommentsByOmsGlobal, getCommentsByQuestLead } = useComment();
   const route = useParams();
 
   const [openAction, setOpenAction] = React.useState(false);
@@ -54,8 +55,15 @@ const PostAdd = ({ className, ...rest } ) => {
   const handleCloseAction =  async (valor, status) =>{
     setOpenAction(false);
     if(status){
-      await createComment({comment: value, user: user._id, actions: valor}, route.id)
-      await getCommentsByLead(route.id)
+      await createComment({comment: value, user: user._id, actions: valor, type: type}, route.id)
+      if(type === 'lead'){
+        await getCommentsByLead(route.id)
+      }else if(type === 'global'){
+        await getCommentsByOmsGlobal(route.id)
+      }else{
+        await getCommentsByQuestLead(route.id)
+
+      }
       setValue('');
     }
     
@@ -66,11 +74,6 @@ const PostAdd = ({ className, ...rest } ) => {
     setValue(event.target.value);
   };
 
-{/*
-  const handleAttach = () => {
-    fileInputRef.current.click();
-  }; */}
-
   const onSubmit = async e => {
     e.preventDefault();
     if(value !== ''){
@@ -79,11 +82,12 @@ const PostAdd = ({ className, ...rest } ) => {
     
   };
 
-  const handleKeyDown = async (event) => {
-    if (event.key === 'Enter' && value !== '') {
+  const handleKeyUp = event => {
+    if (event.keyCode === 13 && value !== '') {
       setOpenAction(true);
     }
-  }
+  };
+
 
   return (
     <Card
@@ -91,7 +95,7 @@ const PostAdd = ({ className, ...rest } ) => {
       {...rest}
     >
       <SimpleDialog open={openAction} onClose={handleCloseAction} />
-      <CardHeader title="Follow up" />
+      <CardHeader title={t("Titles.FollowUp")} />
         <Divider />
       <CardContent>
         <Box
@@ -104,11 +108,11 @@ const PostAdd = ({ className, ...rest } ) => {
             variant="outlined"
           >
             <Input
-              placeholder={`What's on your mind, ${user.name}`}
+              placeholder={`${t("Placeholder.Comment")} ${user.name}${t("Placeholder.CommentEnd")}`}
               disableUnderline
               fullWidth
               onChange={handleChange}
-              onKeyDown={handleKeyDown}
+              onKeyUp={handleKeyUp}
               value={value}
             />
           </Paper>

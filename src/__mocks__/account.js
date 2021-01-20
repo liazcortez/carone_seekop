@@ -96,7 +96,7 @@ mock.onPost('/api/account/register').reply(async (config) => {
       accessToken,
       user: {
         id: user.id,
-        image: user.image,
+        avatar: user.avatar,
         email: user.email,
         name: user.name,
         tier: user.tier
@@ -127,7 +127,7 @@ mock.onGet('/api/account/me').reply((config) => {
     return [200, {
       user: {
         id: user.id,
-        image: user.image,
+        avatar: user.avatar,
         email: user.email,
         name: user.name,
         tier: user.tier

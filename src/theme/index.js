@@ -60,6 +60,9 @@ const themesOptions = [
       secondary: {
         main: '#5850EC'
       },
+      error: {
+        main: '#f44336'
+      },
       text: {
         primary: colors.blueGrey[900],
         secondary: colors.blueGrey[600]
@@ -90,6 +93,9 @@ const themesOptions = [
       secondary: {
         main: '#8a85ff'
       },
+      error: {
+        main: '#f44336'
+      },
       text: {
         primary: '#e6e5e8',
         secondary: '#adb0bb'
@@ -119,6 +125,9 @@ const themesOptions = [
       },
       secondary: {
         main: '#a67dff'
+      },
+      error: {
+        main: '#f44336'
       },
       text: {
         primary: '#f6f5f8',

@@ -19,6 +19,7 @@ import {
     Delete as DeleteIcon
   
   } from 'react-feather';
+import { useTranslation } from 'react-i18next';
   
   const useStyles = makeStyles((theme) => ({
     root: {},
@@ -42,13 +43,14 @@ import {
     const history = useHistory();
     const { enqueueSnackbar } = useSnackbar();  
     const [open, setOpen] = React.useState(false);
+    const { t } = useTranslation()
 
     const handleClose = async (value) => {
       setOpen(false);
       if(value === 'yes'){      
         deleteVehicle(route.id);
         getVehicles();
-        enqueueSnackbar('Vehicle deleted', {
+        enqueueSnackbar(t("SnackBar.VehicleDeleted"), {
           variant: 'error'
         });
         history.push("/app/management/vehicles");
@@ -66,7 +68,7 @@ import {
       >
         <SimpleDialog open={open} onClose={handleClose} />
 
-        <CardHeader title="Delete" />
+        <CardHeader title={t("Buttons.Delete")} />
         <Divider />
         <CardContent>
             <Box
@@ -81,7 +83,7 @@ import {
                     onClick={handleDelete}
                     className={classes.error}
                     >
-                    Delete Vehicle
+                    {t("Buttons.Delete")} {t("Vehicles.Vehicle")}
                 </Button>
             </Box>
         </CardContent>

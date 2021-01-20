@@ -17,10 +17,11 @@ import {
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import { Edit as EditIcon } from 'react-feather';
 import { ArrowLeft as BackIcon } from 'react-feather';
-
+import { CapitalizeNames } from 'src/utils/capitalize';
 import useAuth from 'src/hooks/useAuth';
-import useLead from 'src/hooks/useLead';
+import useDocument from 'src/hooks/useDocument';
 import { useSnackbar } from 'notistack';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -37,28 +38,25 @@ const useStyles = makeStyles((theme) => ({
 const Header = ({ className, document, ...rest }) => {
   const classes = useStyles();
   const { user } = useAuth();
-  const { deleteLead, getLeads } = useLead();
+  const { deleteDocument, getDocuments } = useDocument();
   const { enqueueSnackbar } = useSnackbar();  
   const history = useHistory();
   const route = useParams();
+  const { t } = useTranslation()
 
   const [open, setOpen] = React.useState(false);
   const handleClose = async (value) => {
     setOpen(false);
     if(value === 'yes'){      
-      deleteLead(route.id);
-      getLeads();
-      enqueueSnackbar('Document deleted', {
+      deleteDocument(route.id);
+      getDocuments();
+      enqueueSnackbar(t("SnackBar.DocumentDeleted"), {
         variant: 'error'
       });
       history.push("/app/management/documents");
     }
   };
 
-
-  const handleDelete = () =>{
-    setOpen(true);    
-  }
   
   return (
     
@@ -83,20 +81,20 @@ const Header = ({ className, document, ...rest }) => {
             to="/app/management/documents"
             component={RouterLink}
           >
-            Management
+            {t("BreadCumbs.Management")}
           </Link>
           <Typography
             variant="body1"
             color="textPrimary"
           >
-            Documents
+            {t("BreadCumbs.Documents")}
           </Typography>
         </Breadcrumbs>
         <Typography
           variant="h3"
           color="textPrimary"
         >
-          {document && document.title}
+          {document && CapitalizeNames(document.title)}
         </Typography>
       </Grid>
       <Grid item>
@@ -113,9 +111,9 @@ const Header = ({ className, document, ...rest }) => {
           to="/app/management/documents"
         >
         
-            Go Back
+        {t("Buttons.GoBack")}
         </Button>
-      { user && user.role === 'rockstar' ? (
+      { user && (user.role === 'rockstar' || user.role === 'super admin') ? (
        <> <Button
           style={{marginLeft: 15}}
           color="secondary"
@@ -128,20 +126,9 @@ const Header = ({ className, document, ...rest }) => {
             </SvgIcon>
           }
         >
-          Edit
+          {t("Buttons.Edit")}
         </Button>
-        <Button
-          className={classes.error}
-          variant="contained"
-          onClick={handleDelete}
-          startIcon={
-            <SvgIcon fontSize="small">
-              <EditIcon />
-            </SvgIcon>
-          }
-        >
-          Delete
-        </Button></>
+        </>
       ) : false }
       </Grid>
     </Grid>

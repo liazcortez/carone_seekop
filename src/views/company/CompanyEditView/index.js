@@ -24,7 +24,6 @@ const useStyles = makeStyles((theme) => ({
 const CompanyEditView = () => {
   const classes = useStyles();
   const { getCompany, company } = useCompany();
-
   const route = useParams();
 
 

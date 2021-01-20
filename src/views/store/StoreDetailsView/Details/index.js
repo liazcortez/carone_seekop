@@ -24,8 +24,8 @@ const Details = ({  store, className, ...rest }) => {
         <StoreInfo store={store}/>
       </Grid>    
       <Grid item lg={3} md={3} xl={3} xs={12}>
-        <UpdateMake style={{ marginBottom: '1em' }}/>
         <DeleteStore style={{ marginBottom: '1em' }}/>
+        <UpdateMake style={{ marginBottom: '1em' }}/>
       </Grid>
     </Grid>
   );

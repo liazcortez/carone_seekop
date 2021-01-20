@@ -1,4 +1,4 @@
-import { GET_COMMENTS_BY_LEAD, CREATE_COMMENT, SET_ERROR } from '../types';
+import { GET_COMMENTS_BY_LEAD, CREATE_COMMENT, SET_ERROR, GET_COMMENTS_BY_OMSGLOBAL, CLEAR_STATE, GET_COMMENTS_BY_QUESTLEAD } from '../types';
 
 export default (state, action) => {
   switch (action.type) {
@@ -6,7 +6,24 @@ export default (state, action) => {
       return {
         ...state,
         comments: action.payload,
-        loading: false
+        loading: false,
+        error: null
+
+      };
+    case GET_COMMENTS_BY_QUESTLEAD:
+      return {
+        ...state, 
+        comments: action.payload,
+        loading: false,
+        error: null
+      }
+    case GET_COMMENTS_BY_OMSGLOBAL:
+      return {
+        ...state,
+        comments: action.payload,
+        loading: false,
+        error: null
+
       };
     case CREATE_COMMENT:
       return {
@@ -17,6 +34,14 @@ export default (state, action) => {
       return {
         ...state,
         error: action.payload,
+        loading: false
+      }
+    case CLEAR_STATE:
+      return {
+        ...state,
+        comments: [],
+        comment: {},
+        error: null,
         loading: false
       }
     default:

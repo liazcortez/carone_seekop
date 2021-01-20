@@ -17,6 +17,7 @@ import {
   TextField,
   makeStyles,
 } from '@material-ui/core';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles(() => ({
   root: {}
@@ -27,12 +28,13 @@ const ChangePassword = ({ className, ...rest }) => {
   const { enqueueSnackbar } = useSnackbar();
   const { error, updatePassword } = useAuth();
   const [submitedForm, setSubmitedForm] = useState(false);
+  const { t } = useTranslation()
 
   useEffect(() => {
     
     if(submitedForm){
       if(!error){
-        enqueueSnackbar('Password updated', {
+        enqueueSnackbar(t("SnackBar.PasswordUpdated"), {
           variant: 'success'
         });
       }
@@ -87,7 +89,7 @@ const ChangePassword = ({ className, ...rest }) => {
             className={clsx(classes.root, className)}
             {...rest}
           >
-            <CardHeader title="Password" />
+            <CardHeader title={t("Users.Password1")} />
             <Divider />
             <CardContent>
               <Grid
@@ -103,7 +105,7 @@ const ChangePassword = ({ className, ...rest }) => {
                     error={Boolean(touched.currentPassword && errors.currentPassword)}
                     fullWidth
                     helperText={touched.currentPassword && errors.currentPassword}
-                    label="Current Password"
+                    label={t("Account.CurrentPassword")}
                     name="currentPassword"
                     required
                     onBlur={handleBlur}
@@ -121,7 +123,7 @@ const ChangePassword = ({ className, ...rest }) => {
                   <TextField
                     error={Boolean(touched.newPassword && errors.newPassword)}
                     fullWidth
-                    label="New Password"
+                    label={t("Account.NewPassword")}
                     name="newPassword"
                     onBlur={handleBlur}
                     onChange={handleChange}
@@ -154,7 +156,7 @@ const ChangePassword = ({ className, ...rest }) => {
                 type="submit"
                 variant="contained"
               >
-                Save Changes
+                {t("Buttons.Save")}
               </Button>
             </Box>
           </Card>

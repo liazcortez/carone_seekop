@@ -26,7 +26,7 @@ const StoreCreateView = ({ className, ...rest }) => {
   return (
     <Page
       className={classes.root}
-      title="Create Make"
+      title="Create Store"
     >
       <Container maxWidth="lg">
         <Header />

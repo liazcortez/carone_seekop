@@ -35,7 +35,7 @@ const ReviewCard = ({ className, review, ...rest }) => {
     <Card className={clsx(classes.root, className)} {...rest}>
       <CardHeader
         avatar={
-          <Avatar alt="Reviewer" src={review.user.image}>
+          <Avatar alt="Reviewer" src={`${process.env.REACT_APP_URL_IMAGE_S3_URL}${review.user.image}`}>
             {getInitials(review.user.name)}
           </Avatar>
         }

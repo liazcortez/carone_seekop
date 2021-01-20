@@ -13,7 +13,9 @@ import {
   SET_LOADING,
   GET_ACTIVITIES_BY_USER,
   GET_ACTIVITIES_BY_LEAD,
-  GET_ACTIVITIES_AR
+  GET_ACTIVITIES_AR,
+  GET_ACTIVITIES_BY_OMSGLOBAL,
+  GET_ACTIVITIES_BY_QUESTLEAD
 } from '../types';
 
 const ActivityState = props => {
@@ -52,12 +54,33 @@ const ActivityState = props => {
 
   //Get Activities By lead
   const getActivitiesByLead = async (leadId) => {
-    console.log(leadId)
     clearState();
     setLoading();
     try {
       const res = await api.get(`leads/${leadId}/activities`);
       dispatch({ type: GET_ACTIVITIES_BY_LEAD, payload: res.data.data });
+    } catch (err) {
+      dispatch({ type: SET_ERROR, payload: err.response.data})
+    }
+  };
+
+  const getActivitiesByOmsGlobal = async (omsGlobalId) =>{
+    clearState();
+    setLoading();
+    try {
+      const res = await api.get(`omsGlobals/${omsGlobalId}/activities`);
+      dispatch({ type: GET_ACTIVITIES_BY_OMSGLOBAL, payload: res.data.data });
+    } catch (err) {
+      dispatch({ type: SET_ERROR, payload: err.response.data})
+    }
+  };
+
+  const getActivitiesByQuestLead = async (questLeadId) =>{
+    clearState();
+    setLoading();
+    try {
+      const res = await api.get(`questLeads/${questLeadId}/activities`);
+      dispatch({ type: GET_ACTIVITIES_BY_QUESTLEAD, payload: res.data.data });
     } catch (err) {
       dispatch({ type: SET_ERROR, payload: err.response.data})
     }
@@ -94,7 +117,6 @@ const ActivityState = props => {
 
     }
   };
-
 
   //Create Activity
   const createActivity = async (activity) => {
@@ -173,7 +195,9 @@ const ActivityState = props => {
         setLoading,
         getActivitiesByUser,
         getActivitiesByLead,
-        getActivitiesAR
+        getActivitiesAR,
+        getActivitiesByOmsGlobal,
+        getActivitiesByQuestLead
       }}
     >
       {props.children}

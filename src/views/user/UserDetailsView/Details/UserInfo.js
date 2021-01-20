@@ -13,7 +13,9 @@ import {
   Typography,
   makeStyles
 } from '@material-ui/core';
-
+import { useTranslation } from 'react-i18next';
+import {Capitalize, CapitalizeNames} from 'src/utils/capitalize';
+import moment from 'moment'
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -24,43 +26,60 @@ const useStyles = makeStyles(theme => ({
 
 const UserInfo = ({ user, className, ...rest }) => {
   const classes = useStyles();
+  const { t } = useTranslation()
 
   return (
     <Card className={clsx(classes.root, className)} {...rest}>
-      <CardHeader title="Customer info" />
+      <CardHeader title={t("Users.Info")} />
       <Divider />
       <Table>
         <TableBody>
-          <TableRow>
-            <TableCell className={classes.fontWeightMedium}>Name</TableCell>
+        <TableRow>
+            <TableCell className={classes.fontWeightMedium}>ID</TableCell>
             <TableCell>
               <Typography variant="body2" color="textSecondary">
-                {user && user.name ? user.name : 'None'}
+                {user && user._id ? user._id : ''}
               </Typography>
             </TableCell>
           </TableRow>
           <TableRow>
-            <TableCell className={classes.fontWeightMedium}>Store</TableCell>
+            <TableCell className={classes.fontWeightMedium}>{t("Users.Name")} </TableCell>
             <TableCell>
               <Typography variant="body2" color="textSecondary">
-                {user &&  user.store && user.store.make && user.store.make.name ? user.store.make.name + ' ' : '' }
-                {user &&  user.store && user.store.name ? user.store.name : 'None'}
+                {user && user.name ? CapitalizeNames(user.name) : ''}
               </Typography>
             </TableCell>
           </TableRow>
           <TableRow>
-            <TableCell className={classes.fontWeightMedium}>Email</TableCell>
+            <TableCell className={classes.fontWeightMedium}>{t("Users.Store")} </TableCell>
             <TableCell>
               <Typography variant="body2" color="textSecondary">
-                {user &&  user.email ? user.email : 'None'}
+                {user &&  user.store && user.store.make && user.store.make.name ? CapitalizeNames(user.store.make.name) + ' ' : '' }
+                {user &&  user.store && user.store.name ? CapitalizeNames(user.store.name) : '- - -'}
               </Typography>
             </TableCell>
           </TableRow>
           <TableRow>
-            <TableCell className={classes.fontWeightMedium}>Role</TableCell>
+            <TableCell className={classes.fontWeightMedium}>{t("Users.Email")} </TableCell>
             <TableCell>
               <Typography variant="body2" color="textSecondary">
-                {user && user.role ? user.role.charAt(0).toUpperCase() + user.role.slice(1) : 'None'}
+                {user &&  user.email ? user.email : ''}
+              </Typography>
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell className={classes.fontWeightMedium}>{t("Users.Role")} </TableCell>
+            <TableCell>
+              <Typography variant="body2" color="textSecondary">
+                {user && user.role ? Capitalize(user.role) : ''}
+              </Typography>
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell className={classes.fontWeightMedium}>{t("Users.CreatedAt")} </TableCell>
+            <TableCell>
+              <Typography variant="body2" color="textSecondary">
+                {user && user.createdAt ? moment(user.createdAt).format('ll') : ''}
               </Typography>
             </TableCell>
           </TableRow>

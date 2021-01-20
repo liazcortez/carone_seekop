@@ -1,5 +1,3 @@
-/*eslint no-unused-vars: 0*/
-
 import React, { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import clsx from 'clsx';
@@ -8,7 +6,7 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 import useStore from 'src/hooks/useStore';
 import SimpleDialog from 'src/components/SimpleDialog'
 import wait from 'src/utils/wait';
-
+import {Capitalize, CapitalizeNames} from 'src/utils/capitalize';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSync } from '@fortawesome/free-solid-svg-icons'
 import {
@@ -34,34 +32,10 @@ import {
 import {
   Search as SearchIcon
 } from 'react-feather';
+import { useTranslation } from 'react-i18next';
+import moment from 'moment'
 
-const tabs = [
-  {
-    value: 'all',
-    label: 'All'
-  }
-];
-
-const sortOptions = [
-  {
-    value: 'updatedAt|desc',
-    label: 'Last update (newest first)'
-  },
-  {
-    value: 'updatedAt|asc',
-    label: 'Last update (oldest first)'
-  },
-  {
-    value: 'orders|desc',
-    label: 'Total orders (high to low)'
-  },
-  {
-    value: 'orders|asc',
-    label: 'Total orders (low to high)'
-  }
-];
-
-const applyFilters = (stores, query, filters) => {
+const applyFilters = (stores, query) => {
   return stores.filter(store => {
     let matches = true;
 
@@ -88,54 +62,12 @@ const applyFilters = (stores, query, filters) => {
       }
     }
 
-    Object.keys(filters).forEach(key => {
-      const value = filters[key];
-
-      if (value && store[key] !== value) {
-        matches = false;
-      }
-    });
-
     return matches;
   });
 };
 
 const applyPagination = (stores, page, limit) => {
   return stores.slice(page * limit, page * limit + limit);
-};
-
-const descendingComparator = (a, b, orderBy) => {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-
-  return 0;
-};
-
-const getComparator = (order, orderBy) => {
-  return order === 'desc'
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
-};
-
-const applySort = (stores, sort) => {
-  const [orderBy, order] = sort.split('|');
-  const comparator = getComparator(order, orderBy);
-  const stabilizedThis = stores.map((el, index) => [el, index]);
-
-  stabilizedThis.sort((a, b) => {
-    const order = comparator(a[0], b[0]);
-
-    if (order !== 0) return order;
-
-    return a[1] - b[1];
-  });
-
-  return stabilizedThis.map(el => el[0]);
 };
 
 const useStyles = makeStyles(theme => ({
@@ -179,36 +111,30 @@ const useStyles = makeStyles(theme => ({
 const Results = ({ className, stores, ...rest }) => {
 
   const classes = useStyles();
-  const [currentTab, setCurrentTab] = useState('all');
   const [selectedStores, setSelectedStores] = useState([]);
   const [page, setPage] = useState(0);
   const [limit, setLimit] = useState(10);
   const [query, setQuery] = useState('');
-  const [sort, setSort] = useState(sortOptions[0].value);
+  const { t } = useTranslation()
   const { getStores, deleteStore, loading } = useStore();
+  const [deletedStores, setDeletedStores] = useState(false)
   const [open, setOpen] = React.useState(false);
   const [selectedValue, setSelectedValue] = React.useState();
-
-  const [filters, setFilters] = useState({
-    hasAcceptedMarketing: null,
-    isProspect: null,
-    isReturning: null
-  });
 
   const handleClose = async (value) => {
     setOpen(false);
     setSelectedValue(value);
     if(value === 'yes'){
       await selectedStores.map(async store => await deleteStore(store));
-    await wait(1000);
-    await getStores();
+      await wait(1000);
+      await getStores();
+      setSelectedStores([])
     }
   };
 
   const handleDelete =  async () =>{
     setOpen(true);    
   }
-
 
   const handleSelectAllStores = event => {
     setSelectedStores(
@@ -231,26 +157,8 @@ const Results = ({ className, stores, ...rest }) => {
     selectedStores.length > 0 && selectedStores.length < stores.length;
   const selectedAllStores = selectedStores.length === stores.length;
 
-  const handleTabsChange = (event, value) => {
-    setPage(0)
-
-    const updatedFilters = {
-      ...filters,
-      hasAcceptedMarketing: null,
-      isProspect: null,
-      isReturning: null
-    };
-
-    if (value !== 'all') {
-      updatedFilters[value] = true;
-    }
-
-    setFilters(updatedFilters);
-    setSelectedStores([]);
-    setCurrentTab(value);
-  };
-
   const handleQueryChange = event => {
+    setPage(0)
     event.persist();
     setQuery(event.target.value);
   };
@@ -264,13 +172,12 @@ const Results = ({ className, stores, ...rest }) => {
     setLimit(parseInt(event.target.value));
   };
 
-  const filteredStores = applyFilters(stores, query, filters);
-  const sortedStores = applySort(filteredStores, sort);
-  const paginatedStores = applyPagination(sortedStores, page, limit);
+  const filteredStores = applyFilters(stores, query);
+  const paginatedStores = applyPagination(filteredStores, page, limit);
 
   return (
     <Card className={clsx(classes.root, className)} {...rest}>
-      <SimpleDialog selectedValue={selectedValue} open={open} onClose={handleClose} />
+      <SimpleDialog selectedValue={selectedValue} open={open} onClose={handleClose} all={deletedStores}/>
       <div p={2} display="flex" className={classes.containerSync}>
       {
         loading === true ? (
@@ -284,15 +191,13 @@ const Results = ({ className, stores, ...rest }) => {
 
       </div>    
       <Tabs
-        onChange={handleTabsChange}
         scrollButtons="auto"
         textColor="secondary"
-        value={currentTab}
+        value='all'
         variant="scrollable"
       >
-        {tabs.map(tab => (
-          <Tab key={tab.value} value={tab.value} label={tab.label} />
-        ))}
+        
+          <Tab key={0} value={'all'} label={t("Tabs.All")} />
       </Tabs>
       <Divider />
       <Box p={2} minHeight={56} display="flex" alignItems="center">
@@ -308,7 +213,7 @@ const Results = ({ className, stores, ...rest }) => {
             )
           }}
           onChange={handleQueryChange}
-          placeholder="Search stores"
+          placeholder={t("Stores.Search")}
           value={query}
           variant="outlined"
         />
@@ -322,7 +227,7 @@ const Results = ({ className, stores, ...rest }) => {
               onChange={handleSelectAllStores}
             />
             <Button variant="outlined" className={classes.bulkAction} onClick={handleDelete}>
-              Delete
+            {t("Buttons.Delete")}
             </Button>
          
           </div>
@@ -338,13 +243,17 @@ const Results = ({ className, stores, ...rest }) => {
                     checked={selectedAllStores}
                     indeterminate={selectedSomeStores}
                     onChange={handleSelectAllStores}
+                    onClick={(e)=>{setDeletedStores(true)}}
+
                   />
                 </TableCell>
-                <TableCell>Make</TableCell>
-                <TableCell>Store</TableCell>
-                <TableCell>Address</TableCell>
-                <TableCell>Description</TableCell>
-                <TableCell>Phone</TableCell>
+                <TableCell>ID</TableCell>
+                <TableCell>{t("Stores.Make")}</TableCell>
+                <TableCell>{t("Stores.Store")}</TableCell>
+                <TableCell>{t("Stores.Address")}</TableCell>
+                <TableCell>{t("Stores.Description")}</TableCell>
+                <TableCell>{t("Stores.Phone")}</TableCell>
+                <TableCell>{t("Stores.CreatedAt")}</TableCell>
             </TableRow>
             </TableHead>
             <TableBody>
@@ -366,9 +275,10 @@ const Results = ({ className, stores, ...rest }) => {
                           handleSelectOneStore(event, store._id)
                         }
                         value={isStoreSelected}
+                        onClick={(e)=>{setDeletedStores(false)}}
+
                       />
                     </TableCell>
-                    <TableCell>{store.make && store.make.name}</TableCell>
                     <TableCell>
                       <Box display="flex" alignItems="center">
                         <div>
@@ -378,14 +288,31 @@ const Results = ({ className, stores, ...rest }) => {
                             to={`/app/management/stores/${store && store._id}`}
                             variant="h6"
                           >
-                            {store && store.name}
+                            {store && store._id}
                           </Link>
                         </div>
                       </Box>
                     </TableCell>
-                    <TableCell>{store && store.address}</TableCell>
-                    <TableCell>{store && store.description}</TableCell>
-                    <TableCell>{store && store.phone }</TableCell>
+                    <TableCell>{store.make && CapitalizeNames(store.make.name)}</TableCell>
+                    <TableCell>
+                      <Box display="flex" alignItems="center">
+                        <div>
+                          <Link
+                            color="inherit"
+                            component={RouterLink}
+                            to={`/app/management/stores/${store && store._id}`}
+                            variant="h6"
+                          >
+                            {store && store.name ? CapitalizeNames(store.name) : '- - -'}
+                          </Link>
+                        </div>
+                      </Box>
+                    </TableCell>
+                    <TableCell>{store && store.address ? Capitalize(store.address) : '- - -'}</TableCell>
+                    <TableCell>{store && store.description ? Capitalize(store.description) : '- - -'}</TableCell>
+                    <TableCell>{store && store.phone ? store.phone :'- - -' }</TableCell>
+                    <TableCell>{store && moment(store.createdAt).format('ll')}</TableCell>
+                    
                   </TableRow>
                 );
               })}

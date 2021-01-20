@@ -5,7 +5,6 @@ import React, {
 } from 'react';
 import { capitalCase } from 'change-case';
 import {
-  //Badge,
   Box,
   Button,
   FormControlLabel,
@@ -23,7 +22,8 @@ import useStore from 'src/hooks/useStore';
 import { Settings as SettingsIcon } from 'react-feather';
 import useSettings from 'src/hooks/useSettings';
 import { THEMES } from 'src/constants';
-
+import i18next from 'src/utils/i18next'
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles((theme) => ({
   badge: {
@@ -44,8 +44,10 @@ const Settings = () => {
   const ref = useRef(null);
   const { settings, saveSettings } = useSettings();
   const [alarm, setAlarm] = useState(true);
+  const [language, setLanguage] = useState(false);
   const { user } = useAuth();
   const [isOpen, setOpen] = useState(false);
+  const { t } = useTranslation()
   const { updateStore } = useStore();
 
   const [values, setValues] = useState({
@@ -53,6 +55,21 @@ const Settings = () => {
     responsiveFontSizes: settings.responsiveFontSizes,
     theme: settings.theme
   });
+
+  useEffect(()=>{
+    if(localStorage.getItem("language")){
+      i18next.changeLanguage(localStorage.getItem("language"));
+      if(localStorage.getItem("language") === 'es'){
+        setLanguage(true)
+      }else{
+        setLanguage(false)
+
+      }
+    }else{
+      localStorage.setItem("language", 'en')
+      i18next.changeLanguage(localStorage.getItem("language"));
+    }
+  },[]);
 
   useEffect(() => {
 
@@ -86,18 +103,20 @@ const Settings = () => {
   };
 
   const handleSave = () => {
+    if(language){
+      localStorage.setItem("language", 'es')
+    }
+    if(!language){
+      localStorage.setItem("language", 'en')
+    }
+    i18next.changeLanguage(localStorage.getItem("language"));
     saveSettings(values);
     setOpen(false);
   };
 
   return (
     <>
-      <Tooltip title="Settings">
-        {/*<Badge
-          color="secondary"
-          variant="dot"
-          classes={{ badge: classes.badge }}
-        >*/}
+      <Tooltip title={t("Settings.Settings")}>
           <IconButton
             color="inherit"
             onClick={handleOpen}
@@ -107,7 +126,6 @@ const Settings = () => {
               <SettingsIcon />
             </SvgIcon>
           </IconButton>
-        {/*</Badge>*/}
       </Tooltip>
       <Popover
         anchorOrigin={{
@@ -123,12 +141,12 @@ const Settings = () => {
           variant="h4"
           color="textPrimary"
         >
-          Settings
+          {t("Settings.Settings")}
         </Typography>
         
           {
-              user && user.role !== 'admin' ? (
-              <Box
+              user && user.role === 'admin' ? (
+                <Box
                 mt={2}
                 px={1}
               >
@@ -143,15 +161,16 @@ const Settings = () => {
                   color="primary"
                 />
               }
-              label='Alarm'
+              label={t("Alarms.Alarm")}
               />
              
               </Box>
+              
               ): false
 
             }
             
-        <Box
+            <Box
           mt={2}
           px={1}
         >
@@ -166,6 +185,7 @@ const Settings = () => {
             )}
             label="RTL"
           />
+          
         </Box>
         <Box
           mt={2}
@@ -174,19 +194,22 @@ const Settings = () => {
           <FormControlLabel
             control={(
               <Switch
-                checked={values.responsiveFontSizes}
+                checked={language}
                 edge="start"
-                name="direction"
-                onChange={(event) => handleChange('responsiveFontSizes', event.target.checked)}
+                name="language"
+                onChange={(event) => {
+                    setLanguage(!language)
+                }}
               />
             )}
-            label="Responsive font sizes"
+            label="EN/ES"
           />
+          
         </Box>
         <Box mt={2}>
           <TextField
             fullWidth
-            label="Theme"
+            label={t("Settings.Theme")}
             name="theme"
             onChange={(event) => handleChange('theme', event.target.value)}
             select
@@ -211,7 +234,7 @@ const Settings = () => {
             fullWidth
             onClick={handleSave}
           >
-            Save Settings
+            {t("Settings.Save")}
           </Button>
         </Box>
       </Popover>

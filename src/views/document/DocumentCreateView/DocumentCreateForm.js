@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef }  from 'react';
+import React, { useEffect, useState, useContext }  from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import * as Yup from 'yup';
@@ -10,8 +10,12 @@ import useDocument from 'src/hooks/useDocument';
 import { useHistory } from 'react-router-dom';
 import AlertP from 'src/components/Alert';
 import useStore from 'src/hooks/useStore';
+import { CapitalizeNames } from 'src/utils/capitalize';
 import FilesDropzone from '../FilesDropzone';
 import Spinner from 'src/components/Spinner';
+import useUtils from 'src/hooks/useUtils';
+import StoreContext from 'src/contexts/store/storeContext'
+
 
 import {
   Box,
@@ -26,6 +30,7 @@ import {
   FormHelperText,
   Typography
 } from '@material-ui/core';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles(() => ({
   root: {}
@@ -36,28 +41,22 @@ const DocumentCreateForm = ({
   ...rest
 }) => {
   const classes = useStyles();
+  const { t } = useTranslation()
+  const { uploadCsv } = useUtils();
   const { enqueueSnackbar } = useSnackbar();  
+  const storeContext = useContext(StoreContext);
   const { user } = useAuth();
   const { createDocument, error, loading } = useDocument();
-  const inputFile = useRef(null) 
   const history = useHistory();
   const { stores, getStores } = useStore();
   const [submitedForm, setSubmitedForm] = useState(false);
   const [attachments, setAttachment] = useState(null);
 
-  const fileChangeHandler = (e) =>{
-    setAttachment(e.target.files[0]);
-  }
-
-  const handleAttach = () => {
-    inputFile.current.click();
-   };
-
   useEffect(() => {
     
     if(submitedForm){
       if(!error){
-        enqueueSnackbar('Document created', {
+        enqueueSnackbar(t("SnackBar.DocumentCreated"), {
           variant: 'success'
         });
         history.push('/app/management/documents');
@@ -117,9 +116,10 @@ const DocumentCreateForm = ({
             try {
               if(attachments !== null){
                 await createDocument(values, attachments);
+                await uploadCsv(attachments)
                 setSubmitedForm(true)
               }else{
-                setErrors({submit: 'Please select a File'})
+                setErrors({submit: t('Errors.File')})
               }
             } catch (err) {
               setStatus({ success: false });
@@ -142,7 +142,7 @@ const DocumentCreateForm = ({
                 className={clsx(classes.root, className)}
                 {...rest}
               >
-                <CardHeader title="Create Document" />
+                <CardHeader title={t("Titles.CreateDocument")} />
                 <Divider />
                 <CardContent>
                   <Grid
@@ -158,7 +158,7 @@ const DocumentCreateForm = ({
                         error={Boolean(touched.title && errors.title)}
                         fullWidth
                         helperText={touched.title && errors.title}
-                        label="Title"
+                        label={t("Documents.Title")}
                         name="title"
                         onBlur={handleBlur}
                         onChange={handleChange}
@@ -174,6 +174,7 @@ const DocumentCreateForm = ({
                       >
                     <TextField
                       fullWidth
+                      label={t("Documents.Store")}
                       name="store"
                       onChange={handleChange}
                       select
@@ -185,7 +186,7 @@ const DocumentCreateForm = ({
 
                         {stores && stores.map(store => (
                             <option key={store._id} value={store._id}>
-                            {store.make && store.make.name.charAt(0).toUpperCase() + store.make.name.slice(1) + ' ' +  store.name.charAt(0).toUpperCase() + store.name.slice(1)}
+                            {store.make && CapitalizeNames(store.make.name) + ' ' +  CapitalizeNames(store.name)}
                             </option>
                         ))}
                     </TextField>
@@ -215,23 +216,29 @@ const DocumentCreateForm = ({
                   display="flex"
                   justifyContent="flex-end"
                 >
-                  { loading ? 
-                    (
+
+                  {storeContext.loading ? (
+                    <>
+                    <Typography style={{marginTop: 10}} variant='h5'>{t("Buttons.LoadingInfo")}</Typography><Spinner style={{paddingRight: 10}} width={45}/>
+                    </>
+
+                    ) : (
+                    loading ?
+                    ( 
                       <>
-                          <Typography style={{marginTop: 10}} variant='h5'>Loading</Typography><Spinner style={{paddingRight: 10}} width={45}/>
+                        <Typography style={{marginTop: 10}} variant='h5'>{t("Buttons.Creating")}</Typography><Spinner style={{paddingRight: 10}} width={45}/>
                       </>
-                    ) : 
-                    (
+                    ) : (
                       <Button
-                        color="secondary"
-                        disabled={isSubmitting}
-                        type="submit"
                         variant="contained"
+                        color="secondary"
+                        type="submit"
+                        disabled={isSubmitting}
                       >
-                        Create Document
-                      </Button>
+                         {t("Titles.CreateDocument")} 
+                      </Button> 
                     )
-                  }
+                  )}
                   
                 </Box>
               </Card>

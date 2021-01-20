@@ -25,14 +25,12 @@ const StatusState = props => {
 
   //Get Statuses
   const getStatuses = async () => {
-    clearState();
     setLoading();
     try {
       const res = await api.get(`/status`);
       dispatch({ type: GET_STATUSES, payload: res.data.data });
     } catch (err) {
       dispatch({ type: SET_ERROR, payload: err.response.data})
-
     }
   };
 
@@ -45,7 +43,6 @@ const StatusState = props => {
       dispatch({ type: GET_STATUS, payload: res.data.data });
     } catch (err) {
       dispatch({ type: SET_ERROR, payload: err.response.data})
-
     }
   };
 
@@ -60,12 +57,10 @@ const StatusState = props => {
     clearState();
     setLoading();
     try {
-      
       const res = await api.delete(`/status/${statusId}`, config);
       dispatch({ type: DELETE_STATUS, payload: res.data.data })
     } catch (err) {
       dispatch({ type: SET_ERROR, payload: err.response.data})
-
     }
   };
 
@@ -86,7 +81,6 @@ const StatusState = props => {
       dispatch({ type: CREATE_STATUS, payload: res.data.data });
     } catch (err) {
       dispatch({ type: SET_ERROR, payload: err.response.data})
-
     }
   }
 
@@ -106,7 +100,6 @@ const StatusState = props => {
       dispatch({ type: UPDATE_STATUS, payload: res.data.data })
     } catch (err) {
       dispatch({ type: SET_ERROR, payload: err.response.data})
-
     }
   };
 

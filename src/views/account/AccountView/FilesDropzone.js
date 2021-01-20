@@ -1,39 +1,28 @@
 import React, {
-    useState,
     useCallback
   } from 'react';
   import clsx from 'clsx';
   import { useDropzone } from 'react-dropzone';
-  import PerfectScrollbar from 'react-perfect-scrollbar';
   import PropTypes from 'prop-types';
   import {
-    Box,
-    Link,
-    List,
-    ListItem,
-    ListItemIcon,
-    ListItemText,
-    Typography,
     makeStyles,
     Avatar
   } from '@material-ui/core';
-  import FileCopyIcon from '@material-ui/icons/FileCopy';
-  import bytesToSize from 'src/utils/bytesToSize';
-  
+  import {
+    Edit as EditIcon
+  } from 'react-feather'
+
   const useStyles = makeStyles((theme) => ({
     root: {},
     dropZone: {
-      // border: `1px dashed ${theme.palette.divider}`,
-      // padding: theme.spacing(6),
+      padding: theme.spacing(2),
       outline: 'none',
       display: 'flex',
       justifyContent: 'center',
       flexWrap: 'wrap',
       alignItems: 'center',
       '&:hover': {
-        backgroundColor: theme.palette.action.hover,
-        opacity: 0.5,
-        cursor: 'pointer'
+         cursor: 'pointer'
       }
     },
     dragActive: {
@@ -60,20 +49,30 @@ import React, {
     avatar: {
       height: 125,
       width: 125
+    },
+    edit: {
+      position: 'absolute', 
+      bottom: 0, 
+      right: 0,
+      color: theme.palette.text.primary,
+      backgroundColor: theme.palette.primary.main,
+      width: 25,
+      height: 25,
     }
+   
   }));
   
   const FilesDropzone = ({ className, setAttachment, image, ...rest }) => {
     const classes = useStyles();
-    const [files, setFiles] = useState([]);
   
     const handleDrop = useCallback((acceptedFiles) => {
-      setFiles(acceptedFiles);
       setAttachment(acceptedFiles[0])
+    //eslint-disable-next-line
     }, []);
   
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
-      onDrop: handleDrop
+      onDrop: handleDrop,
+      accept: 'image/jpeg, image/png'
     });
   
     return (
@@ -89,40 +88,21 @@ import React, {
           {...getRootProps()}
         >
           <input {...getInputProps()} />
+        
+          <div style={{position: 'relative'}}>
             <Avatar
               className={classes.avatar}
               src={image ? image : '/app/account'}
             />
-            {/* <img
-            style={{height: 100}}
-              alt="Select file"
-              className={classes.image}
-              src={image}
-            /> */}
+            <Avatar className={classes.edit}>
+                <EditIcon style={{width: 14}}/>
+            </Avatar>
+          </div>
+
+           
+        
         </div>
-        {files.length > 0 && (
-          <>
-            {/* <PerfectScrollbar options={{ suppressScrollX: true }}>
-              <List className={classes.list}>
-                {files.map((file, i) => (
-                  <ListItem
-                    divider={i < files.length - 1}
-                    key={i}
-                  >
-                    <ListItemIcon>
-                      <FileCopyIcon />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={file.name}
-                      primaryTypographyProps={{ variant: 'h5' }}
-                      secondary={bytesToSize(file.size)}
-                    />
-                  </ListItem>
-                ))}
-              </List>
-            </PerfectScrollbar> */}
-          </>
-        )}
+       
       </div>
     );
   };

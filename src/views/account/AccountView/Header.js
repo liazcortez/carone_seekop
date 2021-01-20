@@ -9,6 +9,7 @@ import {
   makeStyles
 } from '@material-ui/core';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles(() => ({
   root: {}
@@ -16,6 +17,7 @@ const useStyles = makeStyles(() => ({
 
 const Header = ({ className, ...rest }) => {
   const classes = useStyles();
+  const { t } = useTranslation()
 
   return (
     <div
@@ -27,17 +29,17 @@ const Header = ({ className, ...rest }) => {
         aria-label="breadcrumb"
       >
         <Link color="inherit" to="/app" component={RouterLink}>
-          Dashboard
+        {t("BreadCumbs.Dashboard")}
         </Link>
         <Typography color="textPrimary">
-          Account
+        {t("BreadCumbs.Account")}
         </Typography>
       </Breadcrumbs>
       <Typography
         variant="h3"
         color="textPrimary"
       >
-        Settings
+        {t("BreadCumbs.Settings")}
       </Typography>
     </div>
   );

@@ -14,6 +14,7 @@ import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import {
   PlusCircle as PlusCircleIcon,
 } from 'react-feather';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -27,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Header = ({ className, ...rest }) => {
   const classes = useStyles();
-
+  const { t } = useTranslation()
   return (
     <Grid
       className={clsx(classes.root, className)}
@@ -46,20 +47,20 @@ const Header = ({ className, ...rest }) => {
             variant="body1"
             color="textPrimary"
           >
-            Management
+            {t("BreadCumbs.Management")}
           </Typography>
           <Typography
             variant="body1"
             color="textPrimary"
           >
-            Documents
+            {t("BreadCumbs.Documents")}
           </Typography>
         </Breadcrumbs>
         <Typography
           variant="h3"
           color="textPrimary"
         >
-          All Documents
+          {t("BreadCumbs.All")} {t("BreadCumbs.Documents")}
         </Typography>
       </Grid>
       <Grid item>
@@ -74,7 +75,7 @@ const Header = ({ className, ...rest }) => {
           component={RouterLink}
           to="/app/create/document"
         >
-          New Document
+          {t("Buttons.New2")} {t("Documents.Document")}
         </Button>
       </Grid>
     </Grid>

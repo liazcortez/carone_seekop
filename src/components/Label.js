@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { fade, makeStyles } from '@material-ui/core';
-import { blue } from '@material-ui/core/colors';
+import { blue, grey } from '@material-ui/core/colors';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -46,7 +46,16 @@ const useStyles = makeStyles((theme) => ({
   blue: {
     color: blue[600],
     backgroundColor: fade(blue[600], 0.08)
-  }
+  },
+  grey: {
+    padding: 10,
+    color: theme.palette.text.primary,
+    backgroundColor: fade(grey[300], 0.08),
+    '&:hover': {
+      cursor: 'pointer',
+      backgroundColor:  fade(grey[600], 0.4),
+    }
+  },
 }));
 
 const Label = ({
@@ -75,7 +84,7 @@ const Label = ({
 Label.propTypes = {
   className: PropTypes.string,
   style: PropTypes.object,
-  color: PropTypes.oneOf(['primary', 'secondary', 'error', 'warning', 'success', 'blue'])
+  color: PropTypes.oneOf(['primary', 'secondary', 'error', 'warning', 'success', 'blue', 'grey'])
 };
 
 export default Label;

@@ -31,7 +31,7 @@ const General = ({ className, ...rest }) => {
         xl={3}
         xs={12}
       >
-        <ProfileDetails user={user} removeimagebutton="true"/>
+        <ProfileDetails user={user} edit="true"/>
       </Grid>
       <Grid
         item

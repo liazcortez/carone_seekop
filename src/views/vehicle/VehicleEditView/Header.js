@@ -15,6 +15,7 @@ import {
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import { ArrowLeft as BackIcon } from 'react-feather';
 import { useParams } from 'react-router';
+import { useTranslation } from 'react-i18next';
 const useStyles = makeStyles(() => ({
   root: {}
 }));
@@ -22,6 +23,7 @@ const useStyles = makeStyles(() => ({
 const Header = ({ className, ...rest }) => {
   const classes = useStyles();
   const route = useParams();
+  const { t } = useTranslation();
   return (
     <Grid
       className={clsx(classes.root, className)}
@@ -41,20 +43,20 @@ const Header = ({ className, ...rest }) => {
             to="/app/management/vehicles"
             component={RouterLink}
           >
-            Management
+            {t("BreadCumbs.Management")}
           </Link>
           <Typography
             variant="body1"
             color="textPrimary"
           >
-            Vehicles
+            {t("BreadCumbs.Vehicles")}
           </Typography>
         </Breadcrumbs>
         <Typography
           variant="h3"
           color="textPrimary"
         >
-          Edit Vehicle
+          {t("Buttons.Edit")} {t("Vehicles.Vehicle")}
         </Typography>
       
       </Grid>
@@ -71,7 +73,7 @@ const Header = ({ className, ...rest }) => {
           to={`/app/management/vehicles/${route.id}`}
         >
         
-            Go Back
+        {t("Buttons.GoBack")}
         </Button>
       </Grid>
     </Grid>

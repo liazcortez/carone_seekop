@@ -7,6 +7,8 @@ import { useSnackbar } from 'notistack';
 import useStatus from 'src/hooks/useStatus';
 import { useHistory } from 'react-router-dom';
 import AlertP from 'src/components/Alert';
+import Spinner from 'src/components/Spinner';
+import { CapitalizeNames, Capitalize } from 'src/utils/capitalize';
 
 import {
   Box,
@@ -18,8 +20,10 @@ import {
   makeStyles,
   FormHelperText, 
   Divider,
-  CardHeader
+  CardHeader,
+  Typography
 } from '@material-ui/core';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles(() => ({
   root: {}
@@ -32,15 +36,16 @@ const StatusEditForm = ({
 }) => {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
-  const { updateStatus, error } = useStatus();
+  const { updateStatus, error, loading } = useStatus();
   const history = useHistory();
   const [submitedForm, setSubmitedForm] = useState(false);
+  const {t} = useTranslation()
 
   useEffect(() => {
     
     if(submitedForm){
       if(!error){
-        enqueueSnackbar('Status updated', {
+        enqueueSnackbar(t('SnackBar.StatusUpdated'), {
           variant: 'success'
         });
         history.push(`/app/management/status/${status.id}`);
@@ -54,8 +59,8 @@ const StatusEditForm = ({
   return (
     <Formik
       initialValues={{
-        name: status.name || '',
-        description: status.description || '',
+        name: (status && CapitalizeNames(status.name)) || '',
+        description: (status && Capitalize(status.description)) || '',
         submit: null
       }}
       validationSchema={Yup.object().shape({
@@ -95,7 +100,7 @@ const StatusEditForm = ({
           {...rest}
         >
           <Card>
-          <CardHeader title="Status" />
+          <CardHeader title={t('Status.Status')} />
             <Divider />
             <CardContent>
               <Grid
@@ -111,7 +116,7 @@ const StatusEditForm = ({
                     error={Boolean(touched.name && errors.name)}
                     fullWidth
                     helperText={touched.name && errors.name}
-                    label="Name"
+                    label={t('Status.Name')}
                     name="name"
                     onBlur={handleBlur}
                     onChange={handleChange}
@@ -129,7 +134,7 @@ const StatusEditForm = ({
                     error={Boolean(touched.description && errors.description)}
                     fullWidth
                     helperText={touched.description && errors.description}
-                    label="Description"
+                    label={t('Status.Description')}
                     name="description"
                     onBlur={handleBlur}
                     onChange={handleChange}
@@ -150,14 +155,23 @@ const StatusEditForm = ({
               <Box  mt={2}
                   display="flex"
                   justifyContent="flex-end">
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  type="submit"
-                  disabled={isSubmitting}
-                >
-                  Update Status
-                </Button>
+                { loading ? 
+                    (
+                      <>
+                          <Typography style={{marginTop: 10}} variant='h5'>{t("Buttons.Updating")}</Typography><Spinner style={{paddingRight: 10}} width={45}/>
+                      </>
+                    ) : 
+                    (
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      type="submit"
+                      disabled={isSubmitting}
+                    >
+                      {t("Buttons.Update")} {t("Status.Status")}
+                    </Button>
+                )
+                }
               </Box>
             </CardContent>
           </Card>

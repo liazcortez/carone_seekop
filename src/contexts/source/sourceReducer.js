@@ -28,7 +28,6 @@ export default (state, action) => {
     case CREATE_SOURCE:
       return {
         ...state,
-        sources: [action.payload, ...state.sources],
         loading: false, 
         error: null
       };
@@ -54,8 +53,6 @@ export default (state, action) => {
       }
     case CLEAR_STATE:
       return {
-        source: {},
-        sources: [],
         loading: false,
         error: null
       }

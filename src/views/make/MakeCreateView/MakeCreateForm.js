@@ -9,6 +9,7 @@ import useAuth from 'src/hooks/useAuth';
 import useMake from 'src/hooks/useMake';
 import { useHistory } from 'react-router-dom';
 import AlertP from 'src/components/Alert';
+import Spinner from 'src/components/Spinner';
 
 import {
   Box,
@@ -21,8 +22,9 @@ import {
   CardHeader,
   Divider,
   FormHelperText,
-
+  Typography
 } from '@material-ui/core';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles(() => ({
   root: {}
@@ -36,15 +38,16 @@ const MakeCreateForm = ({
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();  
   const { user } = useAuth();
-  const { createMake, error } = useMake();
+  const { createMake, error, loading, clearState } = useMake();
   const history = useHistory();
   const [submitedForm, setSubmitedForm] = useState(false);
+  const { t } = useTranslation()
 
   useEffect(() => {
     
     if(submitedForm){
       if(!error){
-        enqueueSnackbar('Make created', {
+        enqueueSnackbar(t("SnackBar.MakeCreated"), {
           variant: 'success'
         });
         history.push('/app/management/makes');
@@ -54,6 +57,11 @@ const MakeCreateForm = ({
 
     // eslint-disable-next-line
   }, [submitedForm]);
+
+  useEffect(() => {
+    clearState()
+    //eslint-disable-next-line
+  }, [])
 
   return (
     <Grid
@@ -124,7 +132,7 @@ const MakeCreateForm = ({
                 className={clsx(classes.root, className)}
                 {...rest}
               >
-                <CardHeader title="Create Make" />
+                <CardHeader title={t("Titles.CreateMake")} />
                 <Divider />
                 <CardContent>
                   <Grid
@@ -140,7 +148,7 @@ const MakeCreateForm = ({
                         error={Boolean(touched.name && errors.name)}
                         fullWidth
                         helperText={touched.name && errors.name}
-                        label="Name"
+                        label={t("Forms.Name")}
                         name="name"
                         onBlur={handleBlur}
                         onChange={handleChange}
@@ -157,8 +165,8 @@ const MakeCreateForm = ({
                       <TextField
                         error={Boolean(touched.description && errors.description)}
                         fullWidth
-                        helperText={touched.description && errors.description ? errors.description : 'A short description about the make'}
-                        label="Description"
+                        helperText={touched.description && errors.description }
+                        label={t("Forms.Description")}
                         name="description"
                         onBlur={handleBlur}
                         onChange={handleChange}
@@ -183,14 +191,22 @@ const MakeCreateForm = ({
                   display="flex"
                   justifyContent="flex-end"
                 >
-                  <Button
-                    color="secondary"
-                    disabled={isSubmitting}
-                    type="submit"
-                    variant="contained"
-                  >
-                    Create Make
-                  </Button>
+                  { loading ? 
+                    (
+                      <>
+                          <Typography style={{marginTop: 10}} variant='h5'>{t("Buttons.Creating")}</Typography><Spinner style={{paddingRight: 10}} width={45}/>
+                      </>
+                    ) : 
+                    (
+                      <Button
+                        color="secondary"
+                        disabled={isSubmitting}
+                        type="submit"
+                        variant="contained"
+                      >
+                        {t("BreadCumbs.Create")}{t("Makes.Make")}
+                      </Button>
+                    )}
                 </Box>
               </Card>
             </form>

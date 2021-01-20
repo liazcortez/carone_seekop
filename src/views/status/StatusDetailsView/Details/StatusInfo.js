@@ -13,7 +13,9 @@ import {
   Typography,
   makeStyles
 } from '@material-ui/core';
-
+import {Capitalize, CapitalizeNames} from 'src/utils/capitalize';
+import { useTranslation } from 'react-i18next';
+import moment from 'moment'
 const useStyles = makeStyles(theme => ({
   root: {},
   fontWeightMedium: {
@@ -23,26 +25,43 @@ const useStyles = makeStyles(theme => ({
 
 const StatusInfo = ({ status, className, ...rest }) => {
   const classes = useStyles();
+  const { t } = useTranslation();
 
   return (
     <Card className={clsx(classes.root, className)} {...rest}>
-      <CardHeader title="Status info" />
+      <CardHeader title={t("Status.Info")} />
       <Divider />
       <Table>
         <TableBody>
-          <TableRow>
-            <TableCell className={classes.fontWeightMedium}>Name</TableCell>
+        <TableRow>
+            <TableCell className={classes.fontWeightMedium}>ID</TableCell>
             <TableCell>
               <Typography variant="body2" color="textSecondary">
-                {status && status.name ? status.name : ''}
+                {status && status._id ? status._id : '- - -'}
               </Typography>
             </TableCell>
           </TableRow>
           <TableRow>
-            <TableCell className={classes.fontWeightMedium}>Description</TableCell>
+            <TableCell className={classes.fontWeightMedium}>{t("Status.Name")}</TableCell>
             <TableCell>
               <Typography variant="body2" color="textSecondary">
-                {status && status.description ? status.description : ''}
+                {status && status.name ? CapitalizeNames(status.name) : '- - -'}
+              </Typography>
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell className={classes.fontWeightMedium}>{t("Status.Description")}</TableCell>
+            <TableCell>
+              <Typography variant="body2" color="textSecondary">
+                {status && status.description ? Capitalize(status.description) : '- - -'}
+              </Typography>
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell className={classes.fontWeightMedium}>{t("Status.CreatedAt")}</TableCell>
+            <TableCell>
+              <Typography variant="body2" color="textSecondary">
+                {status && status.createdAt ? moment(status.createdAt).format('ll') : '- - -'}
               </Typography>
             </TableCell>
           </TableRow>

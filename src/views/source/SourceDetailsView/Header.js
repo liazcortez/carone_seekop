@@ -17,10 +17,12 @@ import {
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import { Edit as EditIcon } from 'react-feather';
 import { ArrowLeft as BackIcon } from 'react-feather';
+import { CapitalizeNames } from 'src/utils/capitalize';
 
 import useAuth from 'src/hooks/useAuth';
-import useLead from 'src/hooks/useLead';
+import useSource from 'src/hooks/useSource';
 import { useSnackbar } from 'notistack';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -36,8 +38,9 @@ const useStyles = makeStyles((theme) => ({
 
 const Header = ({ className, source, ...rest }) => {
   const classes = useStyles();
+  const { t } = useTranslation()
   const { user } = useAuth();
-  const { deleteLead, getLeads } = useLead();
+  const { deleteSources, getSources } = useSource();
   const { enqueueSnackbar } = useSnackbar();  
   const history = useHistory();
   const route = useParams();
@@ -46,9 +49,9 @@ const Header = ({ className, source, ...rest }) => {
   const handleClose = async (value) => {
     setOpen(false);
     if(value === 'yes'){      
-      deleteLead(route.id);
-      getLeads();
-      enqueueSnackbar('Source deleted', {
+      deleteSources(route.id);
+      getSources();
+      enqueueSnackbar(t("SnackBar.SourceDeleted"), {
         variant: 'error'
       });
       history.push("/app/management/sources");
@@ -56,9 +59,6 @@ const Header = ({ className, source, ...rest }) => {
   };
 
 
-  const handleDelete = () =>{
-    setOpen(true);    
-  }
   
   return (
     
@@ -83,20 +83,20 @@ const Header = ({ className, source, ...rest }) => {
             to="/app/management/sources"
             component={RouterLink}
           >
-            Management
+            {t("BreadCumbs.Management")}
           </Link>
           <Typography
             variant="body1"
             color="textPrimary"
           >
-            Sources
+            {t("BreadCumbs.Sources")}
           </Typography>
         </Breadcrumbs>
         <Typography
           variant="h3"
           color="textPrimary"
         >
-          {source && source.name}
+          {source && CapitalizeNames(source.name)}
         </Typography>
       </Grid>
       <Grid item>
@@ -113,9 +113,9 @@ const Header = ({ className, source, ...rest }) => {
           to="/app/management/sources"
         >
         
-            Go Back
+        {t("Buttons.GoBack")}
         </Button>
-      { user && user.role === 'rockstar' ? (
+      { user && (user.role === 'rockstar'|| user.role === 'super admin') ? (
        <> <Button
           style={{marginLeft: 15}}
           color="secondary"
@@ -128,20 +128,9 @@ const Header = ({ className, source, ...rest }) => {
             </SvgIcon>
           }
         >
-          Edit
+          {t("Buttons.Edit")}
         </Button>
-        <Button
-          className={classes.error}
-          variant="contained"
-          onClick={handleDelete}
-          startIcon={
-            <SvgIcon fontSize="small">
-              <EditIcon />
-            </SvgIcon>
-          }
-        >
-          Delete
-        </Button></>
+        </>
       ) : false }
       </Grid>
     </Grid>

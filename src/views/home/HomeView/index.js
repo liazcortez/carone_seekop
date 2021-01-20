@@ -15,19 +15,17 @@ const useStyles = makeStyles(() => ({
 const HomeView = () => {
   const classes = useStyles();
 
-  if(!localStorage.getItem('token')){
-  return (
-    <Page
-      className={classes.root}
-      title="Home"
-    >
-      <Hero />
-      <Features />
-      <Testimonials />
-      <CTA />
-      <FAQS />
-    </Page>
-  );}else{
+  if (!localStorage.getItem('token')) {
+    return (
+      <Page className={classes.root} title="Home">
+        <Hero />
+        <Features />
+        <Testimonials />
+        <CTA />
+        <FAQS />
+      </Page>
+    );
+  } else {
     return <Redirect to="/app/management/leads" />;
   }
 };

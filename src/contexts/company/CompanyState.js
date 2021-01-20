@@ -2,12 +2,12 @@ import React, { useReducer } from 'react';
 import CompanyContext from './companyContext';
 import CompanyReducer from './companyReducer';
 import api from '../../api/api';
-import { 
-  GET_COMPANIES, 
-  CREATE_COMPANY, 
-  GET_COMPANY, 
-  DELETE_COMPANY, 
-  UPDATE_COMPANY, 
+import {
+  GET_COMPANIES,
+  CREATE_COMPANY,
+  GET_COMPANY,
+  DELETE_COMPANY,
+  UPDATE_COMPANY,
   SET_ERROR,
   CLEAR_STATE,
   SET_LOADING
@@ -31,51 +31,46 @@ const CompanyState = props => {
       const res = await api.get(`/companies`);
       dispatch({ type: GET_COMPANIES, payload: res.data.data });
     } catch (err) {
-      dispatch({ type: SET_ERROR, payload: err.response.data})
+      dispatch({ type: SET_ERROR, payload: err.response.data });
     }
   };
 
-   //Get Company
-   const getCompany = async (companyId) => {
+  //Get Company
+  const getCompany = async companyId => {
     clearState();
     setLoading();
     try {
       const res = await api.get(`/companies/${companyId}`);
       dispatch({ type: GET_COMPANY, payload: res.data.data });
     } catch (err) {
-      dispatch({ type: SET_ERROR, payload: err.response.data})
-
+      dispatch({ type: SET_ERROR, payload: err.response.data });
     }
   };
 
   //Delete Company
-  const deleteCompany = async (companyId) => {
-    const config =  {
+  const deleteCompany = async companyId => {
+    const config = {
       headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('token')}`
       }
     };
     clearState();
     setLoading();
     try {
-      
       const res = await api.delete(`/companies/${companyId}`, config);
-      dispatch({ type: DELETE_COMPANY, payload: res.data.data })
+      dispatch({ type: DELETE_COMPANY, payload: res.data.data });
     } catch (err) {
-      dispatch({ type: SET_ERROR, payload: err.response.data})
-
+      dispatch({ type: SET_ERROR, payload: err.response.data });
     }
   };
 
-
   //Create Company
-  const createCompany = async (company) => {
-
+  const createCompany = async company => {
     const config = {
       headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('token')}`
       }
     };
     clearState();
@@ -84,27 +79,29 @@ const CompanyState = props => {
       const res = await api.post(`/companies`, { ...company }, config);
       dispatch({ type: CREATE_COMPANY, payload: res.data.data });
     } catch (err) {
-      dispatch({ type: SET_ERROR, payload: err.response.data})
-
+      dispatch({ type: SET_ERROR, payload: err.response.data });
     }
-  }
+  };
 
   //Update Company
   const updateCompany = async (company, companyId) => {
-    const config =  {
+    const config = {
       headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('token')}`
       }
     };
     clearState();
     setLoading();
     try {
-      
-      const res = await api.put(`/companies/${companyId}`, {...company} ,config);
-      dispatch({ type: UPDATE_COMPANY, payload: res.data.data })
+      const res = await api.put(
+        `/companies/${companyId}`,
+        { ...company },
+        config
+      );
+      dispatch({ type: UPDATE_COMPANY, payload: res.data.data });
     } catch (err) {
-      dispatch({ type: SET_ERROR, payload: err.response.data})
+      dispatch({ type: SET_ERROR, payload: err.response.data });
     }
   };
 

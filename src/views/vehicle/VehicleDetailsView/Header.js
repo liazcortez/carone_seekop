@@ -17,10 +17,12 @@ import {
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import { Edit as EditIcon } from 'react-feather';
 import { ArrowLeft as BackIcon } from 'react-feather';
+import { CapitalizeNames } from 'src/utils/capitalize';
 
 import useAuth from 'src/hooks/useAuth';
-import useLead from 'src/hooks/useLead';
+import useVehicle from 'src/hooks/useVehicle';
 import { useSnackbar } from 'notistack';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -37,18 +39,18 @@ const useStyles = makeStyles((theme) => ({
 const Header = ({ className, vehicle, ...rest }) => {
   const classes = useStyles();
   const { user } = useAuth();
-  const { deleteLead, getLeads } = useLead();
+  const { deleteVehicle, getVehicles } = useVehicle();
   const { enqueueSnackbar } = useSnackbar();  
   const history = useHistory();
   const route = useParams();
-
+  const { t } = useTranslation();
   const [open, setOpen] = React.useState(false);
   const handleClose = async (value) => {
     setOpen(false);
     if(value === 'yes'){      
-      deleteLead(route.id);
-      getLeads();
-      enqueueSnackbar('Vehicle deleted', {
+      deleteVehicle(route.id);
+      getVehicles();
+      enqueueSnackbar(t("SnackBar.VehicleDeleted"), {
         variant: 'error'
       });
       history.push("/app/management/vehicles");
@@ -56,10 +58,6 @@ const Header = ({ className, vehicle, ...rest }) => {
   };
 
 
-  const handleDelete = () =>{
-    setOpen(true);    
-  }
-  
   return (
     
     <Grid
@@ -83,20 +81,20 @@ const Header = ({ className, vehicle, ...rest }) => {
             to="/app/management/vehicles"
             component={RouterLink}
           >
-            Management
+            {t("BreadCumbs.Management")}
           </Link>
           <Typography
             variant="body1"
             color="textPrimary"
           >
-            Vehicles
+            {t("BreadCumbs.Vehicles")}
           </Typography>
         </Breadcrumbs>
         <Typography
           variant="h3"
           color="textPrimary"
         >
-          {vehicle && vehicle.model}
+          {vehicle && CapitalizeNames(vehicle.model)}
         </Typography>
       </Grid>
       <Grid item>
@@ -113,9 +111,9 @@ const Header = ({ className, vehicle, ...rest }) => {
           to="/app/management/vehicles"
         >
         
-            Go Back
+        {t("Buttons.GoBack")}
         </Button>
-      { user && user.role === 'rockstar' ? (
+      { user && (user.role === 'rockstar'|| user.role === 'super admin') ? (
        <> <Button
           style={{marginLeft: 15}}
           color="secondary"
@@ -128,20 +126,9 @@ const Header = ({ className, vehicle, ...rest }) => {
             </SvgIcon>
           }
         >
-          Edit
+          {t("Buttons.Edit")}
         </Button>
-        <Button
-          className={classes.error}
-          variant="contained"
-          onClick={handleDelete}
-          startIcon={
-            <SvgIcon fontSize="small">
-              <EditIcon />
-            </SvgIcon>
-          }
-        >
-          Delete
-        </Button></>
+        </>
       ) : false }
       </Grid>
     </Grid>

@@ -13,7 +13,9 @@ import {
   Typography,
   makeStyles
 } from '@material-ui/core';
-
+import { useTranslation } from 'react-i18next';
+import {Capitalize, CapitalizeNames} from 'src/utils/capitalize';
+import moment from 'moment'
 const useStyles = makeStyles(theme => ({
   root: {},
   fontWeightMedium: {
@@ -23,26 +25,43 @@ const useStyles = makeStyles(theme => ({
 
 const SourceInfo = ({ source, className, ...rest }) => {
   const classes = useStyles();
+  const { t } = useTranslation()
 
   return (
     <Card className={clsx(classes.root, className)} {...rest}>
-      <CardHeader title="Source info" />
+      <CardHeader title={t("Sources.Info")} />
       <Divider />
       <Table>
         <TableBody>
-          <TableRow>
-            <TableCell className={classes.fontWeightMedium}>Name</TableCell>
+        <TableRow>
+            <TableCell className={classes.fontWeightMedium}>ID</TableCell>
             <TableCell>
               <Typography variant="body2" color="textSecondary">
-                {source && source.name ? source.name : ''}
+                {source && source._id ? source._id : '- - -'}
               </Typography>
             </TableCell>
           </TableRow>
           <TableRow>
-            <TableCell className={classes.fontWeightMedium}>Description</TableCell>
+            <TableCell className={classes.fontWeightMedium}>{t("Sources.Name")}</TableCell>
             <TableCell>
               <Typography variant="body2" color="textSecondary">
-                {source && source.description ? source.description : ''}
+                {source && source.name ? CapitalizeNames(source.name) : '- - -'}
+              </Typography>
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell className={classes.fontWeightMedium}>{t("Sources.Description")}</TableCell>
+            <TableCell>
+              <Typography variant="body2" color="textSecondary">
+                {source && source.description ? Capitalize(source.description) : '- - -'}
+              </Typography>
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell className={classes.fontWeightMedium}>{t("Sources.CreatedAt")}</TableCell>
+            <TableCell>
+              <Typography variant="body2" color="textSecondary">
+                {source && source.createdAt ? moment(source.createdAt).format('ll') : '- - -'}
               </Typography>
             </TableCell>
           </TableRow>

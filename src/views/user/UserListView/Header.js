@@ -14,6 +14,7 @@ import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import {
   PlusCircle as PlusCircleIcon,
 } from 'react-feather';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -27,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Header = ({ className, ...rest }) => {
   const classes = useStyles();
-
+  const { t } = useTranslation()
   return (
     <Grid
       className={clsx(classes.root, className)}
@@ -45,20 +46,20 @@ const Header = ({ className, ...rest }) => {
             variant="body1"
             color="textPrimary"
           >
-            Management
+            {t("BreadCumbs.Management")}
           </Typography>
           <Typography
             variant="body1"
             color="textPrimary"
           >
-            Users
+            {t("BreadCumbs.Users")}
           </Typography>
         </Breadcrumbs>
         <Typography
           variant="h3"
           color="textPrimary"
         >
-          All Users
+          {t("BreadCumbs.All")} {t("BreadCumbs.Users")}
         </Typography>
 
       </Grid>
@@ -75,7 +76,7 @@ const Header = ({ className, ...rest }) => {
           to="/app/create/user"
         >
         
-            New User
+        {t("Buttons.New2")} {t("Users.User")}
         </Button>
       </Grid>
     </Grid>

@@ -5,7 +5,7 @@ import { Formik } from 'formik';
 import AlertP from 'src/components/Alert';
 import { Redirect, useParams, useHistory } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
-
+import { useTranslation } from 'react-i18next';
 import {
   Box,
   Button,
@@ -27,11 +27,17 @@ const ResetPassword = ({ className, ...rest }) => {
   
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();  
-  const { resetPassword, error } = useAuth();
+  const { resetPassword, error, clearState } = useAuth();
+  const { t } = useTranslation();
   const isMountedRef = useIsMountedRef();
   const route = useParams();
   const [submitedForm, setSubmitedForm] = useState(false);
   const history = useHistory();
+
+  useEffect(() => {
+    clearState()
+    //eslint-disable-next-line
+  }, [])
 
   useEffect(() => {
     
@@ -51,7 +57,7 @@ const ResetPassword = ({ className, ...rest }) => {
  
   if (localStorage.getItem('token')) {
   
-    return <Redirect to="app/management/leads" />
+    return <Redirect to="/app/management/leads" />
   }else {
   return (
     <Formik
@@ -73,7 +79,7 @@ const ResetPassword = ({ className, ...rest }) => {
             await resetPassword(values);
             setSubmitedForm(true);
           }else{
-            setErrors({ submit: 'Passwords do not match' });
+            setErrors({ submit: t("Errors.Passwords") });
           }
 
         } catch (err) {
@@ -105,7 +111,7 @@ const ResetPassword = ({ className, ...rest }) => {
             fullWidth
             autoFocus
             helperText={touched.password && errors.password}
-            label="New Password"
+            label={t("Forms.NewPassword")}
             margin="normal"
             name="password"
             onBlur={handleBlur}
@@ -120,7 +126,7 @@ const ResetPassword = ({ className, ...rest }) => {
             fullWidth
             autoFocus
             helperText={touched.newPassword && errors.newPassword}
-            label="Confirm Password"
+            label={t("Forms.ConfirmPassword")}
             margin="normal"
             name="newPassword"
             onBlur={handleBlur}
@@ -148,7 +154,7 @@ const ResetPassword = ({ className, ...rest }) => {
               type="submit"
               variant="contained"
             >
-              Reset Password
+              {t("Buttons.ResetPassword")}
             </Button>
           </Box>
         </form>

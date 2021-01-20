@@ -7,6 +7,8 @@ import { useSnackbar } from 'notistack';
 import useSource from 'src/hooks/useSource';
 import { useHistory } from 'react-router-dom';
 import AlertP from 'src/components/Alert';
+import Spinner from 'src/components/Spinner';
+import { CapitalizeNames, Capitalize } from 'src/utils/capitalize';
 
 import {
   Box,
@@ -18,8 +20,10 @@ import {
   makeStyles,
   FormHelperText,
   Divider,
-  CardHeader
+  CardHeader,
+  Typography
 } from '@material-ui/core';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles(() => ({
   root: {}
@@ -32,15 +36,15 @@ const SourceEditForm = ({
 }) => {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
-  const { updateSource, error } = useSource();
+  const { updateSource, error, loading } = useSource();
   const history = useHistory();
   const [submitedForm, setSubmitedForm] = useState(false);
-
+  const { t } = useTranslation()
   useEffect(() => {
     
     if(submitedForm){
       if(!error){
-        enqueueSnackbar('Source updated', {
+        enqueueSnackbar(t("SnackBar.SourceUpdated"), {
           variant: 'success'
         });
         history.push(`/app/management/sources/${source.id}`);
@@ -54,8 +58,8 @@ const SourceEditForm = ({
   return (
     <Formik
       initialValues={{
-        name: source.name || '',
-        description: source.description || '',
+        name: (source && CapitalizeNames(source.name)) || '',
+        description: (source && Capitalize(source.description)) || '',
         submit: null
       }}
       validationSchema={Yup.object().shape({
@@ -95,7 +99,7 @@ const SourceEditForm = ({
           {...rest}
         >
           <Card>
-            <CardHeader title="Source" />
+            <CardHeader title={t("Titles.EditSource")} />
             <Divider />
             <CardContent>
               <Grid
@@ -111,7 +115,7 @@ const SourceEditForm = ({
                     error={Boolean(touched.name && errors.name)}
                     fullWidth
                     helperText={touched.name && errors.name}
-                    label="Name"
+                    label={t("Forms.Name")}
                     name="name"
                     onBlur={handleBlur}
                     onChange={handleChange}
@@ -129,7 +133,7 @@ const SourceEditForm = ({
                     error={Boolean(touched.description && errors.description)}
                     fullWidth
                     helperText={touched.description && errors.description}
-                    label="Description"
+                    label={t("Forms.Description")}
                     name="description"
                     onBlur={handleBlur}
                     onChange={handleChange}
@@ -150,14 +154,22 @@ const SourceEditForm = ({
               <Box  mt={2}
                   display="flex"
                   justifyContent="flex-end">
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  type="submit"
-                  disabled={isSubmitting}
-                >
-                  Update Source
-                </Button>
+                { loading ? 
+                    (
+                      <>
+                          <Typography style={{marginTop: 10}} variant='h5'>{t("Buttons.Updating")}</Typography><Spinner style={{paddingRight: 10}} width={45}/>
+                      </>
+                    ) : 
+                    (
+                      <Button
+                        color="secondary"
+                        disabled={isSubmitting}
+                        type="submit"
+                        variant="contained"
+                      >
+                        {t("Buttons.Update")} {t("Sources.Source")}
+                      </Button>
+                    )}
               </Box>
             </CardContent>
           </Card>

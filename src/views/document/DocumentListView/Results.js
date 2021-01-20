@@ -1,6 +1,3 @@
-/*eslint no-unused-vars: 0*/
-
-
 import React, { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import clsx from 'clsx';
@@ -10,6 +7,7 @@ import SimpleDialog from 'src/components/SimpleDialog'
 import useDocument from 'src/hooks/useDocument';
 import wait from 'src/utils/wait';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { CapitalizeNames} from 'src/utils/capitalize';
 import { faSync } from '@fortawesome/free-solid-svg-icons'
 import moment from 'moment';
 import {
@@ -36,34 +34,9 @@ import {
   Search as SearchIcon,
   Download as DownloadIcon
 } from 'react-feather';
+import { useTranslation } from 'react-i18next';
 
-const tabs = [
-  {
-    value: 'all',
-    label: 'All'
-  }
-];
-
-const sortOptions = [
-  {
-    value: 'updatedAt|desc',
-    label: 'Last update (newest first)'
-  },
-  {
-    value: 'updatedAt|asc',
-    label: 'Last update (oldest first)'
-  },
-  {
-    value: 'orders|desc',
-    label: 'Total orders (high to low)'
-  },
-  {
-    value: 'orders|asc',
-    label: 'Total orders (low to high)'
-  }
-];
-
-const applyFilters = (documents, query, filters) => {
+const applyFilters = (documents, query) => {
   return documents.filter(document => {
     let matches = true;
 
@@ -99,54 +72,12 @@ const applyFilters = (documents, query, filters) => {
       }
     }
 
-    Object.keys(filters).forEach(key => {
-      const value = filters[key];
-
-      if (value && document[key] !== value) {
-        matches = false;
-      }
-    });
-
     return matches;
   });
 };
 
 const applyPagination = (documents, page, limit) => {
   return documents.slice(page * limit, page * limit + limit);
-};
-
-const descendingComparator = (a, b, orderBy) => {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-
-  return 0;
-};
-
-const getComparator = (order, orderBy) => {
-  return order === 'desc'
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
-};
-
-const applySort = (documents, sort) => {
-  const [orderBy, order] = sort.split('|');
-  const comparator = getComparator(order, orderBy);
-  const stabilizedThis = documents.map((el, index) => [el, index]);
-
-  stabilizedThis.sort((a, b) => {
-    const order = comparator(a[0], b[0]);
-
-    if (order !== 0) return order;
-
-    return a[1] - b[1];
-  });
-
-  return stabilizedThis.map(el => el[0]);
 };
 
 const useStyles = makeStyles(theme => ({
@@ -193,21 +124,16 @@ const useStyles = makeStyles(theme => ({
 const Results = ({ className, documents, ...rest }) => {
 
   const classes = useStyles();
-  const [currentTab, setCurrentTab] = useState('all');
   const [selectedDocuments, setSelectedDocuments] = useState([]);
   const [page, setPage] = useState(0);
   const [limit, setLimit] = useState(10);
   const [query, setQuery] = useState('');
-  const [sort, setSort] = useState(sortOptions[0].value);
   const { getDocuments, deleteDocument, loading } = useDocument();
+  const [deletedDocuments, setDeletedDocuments] = useState(false)
   const [open, setOpen] = React.useState(false);
+  const { t } = useTranslation()
   const [selectedValue, setSelectedValue] = React.useState();
-  const [filters, setFilters] = useState({
-    hasAcceptedMarketing: null,
-    isProspect: null,
-    isReturning: null
-  });
-
+ 
   const handleClose = async (value) => {
     setOpen(false);
     setSelectedValue(value);
@@ -215,6 +141,7 @@ const Results = ({ className, documents, ...rest }) => {
       await selectedDocuments.map(async document => await deleteDocument(document));
       await wait(1000);
       await getDocuments();
+      setSelectedDocuments([])
     }
   };
 
@@ -243,26 +170,8 @@ const Results = ({ className, documents, ...rest }) => {
     selectedDocuments.length > 0 && selectedDocuments.length < documents.length;
   const selectedAllDocuments = selectedDocuments.length === documents.length;
 
-  const handleTabsChange = (event, value) => {
-    setPage(0)
-
-    const updatedFilters = {
-      ...filters,
-      hasAcceptedMarketing: null,
-      isProspect: null,
-      isReturning: null
-    };
-
-    if (value !== 'all') {
-      updatedFilters[value] = true;
-    }
-
-    setFilters(updatedFilters);
-    setSelectedDocuments([]);
-    setCurrentTab(value);
-  };
-
   const handleQueryChange = event => {
+    setPage(0)
     event.persist();
     setQuery(event.target.value);
   };
@@ -275,13 +184,12 @@ const Results = ({ className, documents, ...rest }) => {
     setLimit(parseInt(event.target.value));
   };
 
-  const filteredDocuments = applyFilters(documents, query, filters);
-  const sortedDocuments = applySort(filteredDocuments, sort);
-  const paginatedDocuments = applyPagination(sortedDocuments, page, limit);
+  const filteredDocuments = applyFilters(documents, query);
+  const paginatedDocuments = applyPagination(filteredDocuments, page, limit);
   
   return (
     <Card className={clsx(classes.root, className)} {...rest}>
-      <SimpleDialog selectedValue={selectedValue} open={open} onClose={handleClose} />
+      <SimpleDialog selectedValue={selectedValue} open={open} onClose={handleClose} all={deletedDocuments}/>
       <div p={2} display="flex" className={classes.containerSync}>
       {
         loading === true ? (
@@ -295,15 +203,13 @@ const Results = ({ className, documents, ...rest }) => {
 
       </div>    
       <Tabs
-        onChange={handleTabsChange}
         scrollButtons="auto"
         textColor="secondary"
-        value={currentTab}
+        value='all'
         variant="scrollable"
       >
-        {tabs.map(tab => (
-          <Tab key={tab.value} value={tab.value} label={tab.label} />
-        ))}
+        
+          <Tab key={0} value={'all'} label={t("Tabs.All")} />
         
       </Tabs>
       <Divider />
@@ -320,7 +226,7 @@ const Results = ({ className, documents, ...rest }) => {
             )
           }}
           onChange={handleQueryChange}
-          placeholder="Search documents"
+          placeholder={t("Documents.Search")}
           value={query}
           variant="outlined"
         />
@@ -334,7 +240,7 @@ const Results = ({ className, documents, ...rest }) => {
               onChange={handleSelectAllDocuments}
             />
             <Button variant="outlined" className={classes.bulkAction} onClick={handleDelete}>
-              Delete
+              {t("Buttons.Delete")}
             </Button>
            
           </div>
@@ -350,12 +256,15 @@ const Results = ({ className, documents, ...rest }) => {
                     checked={selectedAllDocuments}
                     indeterminate={selectedSomeDocuments}
                     onChange={handleSelectAllDocuments}
+                    onClick={(e)=>{setDeletedDocuments(true)}}
+
                   />
                 </TableCell>
-                <TableCell>Title</TableCell>
-                <TableCell>File</TableCell>
-                <TableCell>Store</TableCell>
-                <TableCell>Created At</TableCell>
+                <TableCell>ID</TableCell>
+                <TableCell>{t("Documents.Title")}</TableCell>
+                <TableCell>{t("Documents.File")}</TableCell>
+                <TableCell>{t("Documents.Store")}</TableCell>
+                <TableCell>{t("Documents.CreatedAt")}</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -377,6 +286,8 @@ const Results = ({ className, documents, ...rest }) => {
                           handleSelectOneDocument(event, document._id)
                         }
                         value={isDocumentSelected}
+                        onClick={(e)=>{setDeletedDocuments(false)}}
+
                       />
                     </TableCell>
                     <TableCell>
@@ -388,7 +299,21 @@ const Results = ({ className, documents, ...rest }) => {
                             to={`/app/management/documents/${document._id}`}
                             variant="h6"
                           >
-                            {document.title}
+                            {document._id}
+                          </Link>
+                        </div>
+                      </Box>
+                    </TableCell>
+                    <TableCell>
+                      <Box display="flex" alignItems="center">
+                        <div>
+                          <Link
+                            color="inherit"
+                            component={RouterLink}
+                            to={`/app/management/documents/${document._id}`}
+                            variant="h6"
+                          >
+                            {CapitalizeNames(document.title)}
                           </Link>
                         </div>
                       </Box>
@@ -396,14 +321,13 @@ const Results = ({ className, documents, ...rest }) => {
                     <TableCell>
                     <a
                       className={classes.download}
-                      href={`https://automotive-api.s3.us-east-2.amazonaws.com/${document.file}`}
+                      href={`${process.env.REACT_APP_URL_IMAGE_S3_URL}${document.file}`}
                       download
                     >
-                        <DownloadIcon 
-                        />
+                        <DownloadIcon/>
                     </a>
                     </TableCell>
-                    <TableCell>{document && document.store && document.store.make && document.store.make.name + ' ' + document.store.name}</TableCell>
+                    <TableCell>{document && document.store && document.store.make && CapitalizeNames(document.store.make.name) + ' ' + CapitalizeNames(document.store.name)}</TableCell>
                     <TableCell>{document && moment(document.createdAt).format('ll')}</TableCell>
                   
                   </TableRow>

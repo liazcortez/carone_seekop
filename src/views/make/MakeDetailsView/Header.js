@@ -17,10 +17,12 @@ import {
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import { Edit as EditIcon } from 'react-feather';
 import { ArrowLeft as BackIcon } from 'react-feather';
+import { CapitalizeNames } from 'src/utils/capitalize';
 
 import useAuth from 'src/hooks/useAuth';
 import useMake from 'src/hooks/useMake';
 import { useSnackbar } from 'notistack';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -41,6 +43,7 @@ const Header = ({ className, make, ...rest }) => {
   const { enqueueSnackbar } = useSnackbar();  
   const history = useHistory();
   const route = useParams();
+  const { t } = useTranslation()
 
   const [open, setOpen] = React.useState(false);
   const handleClose = async (value) => {
@@ -48,7 +51,7 @@ const Header = ({ className, make, ...rest }) => {
     if(value === 'yes'){      
       deleteMake(route.id);
       getMakes();
-      enqueueSnackbar('Make deleted', {
+      enqueueSnackbar(t("Makes.MakeDeleted"), {
         variant: 'error'
       });
       history.push("/app/management/makes");
@@ -56,9 +59,6 @@ const Header = ({ className, make, ...rest }) => {
   };
 
 
-  const handleDelete = () =>{
-    setOpen(true);    
-  }
   
   return (
     
@@ -83,20 +83,20 @@ const Header = ({ className, make, ...rest }) => {
             to="/app/management/makes"
             component={RouterLink}
           >
-            Management
+            {t("BreadCumbs.Management")}
           </Link>
           <Typography
             variant="body1"
             color="textPrimary"
           >
-            Makes
+            {t("BreadCumbs.Makes")}
           </Typography>
         </Breadcrumbs>
         <Typography
           variant="h3"
           color="textPrimary"
         >
-          {make && make.name}
+          {make && CapitalizeNames(make.name)}
         </Typography>
       </Grid>
       <Grid item>
@@ -113,9 +113,9 @@ const Header = ({ className, make, ...rest }) => {
           to="/app/management/makes"
         >
         
-            Go Back
+        {t("Buttons.GoBack")}
         </Button>
-      { user && user.role === 'rockstar' ? (
+      { user && (user.role === 'rockstar'|| user.role === 'super admin') ? (
        <> <Button
           style={{marginLeft: 15}}
           color="secondary"
@@ -128,20 +128,9 @@ const Header = ({ className, make, ...rest }) => {
             </SvgIcon>
           }
         >
-          Edit
+          {t("Buttons.Edit")}
         </Button>
-        <Button
-          className={classes.error}
-          variant="contained"
-          onClick={handleDelete}
-          startIcon={
-            <SvgIcon fontSize="small">
-              <EditIcon />
-            </SvgIcon>
-          }
-        >
-          Delete
-        </Button></>
+        </>
       ) : false }
       </Grid>
     </Grid>

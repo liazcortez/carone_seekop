@@ -1,13 +1,13 @@
-import { 
-  GET_COMPANIES, 
-  CREATE_COMPANY, 
-  GET_COMPANY, 
-  DELETE_COMPANY, 
-  UPDATE_COMPANY, 
+import {
+  GET_COMPANIES,
+  CREATE_COMPANY,
+  GET_COMPANY,
+  DELETE_COMPANY,
+  UPDATE_COMPANY,
   SET_ERROR,
   CLEAR_STATE,
   SET_LOADING
- } from '../types';
+} from '../types';
 
 export default (state, action) => {
   switch (action.type) {
@@ -15,35 +15,35 @@ export default (state, action) => {
       return {
         ...state,
         companies: action.payload,
-        loading: false, 
+        loading: false,
         error: null
       };
     case GET_COMPANY:
       return {
         ...state,
         company: action.payload,
-        loading: false, 
+        loading: false,
         error: null
       };
     case CREATE_COMPANY:
       return {
         ...state,
         companies: [action.payload, ...state.companies],
-        loading: false, 
+        loading: false,
         error: null
       };
     case DELETE_COMPANY:
       return {
         ...state,
         company: null,
-        loading: false, 
+        loading: false,
         error: null
       };
     case UPDATE_COMPANY:
       return {
         ...state,
         company: action.payload,
-        loading: false, 
+        loading: false,
         error: null
       };
     case SET_ERROR:
@@ -51,19 +51,19 @@ export default (state, action) => {
         ...state,
         error: action.payload,
         loading: false
-      }
+      };
     case CLEAR_STATE:
       return {
         company: {},
         companies: [],
         loading: false,
         error: null
-      }
+      };
     case SET_LOADING:
       return {
         ...state,
         loading: true
-        }
+      };
     default:
       return state;
   }

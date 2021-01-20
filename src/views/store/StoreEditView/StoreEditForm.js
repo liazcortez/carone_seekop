@@ -7,6 +7,7 @@ import { useSnackbar } from 'notistack';
 import useStore from 'src/hooks/useStore';
 import { useHistory } from 'react-router-dom';
 import AlertP from 'src/components/Alert';
+import Spinner from 'src/components/Spinner';
 
 import {
   Box,
@@ -19,8 +20,11 @@ import {
   CardHeader,
   makeStyles,
   FormHelperText,
+  Typography
 
 } from '@material-ui/core';
+import { useTranslation } from 'react-i18next';
+import { CapitalizeNames, Capitalize } from 'src/utils/capitalize';
 
 const useStyles = makeStyles(() => ({
   root: {}
@@ -33,15 +37,16 @@ const StoreEditForm = ({
 }) => {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
-  const { updateStore, error } = useStore();
+  const { updateStore, error, loading } = useStore();
   const history = useHistory();
   const [submitedForm, setSubmitedForm] = useState(false);
+  const { t } = useTranslation()
 
   useEffect(() => {
     
     if(submitedForm){
       if(!error){
-        enqueueSnackbar('Store updated', {
+        enqueueSnackbar(t("SnackBar.StoreUpdated"), {
           variant: 'success'
         });
         history.push(`/app/management/stores/${store.id}`);
@@ -55,9 +60,9 @@ const StoreEditForm = ({
   return (
     <Formik
       initialValues={{
-        name: store.name || '',
-        description: store.description || '',
-        address: store.address || '',
+        name: CapitalizeNames(store.name) || '',
+        description: Capitalize(store.description) || '',
+        address: CapitalizeNames(store.address) || '',
         phone: store.phone || '',
         submit: null
       }}
@@ -65,7 +70,7 @@ const StoreEditForm = ({
         name: Yup.string().max(255),
         description: Yup.string().max(255),
         address: Yup.string().max(255),
-        phone: Yup.number(),
+        phone: Yup.number().typeError(t("Yup.Number")),
       })}
       onSubmit={async (values, {
         resetForm,
@@ -101,7 +106,7 @@ const StoreEditForm = ({
           {...rest}
         >
           <Card>
-            <CardHeader title="Store" />
+            <CardHeader title={t("Titles.EditStore")} />
             <Divider />
             <CardContent>
               <Grid
@@ -117,7 +122,7 @@ const StoreEditForm = ({
                     error={Boolean(touched.name && errors.name)}
                     fullWidth
                     helperText={touched.name && errors.name}
-                    label="Name"
+                    label={t("Forms.Name")}
                     name="name"
                     onBlur={handleBlur}
                     onChange={handleChange}
@@ -135,7 +140,7 @@ const StoreEditForm = ({
                     error={Boolean(touched.description && errors.description)}
                     fullWidth
                     helperText={touched.description && errors.description}
-                    label="Description"
+                    label={t("Forms.Description")}
                     name="description"
                     onBlur={handleBlur}
                     onChange={handleChange}
@@ -152,7 +157,7 @@ const StoreEditForm = ({
                     error={Boolean(touched.address && errors.address)}
                     fullWidth
                     helperText={touched.address && errors.address}
-                    label="Address"
+                    label={t("Forms.Address")}
                     name="address"
                     onBlur={handleBlur}
                     onChange={handleChange}
@@ -169,7 +174,7 @@ const StoreEditForm = ({
                     error={Boolean(touched.phone && errors.phone)}
                     fullWidth
                     helperText={touched.phone && errors.phone}
-                    label="Phone"
+                    label={t("Forms.Phone")}
                     name="phone"
                     onBlur={handleBlur}
                     onChange={handleChange}
@@ -190,14 +195,23 @@ const StoreEditForm = ({
               <Box  mt={2}
                   display="flex"
                   justifyContent="flex-end">
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  type="submit"
-                  disabled={isSubmitting}
-                >
-                  Update Store
-                </Button>
+               { loading ? 
+                    (
+                      <>
+                          <Typography style={{marginTop: 10}} variant='h5'>{t("Buttons.Updating")}</Typography><Spinner style={{paddingRight: 10}} width={45}/>
+                      </>
+                    ) : 
+                    (
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      type="submit"
+                      disabled={isSubmitting}
+                    >
+                      {t("Buttons.Update")} {t("Stores.Store")}
+                    </Button>
+                )
+                }
               </Box>
             </CardContent>
           </Card>

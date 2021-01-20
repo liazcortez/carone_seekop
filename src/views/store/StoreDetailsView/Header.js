@@ -17,10 +17,12 @@ import {
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import { Edit as EditIcon } from 'react-feather';
 import { ArrowLeft as BackIcon } from 'react-feather';
+import { CapitalizeNames } from 'src/utils/capitalize';
 
 import useAuth from 'src/hooks/useAuth';
-import useLead from 'src/hooks/useLead';
+import useStore from 'src/hooks/useStore';
 import { useSnackbar } from 'notistack';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -37,7 +39,8 @@ const useStyles = makeStyles((theme) => ({
 const Header = ({ className, store, ...rest }) => {
   const classes = useStyles();
   const { user } = useAuth();
-  const { deleteLead, getLeads } = useLead();
+  const { deleteStores, getStores } = useStore();
+  const { t } = useTranslation()
   const { enqueueSnackbar } = useSnackbar();  
   const history = useHistory();
   const route = useParams();
@@ -46,20 +49,15 @@ const Header = ({ className, store, ...rest }) => {
   const handleClose = async (value) => {
     setOpen(false);
     if(value === 'yes'){      
-      deleteLead(route.id);
-      getLeads();
-      enqueueSnackbar('Store deleted', {
+      deleteStores(route.id);
+      getStores();
+      enqueueSnackbar(t("SnackBar.StoreDeleted"), {
         variant: 'error'
       });
       history.push("/app/management/stores");
     }
   };
 
-
-  const handleDelete = () =>{
-    setOpen(true);    
-  }
-  
   return (
     
     <Grid
@@ -83,20 +81,20 @@ const Header = ({ className, store, ...rest }) => {
             to="/app/management/stores"
             component={RouterLink}
           >
-            Management
+            {t("BreadCumbs.Management")}
           </Link>
           <Typography
             variant="body1"
             color="textPrimary"
           >
-            Stores
+            {t("BreadCumbs.Stores")}
           </Typography>
         </Breadcrumbs>
         <Typography
           variant="h3"
           color="textPrimary"
         >
-          {store && store.name}
+          {store && CapitalizeNames(store.name)}
         </Typography>
       </Grid>
       <Grid item>
@@ -113,9 +111,9 @@ const Header = ({ className, store, ...rest }) => {
           to="/app/management/stores"
         >
         
-            Go Back
+        {t("Buttons.GoBack")}
         </Button>
-      { user && user.role === 'rockstar' ? (
+      { user && (user.role === 'rockstar'|| user.role === 'super admin') ? (
        <> <Button
           style={{marginLeft: 15}}
           color="secondary"
@@ -128,20 +126,9 @@ const Header = ({ className, store, ...rest }) => {
             </SvgIcon>
           }
         >
-          Edit
+          {t("Buttons.Edit")}
         </Button>
-        <Button
-          className={classes.error}
-          variant="contained"
-          onClick={handleDelete}
-          startIcon={
-            <SvgIcon fontSize="small">
-              <EditIcon />
-            </SvgIcon>
-          }
-        >
-          Delete
-        </Button></>
+        </>
       ) : false }
       </Grid>
     </Grid>

@@ -1,6 +1,3 @@
-/* eslint no-lone-blocks: 0 */
-/*eslint no-unused-vars: 0*/
-
 import React, { useState, useEffect } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import clsx from 'clsx';
@@ -11,6 +8,8 @@ import useUser from 'src/hooks/useUser';
 import wait from 'src/utils/wait';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSync } from '@fortawesome/free-solid-svg-icons'
+import moment from 'moment'
+import {Capitalize, CapitalizeNames} from 'src/utils/capitalize';
 
 import {
   Box,
@@ -35,34 +34,9 @@ import {
 import {
   Search as SearchIcon
 } from 'react-feather';
+import { useTranslation } from 'react-i18next';
 
-const tabs = [
-  {
-    value: 'all',
-    label: 'All'
-  }
-];
-
-const sortOptions = [
-  {
-    value: 'updatedAt|desc',
-    label: 'Last update (newest first)'
-  },
-  {
-    value: 'updatedAt|asc',
-    label: 'Last update (oldest first)'
-  },
-  {
-    value: 'orders|desc',
-    label: 'Total orders (high to low)'
-  },
-  {
-    value: 'orders|asc',
-    label: 'Total orders (low to high)'
-  }
-];
-
-const applyFilters = (users, query, filters) => {
+const applyFilters = (users, query) => {
   return users.filter(user => {
     let matches = true;
 
@@ -94,54 +68,12 @@ const applyFilters = (users, query, filters) => {
       }
     }
 
-    Object.keys(filters).forEach(key => {
-      const value = filters[key];
-
-      if (value && user[key] !== value) {
-        matches = false;
-      }
-    });
-
     return matches;
   });
 };
 
 const applyPagination = (users, page, limit) => {
   return users.slice(page * limit, page * limit + limit);
-};
-
-const descendingComparator = (a, b, orderBy) => {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-
-  return 0;
-};
-
-const getComparator = (order, orderBy) => {
-  return order === 'desc'
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
-};
-
-const applySort = (users, sort) => {
-  const [orderBy, order] = sort.split('|');
-  const comparator = getComparator(order, orderBy);
-  const stabilizedThis = users.map((el, index) => [el, index]);
-
-  stabilizedThis.sort((a, b) => {
-    const order = comparator(a[0], b[0]);
-
-    if (order !== 0) return order;
-
-    return a[1] - b[1];
-  });
-
-  return stabilizedThis.map(el => el[0]);
 };
 
 const useStyles = makeStyles(theme => ({
@@ -216,21 +148,16 @@ const useStyles = makeStyles(theme => ({
 const Results = ({ className, users, ...rest }) => {
 
   const classes = useStyles();
-  const [currentTab, setCurrentTab] = useState('all');
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [page, setPage] = useState(0);
   const [limit, setLimit] = useState(10);
   const [query, setQuery] = useState('');
-  const [sort, setSort] = useState(sortOptions[0].value);
   const { getUsers, deleteUser, loading } = useUser();
+  const [deletedUsers, setDeletedUsers] = useState(false)
   const [multipleDelete, setMultipleDelete] = useState(false);
   const [open, setOpen] = React.useState(false);
+  const { t } = useTranslation()
   const [selectedValue, setSelectedValue] = React.useState();
-  const [filters, setFilters] = useState({
-    hasAcceptedMarketing: null,
-    isProspect: null,
-    isReturning: null
-  });
 
   useEffect(() => {
   
@@ -250,6 +177,7 @@ const Results = ({ className, users, ...rest }) => {
       await selectedUsers.map(async user => await deleteUser(user));
       await wait(1000);
       await getUsers();
+      setSelectedUsers([])
     }
   };
 
@@ -278,27 +206,8 @@ const Results = ({ className, users, ...rest }) => {
     selectedUsers.length > 0 && selectedUsers.length < users.length;
   const selectedAllUsers = selectedUsers.length === users.length;
 
-
-  const handleTabsChange = (event, value) => {
-    setPage(0)
-
-    const updatedFilters = {
-      ...filters,
-      hasAcceptedMarketing: null,
-      isProspect: null,
-      isReturning: null
-    };
-
-    if (value !== 'all') {
-      updatedFilters[value] = true;
-    }
-
-    setFilters(updatedFilters);
-    setSelectedUsers([]);
-    setCurrentTab(value);
-  };
-
   const handleQueryChange = event => {
+    setPage(0)
     event.persist();
     setQuery(event.target.value);
   };
@@ -311,14 +220,13 @@ const Results = ({ className, users, ...rest }) => {
     setLimit(parseInt(event.target.value));
   };
 
-  const filteredUsers = applyFilters(users, query, filters);
-  const sortedUsers = applySort(filteredUsers, sort);
-  const paginatedUsers = applyPagination(sortedUsers, page, limit);
+  const filteredUsers = applyFilters(users, query);
+  const paginatedUsers = applyPagination(filteredUsers, page, limit);
  
 
   return (
     <Card className={clsx(classes.root, className)} {...rest}>
-      <SimpleDialog selectedValue={selectedValue} open={open} onClose={handleClose} />
+      <SimpleDialog selectedValue={selectedValue} open={open} onClose={handleClose} all={deletedUsers}/>
       <div p={2} display="flex" className={classes.containerSync}>
       {
         loading === true ? (
@@ -332,15 +240,13 @@ const Results = ({ className, users, ...rest }) => {
 
       </div>    
       <Tabs
-        onChange={handleTabsChange}
         scrollButtons="auto"
         textColor="secondary"
-        value={currentTab}
+        value='all'
         variant="scrollable"
       >
-        {tabs.map(tab => (
-          <Tab key={tab.value} value={tab.value} label={tab.label} />
-        ))}
+        
+          <Tab key={0} value={'all'} label={t("Tabs.All")} />
        
       </Tabs>
       <Divider />
@@ -357,7 +263,7 @@ const Results = ({ className, users, ...rest }) => {
             )
           }}
           onChange={handleQueryChange}
-          placeholder="Search users"
+          placeholder={t("Users.Search")}
           value={query}
           variant="outlined"
         />
@@ -370,9 +276,10 @@ const Results = ({ className, users, ...rest }) => {
               checked={selectedAllUsers}
               indeterminate={selectedSomeUsers}
               onChange={handleSelectAllUsers}
+
             />
             <Button variant="outlined" className={classes.bulkAction} onClick={handleDelete}>
-              Delete
+              {t("Buttons.Delete")}
             </Button>
            
           </div>
@@ -388,14 +295,16 @@ const Results = ({ className, users, ...rest }) => {
                     checked={selectedAllUsers}
                     indeterminate={selectedSomeUsers}
                     onChange={handleSelectAllUsers}
+                    onClick={(e)=>{setDeletedUsers(true)}}
+
                   />
                 </TableCell>}
-                <TableCell>Name</TableCell>
-                <TableCell>Store</TableCell>
-                <TableCell>Email</TableCell>
-                <TableCell>Role</TableCell>
-                
-                {/*<TableCell align="right">Actions</TableCell>*/}
+                <TableCell>ID</TableCell>
+                <TableCell>{t("Users.Name")}</TableCell>
+                <TableCell>{t("Users.Store")}</TableCell>
+                <TableCell>{t("Users.Email")}</TableCell>
+                <TableCell>{t("Users.Role")}</TableCell>
+                <TableCell>{t("Users.CreatedAt")}</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -417,8 +326,24 @@ const Results = ({ className, users, ...rest }) => {
                           handleSelectOneUser(event, user._id)
                         }
                         value={isUserSelected}
+                        onClick={(e)=>{setDeletedUsers(false)}}
+
                       />
                       </TableCell>}
+                      <TableCell>
+                      <Box display="flex" alignItems="center">
+                        <div>
+                          <Link
+                            color="inherit"
+                            component={RouterLink}
+                            to={`/app/management/users/${user._id}`}
+                            variant="h6"
+                          >
+                            {user && user._id ? user._id : '- - -'}
+                          </Link>
+                        </div>
+                      </Box>
+                    </TableCell>
                     <TableCell>
                       <Box display="flex" alignItems="center">
                         <div>
@@ -428,36 +353,20 @@ const Results = ({ className, users, ...rest }) => {
                             to={`/app/management/users/${user._id}`}
                             variant="h6"
                           >
-                            {user && user.name ? user.name : 'No Name'}
+                            {user && user.name ? CapitalizeNames(user.name) : '- - -'}
                           </Link>
                         </div>
                       </Box>
                     </TableCell>
                     <TableCell>
-                      {user &&  user.store && user.store.make && user.store.make.name ? user.store.make.name + ' ' : 'No Make' }
-                      {user &&  user.store && user.store.name ? user.store.name : 'No store'}</TableCell>
-                    <TableCell>{user && user.email ? user.email : 'No Email'}</TableCell>
+                      {user &&  user.store && user.store.make && user.store.make.name ? CapitalizeNames(user.store.make.name) + ' ' : '' }
+                      {user &&  user.store && user.store.name ? CapitalizeNames(user.store.name) : '- - -'}</TableCell>
+                    <TableCell>{user && user.email ? user.email : '- - -'}</TableCell>
                     <TableCell>
-                      {user && user.role ? user.role : 'No Role'}
+                      {user && user.role ? Capitalize(user.role) : '- - -'}
                     </TableCell>
-                    {/*<TableCell align="right">
-                      <IconButton
-                        component={RouterLink}
-                        to={`/app/management/users/${user._id}/edit`}
-                      >
-                        <SvgIcon fontSize="small">
-                          <EditIcon />
-                        </SvgIcon>
-                      </IconButton>
-                      <IconButton
-                        component={RouterLink}
-                        to={`/app/management/users/${user._id}`}
-                      >
-                        <SvgIcon fontSize="small">
-                          <ArrowRightIcon />
-                        </SvgIcon>
-                      </IconButton>
-                          </TableCell>*/}
+                    <TableCell>{user && moment(user.createdAt).format('ll')}</TableCell>
+                   
                   </TableRow>
                 );
               })}

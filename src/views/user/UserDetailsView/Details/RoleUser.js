@@ -20,6 +20,8 @@ import {
     Edit as EditIcon
   
   } from 'react-feather';
+import { useTranslation } from 'react-i18next';
+import { CapitalizeNames } from 'src/utils/capitalize';
   
   const useStyles = makeStyles((theme) => ({
     root: {},
@@ -47,6 +49,7 @@ import {
     const { enqueueSnackbar } = useSnackbar();  
     const { updateUserRole, user, getUser } = useUser();
     const route = useParams();
+    const { t } = useTranslation()
 
     useEffect(() => {
       getUser(route.id)
@@ -58,7 +61,7 @@ import {
         className={clsx(classes.root, className)}
         {...rest}
       >
-        <CardHeader title="Role" />
+        <CardHeader title={t("Users.Role")} />
         <Divider />
         <CardContent>
         <Formik
@@ -79,7 +82,7 @@ import {
               resetForm();
               setStatus({ success: true });
               setSubmitting(false);
-              enqueueSnackbar('Role updated', {
+              enqueueSnackbar(t("SnackBar.RoleUpdated"), {
                 variant: 'success'
               });
             } catch (err) {
@@ -111,7 +114,7 @@ import {
 
                         {roleOptions.map(role => (
                           <option key={role.id} value={role.value}>
-                            {role.value.charAt(0).toUpperCase() + role.value.slice(1)}
+                            {CapitalizeNames(role.value)}
                           </option>
                         ))}
 
@@ -135,7 +138,7 @@ import {
                         color="primary"
                         startIcon={<EditIcon />}
                         >
-                        Update Role
+                        {t("Buttons.Update")} {t("Users.Role")}
                     </Button>
                 </Box>
             </form>

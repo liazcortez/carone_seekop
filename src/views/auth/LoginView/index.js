@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import {
   Box,
@@ -13,12 +13,15 @@ import {
 import Page from 'src/components/Page';
 import Logo from 'src/components/Logo';
 import JWTLogin from './JWTLogin';
+import { useTranslation } from 'react-i18next';
+import i18next from 'src/utils/i18next';
 
 const methodIcons = {
   'Auth0': '/static/images/auth0.svg',
   'FirebaseAuth': '/static/images/firebase.svg',
   'JWT': '/static/images/jwt.svg'
 };
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -65,6 +68,17 @@ const useStyles = makeStyles((theme) => ({
 
 const LoginView = () => {
   const classes = useStyles();
+  const { t } = useTranslation();
+
+  useEffect(()=>{
+    let language;
+    if(localStorage.getItem("i18nextLng")){
+      language = localStorage.getItem("i18nextLng")
+    }else{
+      language = 'en'
+    }
+      i18next.changeLanguage(language);
+  },[]);
 
   return (
     <Page
@@ -98,13 +112,13 @@ const LoginView = () => {
                   gutterBottom
                   variant="h2"
                 >
-                  Sign in
+                  {t('Login.SignIn')}
                 </Typography>
                 <Typography
                   variant="body2"
                   color="textSecondary"
                 >
-                  Sign in on the internal platform
+                   {t('Login.SignIn2')}
                 </Typography>
               </div>
               <div className={classes.currentMethodIcon}>
@@ -129,7 +143,8 @@ const LoginView = () => {
                   color="textSecondary"
                   className={classes.rightText}
                 >
-                  Forgot password?
+                  {t('Login.ForgotPsw')}
+
                 </Link>
               </Box>
               
@@ -143,7 +158,7 @@ const LoginView = () => {
               variant="body2"
               color="textSecondary"
             >
-              Create new account
+              {t("Login.NewAccount")}
             </Link>
           </CardContent>
         </Card>

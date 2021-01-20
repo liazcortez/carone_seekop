@@ -4,7 +4,6 @@ import Page from 'src/components/Page';
 import Header from './Header';
 import Results from './Results';
 import useDocument from 'src/hooks/useDocument';
-
 const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.dark,

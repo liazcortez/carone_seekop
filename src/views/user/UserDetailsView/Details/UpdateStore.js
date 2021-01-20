@@ -4,6 +4,7 @@ import { useSnackbar } from 'notistack';
 import { Formik } from 'formik';
 import clsx from 'clsx';  
 import useUser from 'src/hooks/useUser';
+import { CapitalizeNames } from 'src/utils/capitalize';
 import { useParams } from 'react-router';
 import useStore from 'src/hooks/useStore';
 import {
@@ -21,6 +22,7 @@ import {
     Edit as EditIcon
   
   } from 'react-feather';
+import { useTranslation } from 'react-i18next';
   
   const useStyles = makeStyles((theme) => ({
     root: {},
@@ -35,6 +37,7 @@ import {
     const { stores, getStores } = useStore();
     const { updateUser, user, getUser } = useUser();
     const route = useParams();
+    const { t } = useTranslation()
 
     useEffect(() => {
       getUser(route.id)
@@ -48,7 +51,7 @@ import {
         className={clsx(classes.root, className)}
         {...rest}
       >
-        <CardHeader title="Store" />
+        <CardHeader title={t("Users.Store")} />
         <Divider />
         <CardContent>
         <Formik
@@ -68,7 +71,7 @@ import {
               resetForm();
               setStatus({ success: true });
               setSubmitting(false);
-              enqueueSnackbar('User updated', {
+              enqueueSnackbar(t("SnackBar.StoreUpdated"), {
                 variant: 'success'
               });
             } catch (err) {
@@ -99,7 +102,7 @@ import {
                     >
                     {stores.map((store) => (
                         <option  key={store._id} value={store._id} >
-                        {store.make.name.charAt(0).toUpperCase() + store.make.name.slice(1) + " " + store.name}
+                        {CapitalizeNames(store.make.name) + " " + CapitalizeNames(store.name)}
                         </option>
                     ))}
                 </TextField>
@@ -122,7 +125,7 @@ import {
                         color="primary"
                         startIcon={<EditIcon />}
                         >
-                        Update Store
+                        {t("Buttons.Update")} {t("Users.User")}
                     </Button>
                 </Box>
             </form>

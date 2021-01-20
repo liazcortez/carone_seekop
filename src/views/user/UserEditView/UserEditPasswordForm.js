@@ -17,6 +17,7 @@ import {
   TextField,
   makeStyles,
 } from '@material-ui/core';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles(() => ({
   root: {}
@@ -28,12 +29,13 @@ const ChangePassword = ({ className, ...rest }) => {
   const { error, updateUser } = useUser();
   const [submitedForm, setSubmitedForm] = useState(false);
   const route = useParams();
+  const { t } = useTranslation()
   
   useEffect(() => {
     
     if(submitedForm){
       if(!error){
-        enqueueSnackbar('Password updated', {
+        enqueueSnackbar(t('SnackBar.PasswordUpdated'), {
           variant: 'success'
         });
       }
@@ -87,7 +89,7 @@ const ChangePassword = ({ className, ...rest }) => {
             className={clsx(classes.root, className)}
             {...rest}
           >
-            <CardHeader title="Password" />
+            <CardHeader title={t('Titles.ResetPassword')} />
             <Divider />
             <CardContent>
               <Grid
@@ -103,7 +105,7 @@ const ChangePassword = ({ className, ...rest }) => {
                     error={Boolean(touched.password && errors.password)}
                     fullWidth
                     helperText={touched.password && errors.password}
-                    label="Password"
+                    label={t('Users.Password1')}
                     name="password"
                     required
                     onBlur={handleBlur}
@@ -135,7 +137,7 @@ const ChangePassword = ({ className, ...rest }) => {
                 type="submit"
                 variant="contained"
               >
-                Save Changes
+                {t('Buttons.Reset')} {t('Users.Password1')}
               </Button>
             </Box>
           </Card>

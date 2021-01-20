@@ -33,7 +33,6 @@ export default (state, action) => {
     case CREATE_STORE:
       return {
         ...state,
-        stores: [action.payload, ...state.stores],
         loading: false
       };
     case DELETE_STORE:
