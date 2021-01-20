@@ -218,7 +218,13 @@ const Search = forwardRef((props, ref) => {
                     value={state.status.split('/')[0]}
                 >
                     <option key={0} value={'0/0'}>{t("AdvancedAll.Status")}</option>
-                    {statuses && statuses.map(status => (<option key={status._id} value={status._id} status={status.name}>{CapitalizeNames(status.name)}</option> ))}
+                    {statuses && statuses.map(status => {
+                      if(status.name !== 'default' && status.name !== 'opened'){
+                        return (<option key={status._id} value={status._id} status={status.name}>{CapitalizeNames(status.name)}</option> )
+                      }
+                      return false;
+                      }
+                    )}
                 </TextField>
             </Grid>
             <Grid item lg={6} md={6} sm={12} xs={12}>

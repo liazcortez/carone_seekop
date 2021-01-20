@@ -83,11 +83,11 @@ const OmsGlobalState = props => {
         if(tabs.includes('status')){
           let stat = tabs.split('.');
           res = await api.get(
-            `/omsGlobals?page=${pagination.page}&limit=${pagination.limit}&status=${stat[1]}&searchIndex=name-email-make-agencyName-phone-phone2&searchText=${query}&searchType=${typeQuery}`
+            `/omsGlobals?page=${pagination.page}&limit=${pagination.limit}&status=${stat[1]}&searchIndex=name-email-make-store-phone-phone2&searchText=${query}&searchType=${typeQuery}`
           );
         }else{
           res = await api.get(
-            `/omsGlobals?page=${pagination.page}&limit=${pagination.limit}&searchIndex=name-email-make-agencyName-phone-phone2&searchText=${query}&searchType=${typeQuery}`
+            `/omsGlobals?page=${pagination.page}&limit=${pagination.limit}&searchIndex=name-email-make-store-phone-phone2&searchText=${query}&searchType=${typeQuery}`
           );
         }
 
@@ -132,15 +132,15 @@ const OmsGlobalState = props => {
         if(tabs.includes('temperature')){
 
           let temp = tabs.split('.');
-          res = await api.get(`/omsGlobals?page=${pagination.page}&limit=${pagination.limit}&rating=${temp[1]}&searchIndex=name-email-make-agencyName-phone-phone2&searchText=${query}&store=${storeId}&searchType=${typeQuery}`);
+          res = await api.get(`/omsGlobals?page=${pagination.page}&limit=${pagination.limit}&rating=${temp[1]}&searchIndex=name-email-make-store-phone-phone2&searchText=${query}&store=${storeId}&searchType=${typeQuery}`);
 
         }else if(tabs.includes('status')){
 
           let status = tabs.split('.');
-          res = await api.get(`/omsGlobals?page=${pagination.page}&limit=${pagination.limit}&status=${status[1]}&searchIndex=name-email-make-agencyName-phone-phone2&searchText=${query}&store=${storeId}&searchType=${typeQuery}`);
+          res = await api.get(`/omsGlobals?page=${pagination.page}&limit=${pagination.limit}&status=${status[1]}&searchIndex=name-email-make-store-phone-phone2&searchText=${query}&store=${storeId}&searchType=${typeQuery}`);
 
         }else{
-          res = await api.get(`/omsGlobals?page=${pagination.page}&limit=${pagination.limit}&searchIndex=name-email-make-agencyName-phone-phone2&searchText=${query}&store=${storeId}&searchType=${typeQuery}`)
+          res = await api.get(`/omsGlobals?page=${pagination.page}&limit=${pagination.limit}&searchIndex=name-email-make-store-phone-phone2&searchText=${query}&store=${storeId}&searchType=${typeQuery}`)
         }
 
       }else{
@@ -169,15 +169,15 @@ const OmsGlobalState = props => {
         if(tabs.includes('temperature')){
 
           let temp = tabs.split('.');
-          res = await api.get(`/omsGlobals?page=${pagination.page}&limit=${pagination.limit}&rating=${temp[1]}&searchIndex=name-email-make-agencyName-phone-phone2&searchText=${query}&agent=${userId}&searchType=${typeQuery}`);
+          res = await api.get(`/omsGlobals?page=${pagination.page}&limit=${pagination.limit}&rating=${temp[1]}&searchIndex=name-email-make-store-phone-phone2&searchText=${query}&agent=${userId}&searchType=${typeQuery}`);
 
         }else if(tabs.includes('status')){
 
           let status = tabs.split('.');
-          res = await api.get(`/omsGlobals?page=${pagination.page}&limit=${pagination.limit}&status=${status[1]}&searchIndex=name-email-make-agencyName-phone-phone2&searchText=${query}&agent=${userId}&searchType=${typeQuery}`);
+          res = await api.get(`/omsGlobals?page=${pagination.page}&limit=${pagination.limit}&status=${status[1]}&searchIndex=name-email-make-store-phone-phone2&searchText=${query}&agent=${userId}&searchType=${typeQuery}`);
 
         }else{
-          res = await api.get(`/omsGlobals?page=${pagination.page}&limit=${pagination.limit}&searchIndex=name-email-make-agencyName-phone-phone2&searchText=${query}&agent=${userId}&searchType=${typeQuery}`)
+          res = await api.get(`/omsGlobals?page=${pagination.page}&limit=${pagination.limit}&searchIndex=name-email-make-store-phone-phone2&searchText=${query}&agent=${userId}&searchType=${typeQuery}`)
         }
 
       }else{

@@ -14,7 +14,7 @@ const GuestGuard = ({ children }) => {
       loadUser();
       setLoadedUser(true)
     }
-    return <Redirect to="/app/management/leads" />;
+    return <Redirect to="/app/management/omsLeads" />;
   }
 
   return (

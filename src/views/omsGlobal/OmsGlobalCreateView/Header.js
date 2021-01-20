@@ -38,7 +38,7 @@ const Header = ({ className, ...rest }) => {
           <Link
             variant="body1"
             color="inherit"
-            to="/app/management/leads"
+            to="/app/management/omsLeads"
             component={RouterLink}
           >
             {t("BreadCumbs.Management")}

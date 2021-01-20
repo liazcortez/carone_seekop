@@ -26,7 +26,7 @@ import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 
 import useMake from 'src/hooks/useMake';
 import useAuth from 'src/hooks/useAuth';
-import useSource from 'src/hooks/useSource';
+import useCompany from 'src/hooks/useCompany';
 import { useTranslation } from 'react-i18next'
 
 const useStyles = makeStyles(theme => ({
@@ -46,17 +46,26 @@ const ApexChartsView = ({ className, ...rest }) => {
   const [storeSearch, setStoreSearch] = useState('');
   const [makeSearch, setMakeSearch] = useState('');
   const { user } = useAuth();
-  const [sourceSearch, setSourceSearch] = useState('');
+  const [companySearch, setCompanySearch] = useState('');
   const [typeBar, setTypeBar] = useState('column');
-  const { sources, getSources } = useSource();
+  const { companies, getCompanies } = useCompany();
   const { makes, getMakes } = useMake();
   const { t } = useTranslation()
 
 
   useEffect(() => {
-    getOmsGlobalsAR(`${makeSearch}${sourceSearch}${storeSearch}&after=${moment().subtract(12, 'months').format('YYYY-MM-DD')}&chart=daily`)
+    if(user && user.role && (user.role === 'rockstar' || user.role === 'super admin'))
+    getOmsGlobalsAR(`${makeSearch}${companySearch}${storeSearch}&after=${moment().subtract(12, 'months').format('YYYY-MM-DD')}&chart=daily`)
     //eslint-disable-next-line
   }, []);
+
+  useEffect(() => {
+    if(user && user.role && user.store && (user.role === 'admin' || user.role === 'user') ){
+      setMakeSearch(`&make=${user.store.make._id}`)
+      setStoreSearch(`&store=${user.store._id}`)
+    }
+    //eslint-disable-next-line
+  }, [user]);
 
   useEffect(()=>{
     setStoreSearch('&store=')
@@ -66,7 +75,7 @@ const ApexChartsView = ({ className, ...rest }) => {
   useEffect(()=>{
     clearState()
     getMakes();
-    getSources();
+    getCompanies();
     getStores();
     //eslint-disable-next-line
   },[])
@@ -76,17 +85,17 @@ const ApexChartsView = ({ className, ...rest }) => {
   };
 
   const reload = () =>{
-    getOmsGlobalsAR(`${makeSearch}${sourceSearch}${storeSearch}&after=${moment().subtract(12, 'months').format('YYYY-MM-DD')}&chart=daily`)
+    getOmsGlobalsAR(`${makeSearch}${companySearch}${storeSearch}&after=${moment().subtract(12, 'months').format('YYYY-MM-DD')}&chart=daily`)
 
   }
 
   useEffect(()=>{
     if(contar > 1){
-      getOmsGlobalsAR(`${makeSearch}${sourceSearch}${storeSearch}&after=${moment().subtract(12, 'months').format('YYYY-MM-DD')}&chart=daily`)
+      getOmsGlobalsAR(`${makeSearch}${companySearch}${storeSearch}&after=${moment().subtract(12, 'months').format('YYYY-MM-DD')}&chart=daily`)
     }
     contar++;
     //eslint-disable-next-line
-  },[makeSearch, sourceSearch, storeSearch])
+  },[makeSearch, companySearch, storeSearch])
 
   return (
     <Page className={classes.root} title="ApexCharts">
@@ -121,6 +130,7 @@ const ApexChartsView = ({ className, ...rest }) => {
 
         <Grid container spacing={3} style={{marginBottom: 35}}>
           {user && (user.role === 'rockstar' || user.role === 'super admin') ? (
+            <>
             <Grid item xs={4} md={4}>
             <Typography variant='body1' color='textPrimary'>
                 {t("Charts.Make")}
@@ -151,54 +161,55 @@ const ApexChartsView = ({ className, ...rest }) => {
                 ))}
             </TextField>
           </Grid>
-          ):false}
+          <Grid item xs={4} md={4}>
+              <Typography variant='body1' color='textPrimary'>
+              {t("Charts.Store")}
+              </Typography>
+              <TextField
+                  id='inputStore'
+                  fullWidth
+                  name="store"
+                  onChange={(e)=>{ setStoreSearch(`&store=${e.target.value}`)}}
+                  select
+                  required
+                  variant="outlined"
+                  SelectProps={{ native: true }}
+                  >
+                  <option key={0} value={''}>{t("Tabs.All")}</option>
+
+                  {stores && stores.map(store => (
+                      <option key={store._id} value={store._id}>
+                        {CapitalizeNames(store.make.name) + ' ' + CapitalizeNames(store.name)}
+                      </option>
+                  ))}
+              </TextField>
+          </Grid>
           <Grid item xs={4} md={4}>
             <Typography variant='body1' color='textPrimary'>
-            {t("Charts.Source")}
+            {t("Charts.Company")}
             </Typography>
             <TextField
-                fullWidth
-                name="source"
-                onChange={(e)=>{ 
-                  setSourceSearch(`&source=${e.target.value}`)
-                }}
-                select
-                required
-                variant="outlined"
-                SelectProps={{ native: true }}
-                >
-                <option key={0} value={''}>{t("Tabs.All")}</option>
-
-                {sources && sources.map(source => (
-                    <option key={source._id} value={source._id}>
-                    {CapitalizeNames(source.name)}
-                    </option>
-                ))}
-            </TextField>
+              fullWidth
+              name="company"
+              onChange={(e)=>{ 
+                setCompanySearch(`&company=${e.target.value}`)
+              }}
+              select
+              required
+              variant="outlined"
+              SelectProps={{ native: true }}
+              >
+              <option key={0} value={''}>{t("Tabs.All")}</option>
+                {companies && companies.map(company => (
+                  <option key={company._id} value={company._id}>
+                  {CapitalizeNames(company.name)}
+                  </option>
+              ))}
+              </TextField>
             </Grid>
-            <Grid item xs={4} md={4}>
-          <Typography variant='body1' color='textPrimary'>
-            {t("Charts.Store")}
-            </Typography>
-            <TextField
-                id='inputStore'
-                fullWidth
-                name="store"
-                onChange={(e)=>{ setStoreSearch(`&store=${e.target.value}`)}}
-                select
-                required
-                variant="outlined"
-                SelectProps={{ native: true }}
-                >
-                <option key={0} value={''}>{t("Tabs.All")}</option>
+            </>
+          ):false}
 
-                {stores && stores.map(store => (
-                    <option key={store._id} value={store._id}>
-                      {CapitalizeNames(store.make.name) + ' ' + CapitalizeNames(store.name)}
-                    </option>
-                ))}
-            </TextField>
-            </Grid>
             <Grid item xs={12} md={12} container
               direction="row"
               justify="center"

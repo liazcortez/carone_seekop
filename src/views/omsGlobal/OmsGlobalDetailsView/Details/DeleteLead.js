@@ -47,7 +47,7 @@ import {
         enqueueSnackbar(t("SnackBar.LeadDeleted"), {
           variant: 'error'
         });
-        history.push("/app/management/leads");
+        history.push("/app/management/omsLeads");
     }
     
     return (
