@@ -41,7 +41,7 @@ const VehicleState = props => {
     clearState();
     setLoading();
     try {
-      const res = await api.get(`/vehicles`);
+      const res = await api.get(`/vehicles?sort=model`);
       dispatch({ type: GET_VEHICLES, payload: res.data.data });
     } catch (err) {
       dispatch({ type: SET_ERROR, payload: err.response.data})

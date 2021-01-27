@@ -28,7 +28,7 @@ const CompanyState = props => {
     clearState();
     setLoading();
     try {
-      const res = await api.get(`/companies`);
+      const res = await api.get(`/companies?sort=name`);
       dispatch({ type: GET_COMPANIES, payload: res.data.data });
     } catch (err) {
       dispatch({ type: SET_ERROR, payload: err.response.data });

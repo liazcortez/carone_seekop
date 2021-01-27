@@ -140,6 +140,7 @@ const Csv = ({ className, ...rest }) => {
                   <TextField
                     select
                     required
+                    label={t("Stores.Store")}
                     fullWidth
                     variant="outlined"
                     disabled={user && user.role === 'admin'}

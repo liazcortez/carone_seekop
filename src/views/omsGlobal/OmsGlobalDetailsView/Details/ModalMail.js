@@ -249,7 +249,8 @@ const Compose = ({isMailOpen, setMailOpen, store}) => {
         }
         {
             state !== null  && documents && documents.map(doc => (
-              <Button
+            <Button
+              style={{marginLeft: 10, marginRight: 10, paddingRight: 15}}
               key={doc._id}
               name={doc.title}
               onClick={(e) => {

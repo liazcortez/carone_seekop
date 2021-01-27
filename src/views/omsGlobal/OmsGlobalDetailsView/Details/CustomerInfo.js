@@ -99,6 +99,19 @@ const CustomerInfo = ({ customer, className, ...rest }) => {
             </TableCell>
           </TableRow>
           <TableRow>
+            <TableCell className={classes.fontWeightMedium}>{t("OmsGlobals.AgencyName")}</TableCell>
+            <TableCell>
+              <Typography variant="body2" color="textSecondary">
+                {
+                  customer &&
+                  customer.store &&
+                  customer.store.name &&
+                  CapitalizeNames(customer.store.name)
+                }
+              </Typography>
+            </TableCell>
+          </TableRow>
+          <TableRow>
               <TableCell className={classes.fontWeightMedium}>{t("OmsGlobals.Updated")}</TableCell>
               <TableCell>
                 <Typography variant="body2" color="textSecondary">

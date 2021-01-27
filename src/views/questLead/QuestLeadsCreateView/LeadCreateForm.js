@@ -48,7 +48,7 @@ const LeadCreateForm = ({
   const { sources, getSources } = useSource();
   const { vehicles, getVehiclesByMake } = useVehicle();
   const storeContext = useContext(StoreContext);
-  const { createQuestLead, getQuestLeads, error, clearState, loading } = useQuestLead();
+  const { createQuestLead, error, clearState, loading } = useQuestLead();
   const history = useHistory();
   const [submitedForm, setSubmitedForm] = useState(false);
   const [disableStoreInput, setDisableStoreInput] = useState(false)
@@ -126,7 +126,6 @@ const LeadCreateForm = ({
             sellerEmail: '',
             source: '',
             date: moment().format('YYYY-MM-DD'),
-            hour: '',
             onAccount: '',
             model: ''
           }}
@@ -148,7 +147,6 @@ const LeadCreateForm = ({
             try {
               
               await createQuestLead(values);
-              await getQuestLeads();
               setSubmitedForm(true);
 
             } catch (err) {

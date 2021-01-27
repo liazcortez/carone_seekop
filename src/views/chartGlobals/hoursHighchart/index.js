@@ -19,6 +19,7 @@ import BackDrop from 'src/components/Backdrop';
 import { CapitalizeNames } from 'src/utils/capitalize';
 import Page from 'src/components/Page';
 import LineChart from './Chart';
+import useStore from 'src/hooks/useStore';
 import useOmsGlobal from 'src/hooks/useOmsGlobal';
 import moment from 'moment';
 import { 
@@ -46,8 +47,10 @@ const ApexChartsView = ({ className, ...rest }) => {
   const { chart, getOmsGlobalsAR, loading, clearState } = useOmsGlobal();
   const actionRef = useRef(null);
   const [isMenuOpen, setMenuOpen] = useState(false);
+  const { stores, getStores, getStoresByMake } = useStore();
   const { companies, getCompanies } = useCompany();
   const [makeSearch, setMakeSearch] = useState('');
+  const [storeSearch, setStoreSearch] = useState('');
   const [date, setDate] = useState(`&after=${moment().startOf('month').format('YYYY-MM-DD')}`);
   const { user } = useAuth();
   const [companySearch, setCompanySearch] = useState('');
@@ -80,18 +83,28 @@ const ApexChartsView = ({ className, ...rest }) => {
 
   const [timeRange, setTimeRange] = useState(timeRanges[2].text);
   useEffect(() => {
-    getOmsGlobalsAR(`${makeSearch}${companySearch}${date}&chart=hour`)
+    if(user && user.role && (user.role === 'rockstar' || user.role === 'super admin'))
+    getOmsGlobalsAR(`${makeSearch}${companySearch}${storeSearch}${date}&chart=hour`)
     //eslint-disable-next-line
   }, []);
 
   const reload = () =>{
-    getOmsGlobalsAR(`${makeSearch}${companySearch}${date}&chart=hour`)
+    getOmsGlobalsAR(`${makeSearch}${companySearch}${storeSearch}${date}&chart=hour`)
   }
+
+  useEffect(() => {
+    if(user && user.role && user.store && (user.role === 'admin' || user.role === 'user') ){
+      setMakeSearch(`&make=${user.store.make._id}`)
+      setStoreSearch(`&store=${user.store._id}`)
+    }
+    //eslint-disable-next-line
+  }, [user]);
 
   useEffect(()=>{
     clearState();
     getMakes();
     getCompanies();
+    getStores();
     //eslint-disable-next-line
   },[])
 
@@ -101,7 +114,7 @@ const ApexChartsView = ({ className, ...rest }) => {
     }
     contar ++;
     //eslint-disable-next-line
-  },[makeSearch, companySearch, date,])
+  },[makeSearch, companySearch, storeSearch, date])
 
 
   const handleChangeTime = filter => {
@@ -132,7 +145,11 @@ const ApexChartsView = ({ className, ...rest }) => {
 
         break;
       case 'year':
-        setDate(`&after=${moment().startOf('year').format('YYYY-MM-DD')}`);
+        setDate(`&after=${
+          moment()
+            .startOf('month')
+            .subtract('12', 'months').format('YYYY-MM-DD')
+        }`);
         break;
 
       default:
@@ -210,14 +227,22 @@ const ApexChartsView = ({ className, ...rest }) => {
 
         <Grid container spacing={3} style={{marginBottom: 35}}>
           {user && (user.role === 'rockstar'|| user.role === 'super admin') ? (
-            <Grid item xs={6} md={6}>
+            <>
+            <Grid item xs={12} sm={12} md={4} lg={4}>
             <Typography variant='body1' color='textPrimary'>
                 {t("Charts.Make")}
             </Typography>
             <TextField
                 fullWidth
                 name="make"
-                onChange={(e)=>{  setMakeSearch(`&make=${e.target.value}`) }}
+                onChange={(e)=>{  
+                  setMakeSearch(`&make=${e.target.value}`) 
+                  if(e.target.value === ''){
+                    getStores()
+                  }else{
+                    getStoresByMake(e.target.value)
+                  }
+                }}
                 disabled={user && (user.role === 'rockstar'|| user.role === 'super admin') ? false : true}
                 select
                 variant="outlined"
@@ -232,8 +257,29 @@ const ApexChartsView = ({ className, ...rest }) => {
                 ))}
             </TextField>
           </Grid>
-          ):false}
-          <Grid item xs={6} md={6}>
+          <Grid item xs={12} sm={12} md={4} lg={4}>
+            <Typography variant='body1' color='textPrimary'>
+                {t("Charts.Store")}
+            </Typography>
+            <TextField
+                fullWidth
+                name="store"
+                onChange={(e)=>{  setStoreSearch(`&store=${e.target.value}`) }}
+                disabled={user && (user.role === 'rockstar'|| user.role === 'super admin') ? false : true}
+                select
+                variant="outlined"
+                SelectProps={{ native: true }}
+                >
+                <option key={0} value={''}>{t("Tabs.All")}</option>
+
+                {stores && stores.map(store => (
+                    <option key={store._id} value={store._id}>
+                      {CapitalizeNames(store.make.name + ' ' + store.name)}
+                    </option>
+                ))}
+            </TextField>
+          </Grid>
+          <Grid item xs={12} sm={12} md={4} lg={4}>
             <Typography variant='body1' color='textPrimary'>
             {t("Charts.Company")}
             </Typography>
@@ -257,7 +303,8 @@ const ApexChartsView = ({ className, ...rest }) => {
                 ))}
             </TextField>
             </Grid>
-            
+            </>
+            ):false}
             <Grid item xs={12} md={12} container
               direction="row"
               justify="center"

@@ -27,7 +27,7 @@ const SourceState = props => {
   const getSources = async () => {
     setLoading();
     try {
-      const res = await api.get(`/sources`);
+      const res = await api.get(`/sources?sort=name`);
 
       dispatch({ type: GET_SOURCES, payload: res.data.data });
     } catch (err) {

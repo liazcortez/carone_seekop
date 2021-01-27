@@ -155,7 +155,11 @@ const ApexChartsView = ({ className, ...rest }) => {
 
         break;
       case 'year':
-        setDate(`&after=${moment().startOf('year').format('YYYY-MM-DD')}`);
+        setDate(`&after=${
+          moment()
+            .startOf('month')
+            .subtract('12', 'months').format('YYYY-MM-DD')
+        }`);
         break;
 
       default:

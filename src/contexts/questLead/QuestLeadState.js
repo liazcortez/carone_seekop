@@ -272,7 +272,8 @@ const QuestLeadState = props => {
     clearState();
     setLoading();
     try {
-      const res = await api.post(`/questLeads`, { ...questLead }, config);
+      const res = await api.post(`/questLeads/createFromDealer`, { ...questLead }, config);
+      console.log(res)
       dispatch({ type: CREATE_QUESTLEAD, payload: res.data.data });
     } catch (err) {
       dispatch({ type: SET_ERROR, payload: err.response.data });

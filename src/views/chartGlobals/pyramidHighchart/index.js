@@ -20,6 +20,7 @@ import PyramidChart from './PyramidChart';
 import useMake from 'src/hooks/useMake';
 import useOmsGlobal from 'src/hooks/useOmsGlobal';
 import moment from 'moment';
+import useStore from 'src/hooks/useStore';
 import { Calendar as CalendarIcon } from 'react-feather';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import useAuth from 'src/hooks/useAuth';
@@ -41,6 +42,8 @@ const ApexChartsView = ({ className, ...rest }) => {
   const { chart, getOmsGlobalsAR, loading, clearState } = useOmsGlobal();
   const actionRef = useRef(null);
   const [makeSearch, setMakeSearch] = useState('');
+  const [storeSearch, setStoreSearch] = useState('');
+  const { stores, getStores, getStoresByMake } = useStore();
   const { makes, getMakes } = useMake();
   const { user } = useAuth();
   const [companySearch, setCompanySearch] = useState('');
@@ -73,29 +76,29 @@ const ApexChartsView = ({ className, ...rest }) => {
 
   const [timeRange, setTimeRange] = useState(timeRanges[2].text);
   useEffect(() => {
-    getOmsGlobalsAR(`${makeSearch}${companySearch}${date}&chart=statusHC`)
-
-
+    if(user && user.role && (user.role === 'rockstar' || user.role === 'super admin'))
+    getOmsGlobalsAR(`${makeSearch}${companySearch}${storeSearch}${date}&chart=statusHC`)
     //eslint-disable-next-line
   }, []);
 
   useEffect(()=>{
     clearState();
     getMakes();
+    getStores();
     getCompanies();
     //eslint-disable-next-line
   },[])
 
   useEffect(()=>{
     if(contar > 0){
-      getOmsGlobalsAR(`${makeSearch}${companySearch}${date}&chart=statusHC`)
+      getOmsGlobalsAR(`${makeSearch}${companySearch}${storeSearch}${date}&chart=statusHC`)
     }
     contar ++;
     //eslint-disable-next-line
-  },[makeSearch, companySearch, date])
+  },[makeSearch, companySearch, storeSearch, date])
 
   const reload= () =>{
-    getOmsGlobalsAR(`${makeSearch}${companySearch}${date}&chart=statusHC`)
+    getOmsGlobalsAR(`${makeSearch}${companySearch}${storeSearch}${date}&chart=statusHC`)
 
   }
 
@@ -128,8 +131,11 @@ const ApexChartsView = ({ className, ...rest }) => {
 
         break;
       case 'year':
-        setDate(`&after=${moment().startOf('year').format('YYYY-MM-DD')}`);
-
+        setDate(`&after=${
+          moment()
+            .startOf('month')
+            .subtract('12', 'months').format('YYYY-MM-DD')
+        }`);
         break;
 
       default:
@@ -204,7 +210,8 @@ const ApexChartsView = ({ className, ...rest }) => {
         </Grid>
         <Grid container spacing={3} style={{marginBottom: 35}}>
           {user && (user.role === 'rockstar'|| user.role === 'super admin') ? (
-            <Grid item xs={4} md={4}>
+          <>
+          <Grid item xs={4} md={4}>
             <Typography variant='body1' color='textPrimary'>
             {t("Charts.Make")}
             </Typography>
@@ -213,7 +220,11 @@ const ApexChartsView = ({ className, ...rest }) => {
                 name="make"
                 onChange={(e)=>{ 
                   setMakeSearch(`&make=${e.target.value}`)
-
+                  if(e.target.value === ''){
+                    getStores()
+                  }else{
+                    getStoresByMake(e.target.value)
+                  }
 
                 }}
                 disabled={user && (user.role === 'rockstar'|| user.role === 'super admin') ? false : true}
@@ -230,7 +241,32 @@ const ApexChartsView = ({ className, ...rest }) => {
                 ))}
             </TextField>
           </Grid>
-          ):false}
+          <Grid item xs={4} md={4}>
+            <Typography variant='body1' color='textPrimary'>
+            {t("Charts.Store")}
+            </Typography>
+            <TextField
+                fullWidth
+                name="store"
+                onChange={(e)=>{ 
+                  setStoreSearch(`&store=${e.target.value}`)
+
+
+                }}
+                disabled={user && (user.role === 'rockstar'|| user.role === 'super admin') ? false : true}
+                select
+                variant="outlined"
+                SelectProps={{ native: true }}
+                >
+                <option key={0} value={''}>{t("Tabs.All")}</option>
+
+                {stores && stores.map(store => (
+                    <option key={store._id} value={store._id}>
+                    {CapitalizeNames(store.make.name + ' ' + store.name)}
+                    </option>
+                ))}
+            </TextField>
+          </Grid>
           <Grid item xs={4} md={4}>
             <Typography variant='body1' color='textPrimary'>
             {t("Charts.Company")}
@@ -254,7 +290,10 @@ const ApexChartsView = ({ className, ...rest }) => {
                     </option>
                 ))}
             </TextField>
-            </Grid>
+          </Grid>
+          </>
+          ):false}
+
         </Grid>
         <Grid container spacing={3}>
           <Grid item xs={12}>

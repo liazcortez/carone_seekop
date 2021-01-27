@@ -26,7 +26,7 @@ const HomeView = () => {
       </Page>
     );
   } else {
-    return <Redirect to="/app/management/leads" />;
+    return <Redirect to="/app/management/omsLeads" />;
   }
 };
 

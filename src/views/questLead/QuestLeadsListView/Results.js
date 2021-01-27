@@ -217,13 +217,9 @@ const Results = ({
     }
   };
 
-
-
   const handleQueryChange = event => {
-    event.persist();
     setQuery(event.target.value);
   };
-
 
   const handlePageChange = (event, newPage) => {
     setPage(newPage);

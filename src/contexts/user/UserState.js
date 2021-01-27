@@ -29,7 +29,7 @@ const UserState = props => {
     clearState();
     setLoading();
     try {
-      const res = await api.get(`/users`);
+      const res = await api.get(`/users?sort=name`);
       dispatch({ type: GET_USERS, payload: res.data.data });
     } catch (err) {
       dispatch({ type: SET_ERROR, payload: err.response.data})

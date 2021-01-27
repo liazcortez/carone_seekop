@@ -45,7 +45,7 @@ const applyFilters = (stores, query) => {
 
       properties.forEach(property => {
         if(property !== 'make'){
-          if (store[property].toLowerCase().includes(query.toLowerCase())) {
+          if (store[property] && store[property].toLowerCase().includes(query.toLowerCase())) {
             containsQuery = true;
           }
         }else{

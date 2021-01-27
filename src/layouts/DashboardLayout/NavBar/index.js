@@ -21,7 +21,6 @@ import {
 } from '@material-ui/core';
 import {
   BarChart as BarChartIcon,
-  PieChart as PieChartIcon,
   Database as DatabaseIcon,
   Coffee as ControlIcon,
   Facebook as SourceIcon,
@@ -37,7 +36,6 @@ import {
   Sidebar as MultiBarIcon,
   Clock as HourIcon,
   File as DocumentIcon,
-  MessageCircle as WhatsappIcon,
   UploadCloud as LoadIcon
 } from 'react-feather';
 import Logo from 'src/components/Logo';
@@ -193,7 +191,7 @@ const NavBar = ({ onMobileClose, openMobile, ...rest }) => {
           title: t('Navbar.Control'),
           icon: ControlIcon,
           href:
-            loc.pathname === '/app/management/leads'
+            loc.pathname === '/app/management/omsLeads'
               ? '/none'
               : '/app/management',
 
@@ -249,25 +247,7 @@ const NavBar = ({ onMobileClose, openMobile, ...rest }) => {
     }
   ];
 
-  const sectionsUser = [
-    {
-      subheader: t('Navbar.Main'),
-      items: [
-        {
-          title: t('Navbar.Leads'),
-          icon: DatabaseIcon,
-          href: '/app/management/leads'
-        },
-        {
-          title: t('Chat.Title'),
-          icon: WhatsappIcon,
-          href: '/conversations'
-        }
-      ]
-    }
-  ];
-
-  const sectionsRockstar = [
+  const adminSection = [
     {
       subheader: t('Navbar.Oms'),
       items: [
@@ -355,37 +335,27 @@ const NavBar = ({ onMobileClose, openMobile, ...rest }) => {
     },
   ];
 
-  const sectionsAdmin = [
+  const userSection = [
     {
-      subheader: t('Navbar.Main'),
+      subheader: t('Navbar.Oms'),
       items: [
-        {
-          title: t('Navbar.Dashboard'),
-          icon: PieChartIcon,
-          href: '/app/reports/dashboardAdmin'
-        },
         {
           title: t('Navbar.Leads'),
           icon: DatabaseIcon,
-          href: '/app/management/leads'
-        },
+          href: '/app/management/omsLeads'
+        }
+      ]
+    },
+    {
+      subheader: t('Navbar.QuestLeads'),
+      items: [
         {
-          title: t('Navbar.Calendar'),
-          icon: CalendarIcon,
-          href: '/app/calendar'
-        },
-        {
-          title: t('Chat.Title'),
-          icon: WhatsappIcon,
-          href: '/conversations'
-        },
-        {
-          title: t('Navbar.LoadLeads'),
-          href: '/app/management/loadLeads',
-          icon: LoadIcon
+          title: t('Navbar.Leads'),
+          icon: DatabaseIcon,
+          href: '/app/management/questLeads'
         },
       ]
-    }
+    },
   ];
 
   useEffect(() => {
@@ -455,10 +425,12 @@ const NavBar = ({ onMobileClose, openMobile, ...rest }) => {
           </Box>
         </Box>
         <Divider />
-        {user
-          ? user.role === 'rockstar' || user.role === 'super admin'
-            ? sectionsRockstar.map(section => (
-                <Box p={2} key={Math.random() + Math.random()}>
+       
+        {
+          user
+            ? user.role === 'user'
+              ? userSection.map(section => (
+                <Box p={2} key={Math.random()}>
                   <List
                     key={section.subheader + Math.random()}
                     subheader={
@@ -466,7 +438,7 @@ const NavBar = ({ onMobileClose, openMobile, ...rest }) => {
                         {section.subheader}
                       </ListSubheader>
                     }
-                  >
+                    >
                     {renderNavItems({
                       items: section.items,
                       pathname: location.pathname
@@ -474,13 +446,14 @@ const NavBar = ({ onMobileClose, openMobile, ...rest }) => {
                   </List>
                 </Box>
               ))
-            : false
-          : false}
-
-        {user
-          ? user.role === 'admin'
-            ? sectionsAdmin.map(section => (
-                <Box p={2} key={Math.random() + Math.random() + Math.random()}>
+          : false
+          : false
+        }
+        {
+          user
+          ? user.role === 'admin' || user.role === 'rockstar' || user.role === 'super admin'
+          ? adminSection.map(section => (
+            <Box p={2} key={Math.random()}>
                   <List
                     key={section.subheader + Math.random()}
                     subheader={
@@ -488,7 +461,7 @@ const NavBar = ({ onMobileClose, openMobile, ...rest }) => {
                         {section.subheader}
                       </ListSubheader>
                     }
-                  >
+                    >
                     {renderNavItems({
                       items: section.items,
                       pathname: location.pathname
@@ -496,34 +469,13 @@ const NavBar = ({ onMobileClose, openMobile, ...rest }) => {
                   </List>
                 </Box>
               ))
-            : false
-          : false}
-
-        {user
-          ? user.role === 'user'
-            ? sectionsUser.map(section => (
-                <Box p={2} key={Math.random() + Math.random() + Math.random()}>
-                  <List
-                    key={section.subheader + Math.random()}
-                    subheader={
-                      <ListSubheader disableGutters disableSticky>
-                        {section.subheader}
-                      </ListSubheader>
-                    }
-                  >
-                    {renderNavItems({
-                      items: section.items,
-                      pathname: location.pathname
-                    })}
-                  </List>
-                </Box>
-              ))
-            : false
-          : false}
-
-        {user
-          ? user.role === 'rockstar' || user.role === 'super admin'
-            ? rockstarSection.map(section => (
+          : false
+          : false
+        }
+        {
+          user
+            ? user.role === 'rockstar' || user.role === 'super admin'
+              ? rockstarSection.map(section => (
                 <Box p={2} key={Math.random()}>
                   <List
                     key={section.subheader + Math.random()}
@@ -540,12 +492,15 @@ const NavBar = ({ onMobileClose, openMobile, ...rest }) => {
                   </List>
                 </Box>
               ))
-            : false
-          : false}
+          : false
+          : false
+        }
+
+        
       </PerfectScrollbar>
     </Box>
   );
-
+  
   return (
     <>
       <Hidden lgUp>
