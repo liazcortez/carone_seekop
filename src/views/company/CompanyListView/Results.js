@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import SimpleDialog from 'src/components/SimpleDialog'
 import useCompany from 'src/hooks/useCompany';
-import wait from 'src/utils/wait';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSync } from '@fortawesome/free-solid-svg-icons'
 import { CapitalizeNames } from 'src/utils/capitalize'

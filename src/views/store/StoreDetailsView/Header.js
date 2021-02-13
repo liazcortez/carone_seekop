@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
 const Header = ({ className, store, ...rest }) => {
   const classes = useStyles();
   const { user } = useAuth();
-  const { deleteStore, getStores } = useStore();
+  const { deleteStore } = useStore();
   const { t } = useTranslation()
   const { enqueueSnackbar } = useSnackbar();  
   const history = useHistory();
@@ -50,7 +50,6 @@ const Header = ({ className, store, ...rest }) => {
     setOpen(false);
     if(value === 'yes'){      
       deleteStore(route.id);
-      getStores();
       enqueueSnackbar(t("SnackBar.StoreDeleted"), {
         variant: 'error'
       });

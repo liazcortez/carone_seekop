@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
 const Header = ({ className, vehicle, ...rest }) => {
   const classes = useStyles();
   const { user } = useAuth();
-  const { deleteVehicle, getVehicles } = useVehicle();
+  const { deleteVehicle } = useVehicle();
   const { enqueueSnackbar } = useSnackbar();  
   const history = useHistory();
   const route = useParams();
@@ -49,7 +49,6 @@ const Header = ({ className, vehicle, ...rest }) => {
     setOpen(false);
     if(value === 'yes'){      
       deleteVehicle(route.id);
-      getVehicles();
       enqueueSnackbar(t("SnackBar.VehicleDeleted"), {
         variant: 'error'
       });

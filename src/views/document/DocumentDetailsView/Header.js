@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
 const Header = ({ className, document, ...rest }) => {
   const classes = useStyles();
   const { user } = useAuth();
-  const { deleteDocument, getDocuments } = useDocument();
+  const { deleteDocument } = useDocument();
   const { enqueueSnackbar } = useSnackbar();  
   const history = useHistory();
   const route = useParams();
@@ -49,7 +49,6 @@ const Header = ({ className, document, ...rest }) => {
     setOpen(false);
     if(value === 'yes'){      
       deleteDocument(route.id);
-      getDocuments();
       enqueueSnackbar(t("SnackBar.DocumentDeleted"), {
         variant: 'error'
       });

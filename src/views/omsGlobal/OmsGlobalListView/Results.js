@@ -202,7 +202,6 @@ const Results = ({
     if(value === 'yes'){
       selectedOmsGlobals.map(id => deleteOmsGlobal(id));
       setSelectedOmsGlobals([])
-
     }
   };
 

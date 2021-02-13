@@ -38,7 +38,7 @@ import { useTranslation } from 'react-i18next';
   const DeleteVehicle = ({ className, ...rest }) => {
     const classes = useStyles();
 
-    const { deleteVehicle, getVehicles } = useVehicle();
+    const { deleteVehicle } = useVehicle();
     const route = useParams();
     const history = useHistory();
     const { enqueueSnackbar } = useSnackbar();  
@@ -49,7 +49,6 @@ import { useTranslation } from 'react-i18next';
       setOpen(false);
       if(value === 'yes'){      
         deleteVehicle(route.id);
-        getVehicles();
         enqueueSnackbar(t("SnackBar.VehicleDeleted"), {
           variant: 'error'
         });

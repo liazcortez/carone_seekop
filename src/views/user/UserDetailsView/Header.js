@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Header = ({ className, user, ...rest }) => {
   const classes = useStyles();
-  const { deteleUser, getUsers } = useUser();
+  const { deteleUser } = useUser();
   const { enqueueSnackbar } = useSnackbar();  
   const history = useHistory();
   const authContext = useContext(AuthContext);
@@ -49,7 +49,6 @@ const Header = ({ className, user, ...rest }) => {
     setOpen(false);
     if(value === 'yes'){      
       deteleUser(route.id);
-      getUsers();
       enqueueSnackbar(t("SnackBar.UserDeleted"), {
         variant: 'error'
       });

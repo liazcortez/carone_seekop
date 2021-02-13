@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
 const Header = ({ className, customer, ...rest }) => {
   const classes = useStyles();
   const { user } = useAuth();
-  const { deleteQuestLeads, getQuestLeads } = useQuestLead();
+  const { deleteQuestLeads } = useQuestLead();
   const { enqueueSnackbar } = useSnackbar();  
   const history = useHistory();
   const { t } = useTranslation();
@@ -48,7 +48,6 @@ const Header = ({ className, customer, ...rest }) => {
     setOpen(false);
     if(value === 'yes'){      
       deleteQuestLeads(route.id);
-      getQuestLeads();
       enqueueSnackbar(t("SnackBar.QuestLeadsDeleted"), {
         variant: 'error'
       });

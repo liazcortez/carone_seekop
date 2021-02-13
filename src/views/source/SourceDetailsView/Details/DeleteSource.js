@@ -38,7 +38,7 @@ import { useTranslation } from 'react-i18next';
   const DeleteSource = ({ className, ...rest }) => {
     const classes = useStyles();
     const { t } = useTranslation()
-    const { deleteSource, getSources } = useSource();
+    const { deleteSource } = useSource();
     const route = useParams();
     const history = useHistory();
     const { enqueueSnackbar } = useSnackbar();  
@@ -48,7 +48,6 @@ import { useTranslation } from 'react-i18next';
       setOpen(false);
       if(value === 'yes'){      
         deleteSource(route.id);
-        getSources();
         enqueueSnackbar(t("SnackBar.SourceDeleted"), {
           variant: 'error'
         });

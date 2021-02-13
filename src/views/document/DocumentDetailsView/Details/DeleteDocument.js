@@ -38,7 +38,7 @@ import { useTranslation } from 'react-i18next';
   const DeleteDocument = ({ className, ...rest }) => {
     const classes = useStyles();
     const { t } = useTranslation()
-    const { deleteDocument, getDocuments } = useDocument();
+    const { deleteDocument } = useDocument();
     const route = useParams();
     const history = useHistory();
     const { enqueueSnackbar } = useSnackbar();  
@@ -48,7 +48,6 @@ import { useTranslation } from 'react-i18next';
       setOpen(false);
       if(value === 'yes'){      
         deleteDocument(route.id);
-        getDocuments();
         enqueueSnackbar(t("SnackBar.DocumentDeleted"), {
           variant: 'error'
         });

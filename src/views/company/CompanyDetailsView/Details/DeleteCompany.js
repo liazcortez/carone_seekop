@@ -38,7 +38,7 @@ import { useTranslation } from 'react-i18next';
   const DeleteCompany = ({ className, ...rest }) => {
     const classes = useStyles();
 
-    const { deleteCompany, getCompanies } = useCompany();
+    const { deleteCompany } = useCompany();
     const route = useParams();
     const history = useHistory();
     const { enqueueSnackbar } = useSnackbar();  
@@ -49,7 +49,6 @@ import { useTranslation } from 'react-i18next';
       setOpen(false);
       if(value === 'yes'){      
         deleteCompany(route.id);
-        getCompanies();
         enqueueSnackbar('Company deleted', {
           variant: 'error'
         });
