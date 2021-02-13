@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import SimpleDialog from 'src/components/SimpleDialog'
 import useUser from 'src/hooks/useUser';
-import wait from 'src/utils/wait';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSync } from '@fortawesome/free-solid-svg-icons'
 import moment from 'moment'
@@ -174,9 +173,7 @@ const Results = ({ className, users, ...rest }) => {
     setOpen(false);
     setSelectedValue(value);
     if(value === 'yes'){
-      await selectedUsers.map(async user => await deleteUser(user));
-      await wait(1000);
-      await getUsers();
+      selectedUsers.map(user => deleteUser(user));
       setSelectedUsers([])
     }
   };

@@ -138,9 +138,7 @@ const Results = ({ className, documents, ...rest }) => {
     setOpen(false);
     setSelectedValue(value);
     if(value === 'yes'){
-      await selectedDocuments.map(async document => await deleteDocument(document));
-      await wait(1000);
-      await getDocuments();
+      selectedDocuments.map(document => deleteDocument(document));
       setSelectedDocuments([])
     }
   };

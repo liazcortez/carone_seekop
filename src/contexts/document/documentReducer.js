@@ -44,6 +44,7 @@ export default (state, action) => {
 
       };
     case DELETE_DOCUMENT:
+      state.documents = state.documents.filter( item => item._id.toString() !== action.payload.toString())
       return {
         ...state,
         document: null,

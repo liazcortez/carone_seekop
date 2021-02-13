@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import Label from 'src/components/Label';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import useQuestLead from 'src/hooks/useQuestLead';
-import wait from 'src/utils/wait';
 import SimpleDialog from 'src/components/SimpleDialog'
 import useStatus from 'src/hooks/useStatus';
 import useAuth from 'src/hooks/useAuth';
@@ -168,8 +167,6 @@ const Results = ({
     setSelectedValue(value);
     if(value === 'yes'){
       selectedQuestLeads.map(id => deleteQuestLead(id));
-      await wait(1000);
-      setInformation();
       setSelectedQuestLeads([])
     }
   };

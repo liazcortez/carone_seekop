@@ -68,7 +68,6 @@ const MakeState = props => {
 
    //Delete Make
    const deleteMake = async (makeId) => {
-    clearState();
     const config =  {
       headers: {
         "Content-Type": "application/json",
@@ -81,7 +80,7 @@ const MakeState = props => {
     try {
       
       const res = await api.delete(`/makes/${makeId}`, config);
-      dispatch({ type: DELETE_MAKE, payload: res.data.data })
+      dispatch({ type: DELETE_MAKE, payload: res.data.deletedId })
     } catch (err) {
       dispatch({ type: SET_ERROR, payload: err.response.data})
 

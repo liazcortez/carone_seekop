@@ -42,6 +42,7 @@ export default (state, action) => {
       };
     
     case DELETE_USER:
+      state.users = state.users.filter( item => item._id.toString() !== action.payload.toString())
       return {
         ...state,
         user: null,

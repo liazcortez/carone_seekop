@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import useStatus from 'src/hooks/useStatus';
 import SimpleDialog from 'src/components/SimpleDialog'
-import wait from 'src/utils/wait';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSync } from '@fortawesome/free-solid-svg-icons'
 import {Capitalize, CapitalizeNames} from 'src/utils/capitalize';
@@ -118,9 +117,7 @@ const Results = ({ className, statuses, ...rest }) => {
     setOpen(false);
     setSelectedValue(value);
     if(value === 'yes'){
-      await selectedStatuses.map(async status => await deleteStatus(status));
-      await wait(1000);
-      await getStatuses();
+      selectedStatuses.map(status => deleteStatus(status));
       setSelectedStatuses([])
     }
   };

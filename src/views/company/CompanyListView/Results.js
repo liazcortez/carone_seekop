@@ -117,9 +117,7 @@ const Results = ({ className, companies, ...rest }) => {
     setOpen(false);
     setSelectedValue(value);
     if(value === 'yes'){
-      await selectedCompanies.map(async company => await deleteCompany(company));
-      await wait(1000);
-      await getCompanies();
+      selectedCompanies.map(company => deleteCompany(company));
       setSelectedCompanies([])
     }
   };

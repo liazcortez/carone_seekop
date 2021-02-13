@@ -4,7 +4,6 @@ import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import useMake from 'src/hooks/useMake';
-import wait from 'src/utils/wait';
 import SimpleDialog from 'src/components/SimpleDialog'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSync } from '@fortawesome/free-solid-svg-icons'
@@ -119,9 +118,7 @@ const Results = ({ className, makes, ...rest }) => {
     setOpen(false);
     setSelectedValue(value);
     if(value === 'yes'){
-      await selectedMakes.map(make => deleteMake(make));
-      await wait(1000);
-      await getMakes();
+      selectedMakes.map(make => deleteMake(make));
       setSelectedMakes([])
     }
   };

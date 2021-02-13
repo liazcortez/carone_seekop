@@ -74,6 +74,7 @@ export default (state, action) => {
       };
     
     case DELETE_OMSGLOBAL:
+      state.omsGlobals = state.omsGlobals.filter( item => item._id.toString() !== action.payload.toString())
       return {
         ...state,
         omsGlobal: null,

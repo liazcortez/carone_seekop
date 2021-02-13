@@ -56,12 +56,11 @@ const SourceState = props => {
         Authorization: `Bearer ${localStorage.getItem("token")}`
       }
     };
-    clearState();
     setLoading();
     try {
       
       const res = await api.delete(`/sources/${sourceId}`, config);
-      dispatch({ type: DELETE_SOURCE, payload: res.data.data })
+      dispatch({ type: DELETE_SOURCE, payload: res.data.deletedId })
     } catch (err) {
       dispatch({ type: SET_ERROR, payload: err.response.data})
 
