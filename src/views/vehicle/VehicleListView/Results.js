@@ -78,8 +78,7 @@ const useStyles = makeStyles(theme => ({
   bulkActions: {
     paddingLeft: 4,
     paddingRight: 4,
-    marginTop: 6,
-    position: 'absolute',
+    marginBottom: '1em',
     width: '100%',
     zIndex: 2,
     backgroundColor: theme.palette.background.default
@@ -233,6 +232,8 @@ const Results = ({ className, vehicles, ...rest }) => {
       <PerfectScrollbar>
         <Box minWidth={700}>
           <Table>
+          {
+            !enableBulkOperations && (
             <TableHead>
               <TableRow>
                 <TableCell padding="checkbox">
@@ -253,6 +254,7 @@ const Results = ({ className, vehicles, ...rest }) => {
 
               </TableRow>
             </TableHead>
+            )}
             <TableBody>
               {paginatedVehicles.map(vehicle => {
                 const isVehicleSelected = selectedVehicles.includes(
