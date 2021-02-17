@@ -23,6 +23,7 @@ export default (state, action) => {
         error: null
       };
     case DELETE_MAKE:
+      state.makes = state.makes.filter( item => item._id.toString() !== action.payload.toString())
       return {
         ...state,
         make: null,

@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import useStore from 'src/hooks/useStore';
 import SimpleDialog from 'src/components/SimpleDialog'
-import wait from 'src/utils/wait';
 import {Capitalize, CapitalizeNames} from 'src/utils/capitalize';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSync } from '@fortawesome/free-solid-svg-icons'
@@ -81,8 +80,7 @@ const useStyles = makeStyles(theme => ({
   bulkActions: {
     paddingLeft: 4,
     paddingRight: 4,
-    marginTop: 6,
-    position: 'absolute',
+    marginBottom: '1em',
     width: '100%',
     zIndex: 2,
     backgroundColor: theme.palette.background.default
@@ -125,9 +123,7 @@ const Results = ({ className, stores, ...rest }) => {
     setOpen(false);
     setSelectedValue(value);
     if(value === 'yes'){
-      await selectedStores.map(async store => await deleteStore(store));
-      await wait(1000);
-      await getStores();
+      selectedStores.map(store => deleteStore(store));
       setSelectedStores([])
     }
   };
@@ -236,6 +232,8 @@ const Results = ({ className, stores, ...rest }) => {
       <PerfectScrollbar>
         <Box minWidth={700}>
           <Table>
+          {
+            !enableBulkOperations && (
             <TableHead>
               <TableRow>
                 <TableCell padding="checkbox">
@@ -256,6 +254,7 @@ const Results = ({ className, stores, ...rest }) => {
                 <TableCell>{t("Stores.CreatedAt")}</TableCell>
             </TableRow>
             </TableHead>
+            )}
             <TableBody>
               {paginatedStores.map(store => {
                 const isStoreSelected = selectedStores.includes(

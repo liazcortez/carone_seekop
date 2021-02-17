@@ -40,6 +40,7 @@ export default (state, action) => {
         error: null
       };
     case DELETE_VEHICLE:
+      state.vehicles = state.vehicles.filter( item => item._id.toString() !== action.payload.toString())
       return {
         ...state,
         vehicle: null,

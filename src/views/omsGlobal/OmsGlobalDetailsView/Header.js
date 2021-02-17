@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
 const Header = ({ className, customer, ...rest }) => {
   const classes = useStyles();
   const { user } = useAuth();
-  const { deleteOmsGlobal, getOmsGlobals } = useOmsGlobal();
+  const { deleteOmsGlobal } = useOmsGlobal();
   const { enqueueSnackbar } = useSnackbar();  
   const history = useHistory();
   const { t } = useTranslation();
@@ -48,7 +48,6 @@ const Header = ({ className, customer, ...rest }) => {
     setOpen(false);
     if(value === 'yes'){      
       deleteOmsGlobal(route.id);
-      getOmsGlobals();
       enqueueSnackbar(t("SnackBar.OmsGlobalDeleted"), {
         variant: 'error'
       });

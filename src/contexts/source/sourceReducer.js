@@ -32,6 +32,7 @@ export default (state, action) => {
         error: null
       };
     case DELETE_SOURCE:
+      state.sources = state.sources.filter( item => item._id.toString() !== action.payload.toString())
       return {
         ...state,
         source: null,

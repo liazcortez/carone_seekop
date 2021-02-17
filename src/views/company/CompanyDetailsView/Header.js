@@ -40,7 +40,7 @@ const Header = ({ className, company, ...rest }) => {
   const classes = useStyles();
   const { t } = useTranslation()
   const { user } = useAuth();
-  const { deleteCompany, getCompanies } = useCompany();
+  const { deleteCompany } = useCompany();
   const { enqueueSnackbar } = useSnackbar();  
   const history = useHistory();
   const route = useParams();
@@ -49,8 +49,7 @@ const Header = ({ className, company, ...rest }) => {
   const handleClose = async (value) => {
     setOpen(false);
     if(value === 'yes'){      
-      await deleteCompany(route.id);
-      await getCompanies();
+      deleteCompany(route.id);
       enqueueSnackbar(t("SnackBar.CompanyDeleted"), {
         variant: 'error'
       });

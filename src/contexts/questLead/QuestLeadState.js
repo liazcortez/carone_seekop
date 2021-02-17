@@ -251,11 +251,10 @@ const QuestLeadState = props => {
         Authorization: `Bearer ${localStorage.getItem('token')}`
       }
     };
-    clearState();
     setLoading();
     try {
       const res = await api.delete(`/questLeads/${questLeadId}`, config);
-      dispatch({ type: DELETE_QUESTLEAD, payload: res.data.data });
+      dispatch({ type: DELETE_QUESTLEAD, payload: res.data.deletedId });
     } catch (err) {
       dispatch({ type: SET_ERROR, payload: err.response.data });
     }

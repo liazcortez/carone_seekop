@@ -36,6 +36,7 @@ export default (state, action) => {
         loading: false
       };
     case DELETE_STORE:
+      state.stores = state.stores.filter( item => item._id.toString() !== action.payload.toString())
       return {
         ...state,
         store: null,

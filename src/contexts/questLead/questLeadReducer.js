@@ -74,6 +74,7 @@ import {
         };
       
       case DELETE_QUESTLEAD:
+        state.questLeads = state.questLeads.filter( item => item._id.toString() !== action.payload.toString())
         return {
           ...state,
           questLead: null,

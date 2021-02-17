@@ -55,11 +55,10 @@ const CompanyState = props => {
         Authorization: `Bearer ${localStorage.getItem('token')}`
       }
     };
-    clearState();
     setLoading();
     try {
       const res = await api.delete(`/companies/${companyId}`, config);
-      dispatch({ type: DELETE_COMPANY, payload: res.data.data });
+      dispatch({ type: DELETE_COMPANY, payload: res.data.deletedId });
     } catch (err) {
       dispatch({ type: SET_ERROR, payload: err.response.data });
     }

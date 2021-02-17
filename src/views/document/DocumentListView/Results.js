@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import SimpleDialog from 'src/components/SimpleDialog'
 import useDocument from 'src/hooks/useDocument';
-import wait from 'src/utils/wait';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { CapitalizeNames} from 'src/utils/capitalize';
 import { faSync } from '@fortawesome/free-solid-svg-icons'
@@ -91,8 +90,7 @@ const useStyles = makeStyles(theme => ({
   bulkActions: {
     paddingLeft: 4,
     paddingRight: 4,
-    marginTop: 6,
-    position: 'absolute',
+    marginBottom: '1em',
     width: '100%',
     zIndex: 2,
     backgroundColor: theme.palette.background.default
@@ -138,9 +136,7 @@ const Results = ({ className, documents, ...rest }) => {
     setOpen(false);
     setSelectedValue(value);
     if(value === 'yes'){
-      await selectedDocuments.map(async document => await deleteDocument(document));
-      await wait(1000);
-      await getDocuments();
+      selectedDocuments.map(document => deleteDocument(document));
       setSelectedDocuments([])
     }
   };
@@ -249,6 +245,8 @@ const Results = ({ className, documents, ...rest }) => {
       <PerfectScrollbar>
         <Box minWidth={700}>
           <Table>
+          {
+            !enableBulkOperations && (
             <TableHead>
               <TableRow>
                 <TableCell padding="checkbox">
@@ -267,6 +265,7 @@ const Results = ({ className, documents, ...rest }) => {
                 <TableCell>{t("Documents.CreatedAt")}</TableCell>
               </TableRow>
             </TableHead>
+            )}
             <TableBody>
               {paginatedDocuments.map(document => {
                 const isDocumentSelected = selectedDocuments.includes(

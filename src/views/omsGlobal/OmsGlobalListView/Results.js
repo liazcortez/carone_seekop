@@ -4,7 +4,6 @@ import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import useOmsGlobal from 'src/hooks/useOmsGlobal';
-import wait from 'src/utils/wait';
 import SimpleDialog from 'src/components/SimpleDialog'
 import useAuth from 'src/hooks/useAuth';
 import moment from 'moment';
@@ -202,10 +201,7 @@ const Results = ({
     setSelectedValue(value);
     if(value === 'yes'){
       selectedOmsGlobals.map(id => deleteOmsGlobal(id));
-      await wait(1000);
-      setInformation();
       setSelectedOmsGlobals([])
-
     }
   };
 

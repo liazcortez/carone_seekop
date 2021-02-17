@@ -38,7 +38,7 @@ import { useTranslation } from 'react-i18next';
   const DeleteStatus = ({ className, ...rest }) => {
     const classes = useStyles();
     const { t } = useTranslation()
-    const { deleteStatus, getStatuses } = useStatus();
+    const { deleteStatus } = useStatus();
     const route = useParams();
     const history = useHistory();
     const { enqueueSnackbar } = useSnackbar();  
@@ -48,7 +48,6 @@ import { useTranslation } from 'react-i18next';
       setOpen(false);
       if(value === 'yes'){      
         deleteStatus(route.id);
-        getStatuses();
         enqueueSnackbar(t("SnackBar.StatusDeleted"), {
           variant: 'error'
         });

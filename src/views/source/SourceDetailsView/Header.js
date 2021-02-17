@@ -40,7 +40,7 @@ const Header = ({ className, source, ...rest }) => {
   const classes = useStyles();
   const { t } = useTranslation()
   const { user } = useAuth();
-  const { deleteSources, getSources } = useSource();
+  const { deleteSources } = useSource();
   const { enqueueSnackbar } = useSnackbar();  
   const history = useHistory();
   const route = useParams();
@@ -50,7 +50,6 @@ const Header = ({ className, source, ...rest }) => {
     setOpen(false);
     if(value === 'yes'){      
       deleteSources(route.id);
-      getSources();
       enqueueSnackbar(t("SnackBar.SourceDeleted"), {
         variant: 'error'
       });

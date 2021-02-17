@@ -32,6 +32,7 @@ export default (state, action) => {
         error: null
       };
     case DELETE_STATUS:
+      state.statuses = state.statuses.filter( item => item._id.toString() !== action.payload.toString())
       return {
         ...state,
         status: null,

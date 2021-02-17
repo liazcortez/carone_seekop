@@ -90,12 +90,11 @@ const StoreState = props => {
         Authorization: `Bearer ${localStorage.getItem("token")}`
       }
     };
-    clearState();
     setLoading();
     try {
       
       const res = await api.delete(`/stores/${storeId}`, config);
-      dispatch({ type: DELETE_STORE, payload: res.data.data })
+      dispatch({ type: DELETE_STORE, payload: res.data.deletedId })
     } catch (err) {
       dispatch({ type: SET_ERROR, payload: err.response.data})
 

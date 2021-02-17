@@ -33,6 +33,7 @@ export default (state, action) => {
         error: null
       };
     case DELETE_COMPANY:
+      state.companies = state.companies.filter( item => item._id.toString() !== action.payload.toString())
       return {
         ...state,
         company: null,

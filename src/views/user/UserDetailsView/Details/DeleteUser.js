@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';  
 import useUser from 'src/hooks/useUser';
@@ -38,18 +38,17 @@ import { useTranslation } from 'react-i18next';
   const DeleteUser = ({ className, ...rest }) => {
     const classes = useStyles();
     const { t } = useTranslation()
-    const { deleteUser, getUsers } = useUser();
+    const { deleteUser } = useUser();
     const route = useParams();
     const history = useHistory();
     const { enqueueSnackbar } = useSnackbar();  
 
-    const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = useState(false);
 
     const handleClose = async (value) => {
       setOpen(false);
       if(value === 'yes'){      
         deleteUser(route.id);
-        getUsers();
         enqueueSnackbar(t("SnackBar.UserDeleted"), {
           variant: 'error'
         });

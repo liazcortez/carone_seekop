@@ -38,7 +38,7 @@ import { useTranslation } from 'react-i18next';
   const DeleteMake = ({ className, ...rest }) => {
     const classes = useStyles();
     const { t } = useTranslation()
-    const { deleteMake, getMakes } = useMake();
+    const { deleteMake } = useMake();
     const route = useParams();
     const history = useHistory();
     const { enqueueSnackbar } = useSnackbar();  
@@ -49,7 +49,6 @@ import { useTranslation } from 'react-i18next';
       setOpen(false);
       if(value === 'yes'){      
         deleteMake(route.id);
-        getMakes();
         enqueueSnackbar(t("SnackBar.MakeDeleted"), {
           variant: 'error'
         });

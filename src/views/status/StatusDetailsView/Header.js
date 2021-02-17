@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
 const Header = ({ className, status, ...rest }) => {
   const classes = useStyles();
   const { user } = useAuth();
-  const { deleteStatus, getStatuses } = useStatus();
+  const { deleteStatus } = useStatus();
   const { enqueueSnackbar } = useSnackbar();  
   const history = useHistory();
   const route = useParams();
@@ -50,7 +50,6 @@ const Header = ({ className, status, ...rest }) => {
     setOpen(false);
     if(value === 'yes'){      
       deleteStatus(route.id);
-      getStatuses();
       enqueueSnackbar(t("SnackBar.StatusDeleted"), {
         variant: 'error'
       });

@@ -38,7 +38,7 @@ import { useTranslation } from 'react-i18next';
   const DeleteStore = ({ className, ...rest }) => {
     const classes = useStyles();
     const { t } = useTranslation()
-    const { getStore, deleteStore, getStores } = useStore();
+    const { getStore, deleteStore } = useStore();
     const route = useParams();
     const history = useHistory();
     const { enqueueSnackbar } = useSnackbar();  
@@ -48,7 +48,6 @@ import { useTranslation } from 'react-i18next';
       setOpen(false);
       if(value === 'yes'){      
         deleteStore(route.id);
-        getStores();
         enqueueSnackbar(t("SnackBar.StoreDeleted"), {
           variant: 'error'
         });

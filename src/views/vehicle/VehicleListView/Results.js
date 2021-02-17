@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import useVehicle from 'src/hooks/useVehicle';
 import SimpleDialog from 'src/components/SimpleDialog'
-import wait from 'src/utils/wait';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {Capitalize, CapitalizeNames} from 'src/utils/capitalize';
 import { faSync } from '@fortawesome/free-solid-svg-icons'
@@ -79,8 +78,7 @@ const useStyles = makeStyles(theme => ({
   bulkActions: {
     paddingLeft: 4,
     paddingRight: 4,
-    marginTop: 6,
-    position: 'absolute',
+    marginBottom: '1em',
     width: '100%',
     zIndex: 2,
     backgroundColor: theme.palette.background.default
@@ -123,9 +121,7 @@ const Results = ({ className, vehicles, ...rest }) => {
     setOpen(false);
     setSelectedValue(value);
     if(value === 'yes'){
-      await selectedVehicles.map(async vehicle => await deleteVehicle(vehicle));
-      await wait(1000);
-      await getVehicles();
+      selectedVehicles.map(vehicle => deleteVehicle(vehicle));
       setSelectedVehicles([])
     }
   };
@@ -236,6 +232,8 @@ const Results = ({ className, vehicles, ...rest }) => {
       <PerfectScrollbar>
         <Box minWidth={700}>
           <Table>
+          {
+            !enableBulkOperations && (
             <TableHead>
               <TableRow>
                 <TableCell padding="checkbox">
@@ -256,6 +254,7 @@ const Results = ({ className, vehicles, ...rest }) => {
 
               </TableRow>
             </TableHead>
+            )}
             <TableBody>
               {paginatedVehicles.map(vehicle => {
                 const isVehicleSelected = selectedVehicles.includes(
