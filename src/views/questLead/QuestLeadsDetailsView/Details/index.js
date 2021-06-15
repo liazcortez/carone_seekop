@@ -63,11 +63,11 @@ const Details = ({ customer, className, ...rest }) => {
         />
 
 
-        <SendWsp
+        {/* <SendWsp
           user={user}
           customer={customer}
           style={{ marginBottom: '1em' }}
-        />
+        /> */}
       
        
         <ModalMail

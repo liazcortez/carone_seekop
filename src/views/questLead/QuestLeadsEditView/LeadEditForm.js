@@ -99,7 +99,7 @@ const LeadEditForm = ({
             store: (lead && lead.store && lead.store._id) || '',
             idQuest: (lead && lead.idQuest) || '',
             name: (lead && CapitalizeNames(lead.name)) || '',
-            phone: (lead && lead.phone && lead.phone.replace(/\+/g, "") ) || '',
+            phone: (lead && lead.phone && lead.phone.replace(/\+52/g, "") ) || '',
             email:(lead && lead.email) || '',
             sellerKey: (lead && lead.sellerKey) || '',
             seller: (lead && CapitalizeNames(lead.seller)) || '',
@@ -113,7 +113,7 @@ const LeadEditForm = ({
           }}
           validationSchema={Yup.object().shape({
             name: Yup.string().max(255),
-            phone: Yup.number(),
+            phone: Yup.string().matches(/^[0-9]+$/, t("Yup.Number")).test('max length', t("Yup.Phone"), val => val && val.length === 10),
             seller: Yup.string().max(255),
             onAccount: Yup.string().max(20),
 
@@ -189,7 +189,7 @@ const LeadEditForm = ({
                         error={Boolean(touched.email && errors.email)}
                         fullWidth
                         helperText={touched.email && errors.email}
-                        label={t("QuestLeads.Email")}
+                        label={t("QuestLeads.Emailsdfds ")}
                         name="email"
                         onBlur={handleBlur}
                         onChange={handleChange}

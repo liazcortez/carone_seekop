@@ -133,7 +133,7 @@ const LeadCreateForm = ({
             name: Yup.string().max(255),
             seller: Yup.string().max(255),
             source: Yup.string().max(255),
-            phone: Yup.number(),
+            phone: Yup.string().matches(/^[0-9]+$/, t("Yup.Number")).test('max length', t("Yup.Phone"), val => val && val.length === 10),
             faauReason: Yup.string().max(255),
             email: Yup.string().email(t("Yup.Email")).max(255).required(t("Yup.EmailReq")),
             sellerEmail: Yup.string().email(t("Yup.Email")).max(255).required(t("Yup.EmailReq")),
