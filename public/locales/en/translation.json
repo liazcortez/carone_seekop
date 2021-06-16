@@ -525,7 +525,8 @@
     "Yup": {
         "Number": "Only numbers are allowed",
         "Email": "Must be a valid email",
-        "EmailReq": "Email is required"
+        "EmailReq": "Email is required",
+        "Phone": "Must be a valid phone number (10 digits)"
     },
     "Quotes": {
         "Q1": "Now you see me, now you don't",
@@ -558,7 +559,7 @@
     "OmsGlobals": {
         "StateMunicipy": "State",
         "ModeType": "Model Type",
-        "ModeDescription": "Model",
+        "ModeDescription": "Model's Description",
         "DescModel": "Description",
         "Inventory": "Inventory",
         "ModelInfo": "Model Info",
@@ -729,7 +730,7 @@
         "key": "Key",
         "year": "Year",
         "modeType": "Model Type",
-        "modeDescription": "Model",
+        "modeDescription": "Model's Description",
         "descModel": "Description",
         "yearModel": "Model Year",
         "agencyName": "Store",

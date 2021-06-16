@@ -527,7 +527,8 @@
     "Yup": {
         "Number": "Solo está permitido ingresar numeros",
         "Email": "Debe ser un correo válido",
-        "EmailReq": "El correo electrónico es requerido"
+        "EmailReq": "El correo electrónico es requerido",
+        "Phone": "Debe ser un teléfono válido (10 digitos)"
     },
     "Quotes": {
         "Q1": "Ahora me ves, ahora no",
@@ -560,7 +561,7 @@
     "OmsGlobals": {
         "StateMunicipy": "Estado",
         "ModeType": "Tipo de Modelo",
-        "ModeDescription": "Modelo",
+        "ModeDescription": "Descripción del Modelo",
         "DescModel": "Descripción",
         "Inventory": "Inventario",
         "ModelInfo": "Información del Modelo",
@@ -731,7 +732,7 @@
         "key": "Clave",
         "year": "Año",
         "modeType": "Tipo Modelo",
-        "modeDescription": "Modelo",
+        "modeDescription": "Descripción del Modelo",
         "descModel": "Descripción",
         "yearModel": "Año Modelo",
         "agencyName": "Agencia",

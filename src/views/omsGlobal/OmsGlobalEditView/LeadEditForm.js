@@ -95,8 +95,8 @@ const LeadEditForm = ({
             email: CapitalizeNames(lead.email) || '',
             apPaterno: CapitalizeNames(lead.apPaterno) || '',
             apMaterno: CapitalizeNames(lead.apMaterno) || '',
-            phone: lead && lead.phone && lead.phone.replace(/\+/g, "") !== 'na' ?  lead.phone.replace(/\+/g, "") : '',
-            phone2: lead && lead.phone2 && lead.phone2.replace(/\+/g, "") !== 'na' ?  lead.phone2.replace(/\+/g, "") : '',
+            phone: lead && lead.phone && lead.phone.replace(/\+52/g, "") !== 'na' ?  lead.phone.replace(/\+52/g, "") : '',
+            phone2: lead && lead.phone2 && lead.phone2.replace(/\+52/g, "") !== 'na' ?  lead.phone2.replace(/\+52/g, "") : '',
             // statusLead: lead.statusLead|| '',
             company:( lead && lead.company && lead.company._id)|| '',
             key: (lead && lead.key) || '',
@@ -126,8 +126,8 @@ const LeadEditForm = ({
             name: Yup.string().max(255),
             apPaterno: Yup.string().max(255),
             apMaterno: Yup.string().max(255),
-            phone: Yup.number(),
-            phone2: Yup.number(),
+            phone: Yup.string().matches(/^[0-9]+$/, t("Yup.Number")).test('max length', t("Yup.Phone"), val => val && val.length === 10),
+            phone2: Yup.string().matches(/^[0-9]+$/, t("Yup.Number")).test('max length', t("Yup.Phone"), val => val && val.length === 10),
 
             faauTotal: Yup.number(),
             methodPayment: Yup.string().max(255),
@@ -540,7 +540,7 @@ const LeadEditForm = ({
                         ))}
                         </TextField> 
                      </Grid>
-                     <Grid
+                     {/* <Grid
                       item
                       md={6}
                       xs={12}
@@ -556,7 +556,7 @@ const LeadEditForm = ({
                         variant="outlined"
                         value={values.agencyName}
                       />
-                    </Grid>
+                    </Grid> */}
                     
                     <Grid
                       item
