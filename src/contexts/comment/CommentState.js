@@ -48,6 +48,7 @@ const CommentState = props => {
 
   //Create Comment
   const createComment = async (comment, leadId) => {
+console.log('creando comentario');
 
     let actiones = [];
     const config = {
@@ -72,11 +73,11 @@ const CommentState = props => {
       }
       let res;
       if(comment.type === 'lead'){
-        res = await api.post(`/leads/${leadId}/comments`, { comment: comment.comment, action: actiones, lead: leadId, type: comment.type }, config);
+        res = await api.post(`/leads/${leadId}/comments`, { comment: comment.comment, action: actiones, lead: leadId, type: comment.type,  }, config);
       }else if(comment.type === 'global'){
-        res = await api.post(`/omsGlobals/${leadId}/comments`, { comment: comment.comment, action: actiones, global: leadId, type: comment.type }, config);
+        res = await api.post(`/omsGlobals/${leadId}/comments`, { comment: comment.comment, action: actiones, global: leadId, type: comment.type,  }, config);
       }else{
-        res = await api.post(`/questLeads/${leadId}/comments`, { comment: comment.comment, action: actiones, quest: leadId, type: comment.type }, config);
+        res = await api.post(`/questLeads/${leadId}/comments`, { comment: comment.comment, action: actiones, quest: leadId, type: comment.type,  }, config);
 
       }
       dispatch({ type: CREATE_COMMENT, payload: res.data.data });

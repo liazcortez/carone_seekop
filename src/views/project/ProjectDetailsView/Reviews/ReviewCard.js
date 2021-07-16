@@ -13,6 +13,7 @@ import {
   makeStyles
 } from '@material-ui/core';
 import getInitials from 'src/utils/getInitials';
+import { CapitalizeNames } from 'src/utils/capitalize';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -20,7 +21,7 @@ const useStyles = makeStyles(theme => ({
     marginLeft: theme.spacing(1),
     fontWeight: theme.typography.fontWeightBold
   },
-  actions:{
+  actions: {
     float: 'right'
   },
   capitalize: {
@@ -35,49 +36,59 @@ const ReviewCard = ({ className, review, ...rest }) => {
     <Card className={clsx(classes.root, className)} {...rest}>
       <CardHeader
         avatar={
-          <Avatar alt="Reviewer" src={`${process.env.REACT_APP_URL_IMAGE_S3_URL}${review.user.image}`}>
-            {getInitials(review.user.name)}
+          <Avatar
+            alt="Reviewer"
+            src={`${process.env.REACT_APP_URL_IMAGE_S3_URL}${review.assignedBy.image}`}
+          >
+            {getInitials(review.assignedBy.name)}
           </Avatar>
         }
         disableTypography
         subheader={
           <Box flexWrap="wrap" display="flex" alignItems="center">
             <Typography variant="body2" color="textSecondary">
-              {moment(review.createdAt).fromNow()} 
+              {moment(review.createdAt).fromNow()}
             </Typography>
           </Box>
         }
         title={
           <Typography color="textPrimary" variant="h5">
-            
-            {review.user.name}
-
-            {
-              review.action.map( item => (
-              <div className={classes.actions} key={item} style={{marginRight: 10}}>
-                <Label 
-                className={classes.capitalize}
+            {review.action.map(item => (
+              <div
+                className={classes.actions}
                 key={item}
-                color={
-                  item === 'mailing' ? 'warning' :
-                  item === 'information' ? 'error' :
-                  item === 'documentation' ? 'blue' :
-                  item === 'calling' ? 'success' : false
-                }>
+                style={{ marginRight: 10 }}
+              >
+                <Label
+                  className={classes.capitalize}
+                  key={item}
+                  color={
+                    item === 'mailing'
+                      ? 'warning'
+                      : item === 'information'
+                      ? 'error'
+                      : item === 'documentation'
+                      ? 'blue'
+                      : item === 'calling'
+                      ? 'success'
+                      : false
+                  }
+                >
                   {item}
                 </Label>
               </div>
-              ))
-            }
-            
+            ))}
           </Typography>
         }
       />
       <Box pb={2} px={3}>
-        
         <Typography variant="body2" color="textSecondary">
           {review.comment}
         </Typography>
+        <Typography  variant="caption" color="textSecondary">
+          Assigned By: {CapitalizeNames(review.assignedBy.name)}
+          </Typography>
+
       </Box>
     </Card>
   );
