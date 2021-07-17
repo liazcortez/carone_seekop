@@ -18,6 +18,7 @@ import { useParams } from 'react-router';
 import useStatus from 'src/hooks/useStatus';
 import { useTranslation } from 'react-i18next';
 import AllInfo from './AllInformation';
+import useComment from 'src/hooks/useComment';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -31,7 +32,13 @@ const useStyles = makeStyles(theme => ({
 const CustomerDetailsView = () => {
   const classes = useStyles();
   const [currentTab, setCurrentTab] = useState('details');
-  const { omsGlobal, getOmsGlobal, updateOmsGlobal, generateToken } = useOmsGlobal();
+  const {
+    omsGlobal,
+    getOmsGlobal,
+    updateOmsGlobal,
+    generateToken
+  } = useOmsGlobal();
+  const { setComments } = useComment();
   const { statuses, getStatuses } = useStatus();
   const { clearState } = useDocument();
   const { t } = useTranslation();
@@ -52,16 +59,19 @@ const CustomerDetailsView = () => {
   useEffect(() => {
     clearState();
     getOmsGlobal(id);
+    
     getActivitiesByOmsGlobal(id);
     getStatuses();
     // eslint-disable-next-line
   }, []);
 
-  useEffect(()=>{
-    if(omsGlobal)
-    generateToken();
+  useEffect(() => {
+    if (omsGlobal){
+      generateToken();
+      setComments(omsGlobal.comment);
+    } 
     //eslint-disable-next-line
-  },[omsGlobal])
+  }, [omsGlobal]);
 
   useEffect(() => {
     if (statuses) {

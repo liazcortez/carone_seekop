@@ -31,8 +31,8 @@ const Details = ({ customer, className, ...rest }) => {
   const [isMailOpen, setMailOpen] = useState(false);
 
   useEffect(() => {
-    getCommentsByOmsGlobal(route.id);
-    clearState();
+    // getCommentsByOmsGlobal(route.id);
+    // clearState();
     // eslint-disable-next-line
   }, []);
 
@@ -47,14 +47,14 @@ const Details = ({ customer, className, ...rest }) => {
         <CustomerInfo customer={customer} />
       </Grid>
       <Grid item lg={5} md={5} xl={5} xs={12}>
-        <PostAdd style={{ marginBottom: '1em' }} type={'global'}/>
+        <PostAdd style={{ marginBottom: '1em' }} type={'global'} />
         <Reviews reviews={comments} />
       </Grid>
 
       <Grid item lg={3} md={3} xl={3} xs={12}>
         <StatusLead lead={route.id} style={{ marginBottom: '1em' }} />
 
-        <SendEmail setMailOpen={setMailOpen} style={{ marginBottom: '1em' }} /> 
+        <SendEmail setMailOpen={setMailOpen} style={{ marginBottom: '1em' }} />
 
         <MakeCall
           user={user}
@@ -72,9 +72,8 @@ const Details = ({ customer, className, ...rest }) => {
           isMailOpen={isMailOpen}
           setMailOpen={setMailOpen}
           style={{ marginBottom: '1em' }}
-          type='global'
+          type="global"
         />
-    
       </Grid>
     </Grid>
   );

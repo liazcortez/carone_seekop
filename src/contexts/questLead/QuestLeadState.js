@@ -196,6 +196,7 @@ const QuestLeadState = props => {
     setLoading();
     try {
       const res = await api.get(`/questLeads/${questLeadId}`);
+      console.log(res);
       dispatch({
         type: GET_QUESTLEAD,
         payload: res.data.data

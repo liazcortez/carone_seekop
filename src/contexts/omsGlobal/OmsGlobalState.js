@@ -152,6 +152,7 @@ const OmsGlobalState = props => {
         payload: res.data.data,
         count: res.data.pagination.total
        });
+
     } catch (err) {
       dispatch({ type: SET_ERROR, payload: err.response.data });
     }
@@ -200,6 +201,7 @@ const OmsGlobalState = props => {
     setLoading();
     try {
       const res = await api.get(`/omsGlobals/${omsGlobalId}`);
+      console.log(res);
       dispatch({
         type: GET_OMSGLOBAL,
         payload: res.data.data

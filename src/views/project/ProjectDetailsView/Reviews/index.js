@@ -1,8 +1,9 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core';
 import ReviewCard from './ReviewCard';
+import Spinner from 'src/components/Spinner';
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -17,9 +18,15 @@ const Reviews = ({
   ...rest
 }) => {
   const classes = useStyles();
+useEffect(() => {
+  console.log(reviews);
+
+}, [reviews])
 
   return (
-    <div
+    <div>
+      {(reviews)?
+      <div
       className={clsx(classes.root, className)}
       {...rest}
     >
@@ -31,6 +38,9 @@ const Reviews = ({
         />
       ))}
     </div>
+    :<Spinner width={25}/>}
+    </div>
+    
   );
 };
 

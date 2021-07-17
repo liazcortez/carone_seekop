@@ -59,7 +59,9 @@ function SimpleDialog({ className, props, ...rest }) {
     calling: false,
     mailing: false,
     information: false,
-    documentation: false
+    documentation: false,
+    enumAction: ['calling', 'mailing', 'information', 'documentation'],
+    selectedAction: []
   });
 
   const handleClose = () => {
@@ -67,7 +69,9 @@ function SimpleDialog({ className, props, ...rest }) {
       calling: false,
       mailing: false,
       information: false,
-      documentation: false
+      documentation: false,
+      enumAction: ['calling', 'mailing', 'information', 'documentation'],
+      selectedAction: []
     });
     if (!mailing && !information && !documentation && !calling) {
       onClose('', false);
@@ -80,7 +84,14 @@ function SimpleDialog({ className, props, ...rest }) {
     setState({ ...state, [event.target.name]: event.target.checked });
   };
 
-  const { calling, mailing, information, documentation } = state;
+  const {
+    calling,
+    mailing,
+    information,
+    documentation,
+    enumAction,
+    selectedAction
+  } = state;
 
   return (
     <Dialog
