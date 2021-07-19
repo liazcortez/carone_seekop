@@ -100,19 +100,21 @@ const MakeCall = ({ className, customer, user, ...rest }) => {
     // global: '60f0b17981c59d8617d79da4',
     // type: 'global',
     // assignedBy: '60f0836322ec8c5a474d4819'
-    const callDetail = `${obj.description} from ${obj.phoneNumber}`;
+    const callDetail = `Calling ${obj.phoneNumber}`;
     let type = 'global';
     await createComment(
       {
         comment: callDetail,
         user: user._id,
         actions: {
-          calling: true
+          calling: true,
+          mailing: false, information: false, documentation: false
         },
         type: type
       },
       route.id
     );
+    return;
     if (type === 'lead') {
       await getCommentsByLead(route.id);
     } else if (type === 'global') {

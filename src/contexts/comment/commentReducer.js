@@ -34,6 +34,7 @@ export default (state, action) => {
     case CREATE_COMMENT:
       return {
         ...state,
+        comments:[...state.comments,action.payload],
         loading: false
       };
     case SET_ERROR:

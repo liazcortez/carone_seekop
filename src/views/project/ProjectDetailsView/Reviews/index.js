@@ -19,7 +19,7 @@ const Reviews = ({
 }) => {
   const classes = useStyles();
 useEffect(() => {
-  console.log(reviews);
+  // console.log(reviews);
 
 }, [reviews])
 

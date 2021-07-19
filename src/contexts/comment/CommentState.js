@@ -124,8 +124,10 @@ const CommentState = props => {
           config
         );
       }
+      console.log('resultado',res.data.data);
       dispatch({ type: CREATE_COMMENT, payload: res.data.data });
     } catch (err) {
+      console.log('error');
       dispatch({ type: SET_ERROR, payload: err.response.data });
     }
   };
