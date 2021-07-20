@@ -2,6 +2,7 @@ import {
   GET_OMSGLOBALS, 
   GET_OMSGLOBAL, 
   UPDATE_OMSGLOBAL, 
+  UPDATE_OMSGLOBAL_STATUS,
   DELETE_OMSGLOBAL, 
   CREATE_OMSGLOBAL, 
   SET_ERROR, 
@@ -66,9 +67,19 @@ export default (state, action) => {
         error: null
       }
     case UPDATE_OMSGLOBAL:
+      console.log(action.payload);
       return {
         ...state,
         omsGlobal: action.payload,
+        loading: false,
+        error: null
+      };
+
+      case UPDATE_OMSGLOBAL_STATUS:
+      console.log(action.payload);
+      return {
+        ...state,
+        omsGlobal: {...state.omsGlobal,status:{...action.payload}},
         loading: false,
         error: null
       };

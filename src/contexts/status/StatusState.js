@@ -85,6 +85,7 @@ const StatusState = props => {
 
   //Update Make
   const updateStatus = async (status, statusId) => {
+    console.log(status);
     const config =  {
       headers: {
         "Content-Type": "application/json",

@@ -31,17 +31,17 @@ const Details = ({ customer, className, ...rest }) => {
   const [isMailOpen, setMailOpen] = useState(false);
 
   useEffect(() => {
+    console.log(customer);
     // getCommentsByOmsGlobal(route.id);
     // clearState();
     // eslint-disable-next-line
-  }, []);
+  }, [customer]);
 
   return (
     <Grid
       className={clsx(classes.root, className)}
       container
       spacing={3}
-      {...rest}
     >
       <Grid item lg={4} md={4} xl={4} xs={12}>
         <CustomerInfo customer={customer} />
@@ -60,7 +60,7 @@ const Details = ({ customer, className, ...rest }) => {
           user={user}
           customer={customer}
           style={{ marginBottom: '1em' }}
-        />
+        /> */}
         {/* 
           <SendWsp
             user={user}

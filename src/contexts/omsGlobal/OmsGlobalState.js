@@ -6,6 +6,7 @@ import {
   GET_OMSGLOBALS,
   GET_OMSGLOBAL,
   UPDATE_OMSGLOBAL,
+  UPDATE_OMSGLOBAL_STATUS,
   DELETE_OMSGLOBAL,
   CREATE_OMSGLOBAL,
   SET_ERROR,
@@ -199,6 +200,7 @@ const OmsGlobalState = props => {
   const getOmsGlobal = async omsGlobalId => {
     clearState();
     setLoading();
+    console.log('getGlobal',omsGlobalId);
     try {
       const res = await api.get(`/omsGlobals/${omsGlobalId}`);
       console.log(res);
@@ -213,6 +215,7 @@ const OmsGlobalState = props => {
 
   //Update OmsGlobal
   const updateOmsGlobalStatus = async omsGlobal => {
+    console.log(omsGlobal);
     const config = {
       headers: {
         'Content-Type': 'application/json',
@@ -226,7 +229,7 @@ const OmsGlobalState = props => {
         { status: omsGlobal.status },
         config
       );
-      dispatch({ type: UPDATE_OMSGLOBAL, payload: res.data.data });
+      dispatch({ type: UPDATE_OMSGLOBAL_STATUS, payload: res.data.data.status });
     } catch (err) {
       dispatch({ type: SET_ERROR, payload: err.response.data });
     }

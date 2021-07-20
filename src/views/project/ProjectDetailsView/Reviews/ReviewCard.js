@@ -45,10 +45,17 @@ const ReviewCard = ({ className, review, ...rest }) => {
         }
         disableTypography
         subheader={
-          <Box flexWrap="wrap" display="flex" alignItems="center">
-            <Typography variant="body2" color="textSecondary">
-              {moment(review.createdAt).fromNow()}
-            </Typography>
+          <Box flexWrap="wrap" display="grid" alignItems="center">
+            <Box>
+              <Typography variant="caption" color="textSecondary">
+                {CapitalizeNames(review.assignedBy.name)}
+              </Typography>
+            </Box>
+            <Box>
+              <Typography variant="caption" color="textSecondary">
+                {moment(review.createdAt).fromNow()}
+              </Typography>
+            </Box>
           </Box>
         }
         title={
@@ -85,10 +92,6 @@ const ReviewCard = ({ className, review, ...rest }) => {
         <Typography variant="body2" color="textSecondary">
           {review.comment}
         </Typography>
-        <Typography  variant="caption" color="textSecondary">
-          Assigned By: {CapitalizeNames(review.assignedBy.name)}
-          </Typography>
-
       </Box>
     </Card>
   );
