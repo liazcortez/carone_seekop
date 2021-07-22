@@ -60,7 +60,7 @@ const Details = ({ customer, className, ...rest }) => {
           user={user}
           customer={customer}
           style={{ marginBottom: '1em' }}
-        /> */}
+        /> 
         {/* 
           <SendWsp
             user={user}
