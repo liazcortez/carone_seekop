@@ -20,7 +20,7 @@ import {
   Phone as CallIcon
 
 } from 'react-feather';
-
+import { useTranslation } from 'react-i18next';
 
 const avatarsMap = {
   update: {
@@ -97,9 +97,10 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Activity = ({ activity, className, ...rest }) => {
+  const { t } = useTranslation()
   const classes = useStyles();
   const avatar = avatarsMap[activity.action];
-
+  const desc = activity.description.split(' ');
   return (
     <div
       className={clsx(classes.root, className)}
@@ -107,7 +108,7 @@ const Activity = ({ activity, className, ...rest }) => {
     >
       <Avatar className={clsx(classes.avatar, classes[avatar.className])}>
         <avatar.icon />
-      </Avatar>
+      </Avatar> 
       <Card className={classes.card}>
         <Typography
           variant="body1"
@@ -115,7 +116,7 @@ const Activity = ({ activity, className, ...rest }) => {
         >
           
           {' '}
-          {activity.description}
+          {desc[0]} {(activity.action === 'update')?((desc[desc.length - 1]==='Lead')?t(`Activities.Action.update`):t(`Activities.Action.status.${desc[desc.length - 1]}`)):((activity.action === 'call')?(t(`Activities.Action.${activity.action}`) + ' ' + activity.quest.name):t(`Activities.Action.${activity.action}`))}
         </Typography>
         <Typography
           className={classes.date}

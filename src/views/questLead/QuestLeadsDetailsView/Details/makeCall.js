@@ -12,6 +12,7 @@ import {
 } from '@material-ui/core';
 
 import useUtils from 'src/hooks/useUtils';
+import useQuestLead from 'src/hooks/useQuestLead';
 import { Phone as CallIcon } from 'react-feather';
 import { PhoneMissed as PhoneMissedIcon } from 'react-feather';
 import useActivity from 'src/hooks/useActivity';
@@ -34,7 +35,7 @@ const MakeCall = ({ className, customer, user, ...rest }) => {
   const { createActivity } = useActivity();
   const { t } = useTranslation();
 
-  const { callToken } = useUtils();
+  const { callToken } =useQuestLead();
 
   const [callStatus, setCallStatus] = useState('');
 

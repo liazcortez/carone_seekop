@@ -375,7 +375,17 @@
     },
     "Activities": {
         "Today": "Hoy",
-        "History": "Historial"
+        "History": "Historial",
+        "Action":{
+            "call":"realizo una llamada a",
+            "comment":"dejo un comentario",
+            "mailing":"envio documentacion",
+            "update":"actualizo el Lead",
+            "status":{
+                "New":"cambio el estatus a nuevo",
+                "Sold":"cambio el estatus a vendido"
+            }
+        }
     },
     "Lists": {
         "List": "Lista",

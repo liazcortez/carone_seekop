@@ -44,6 +44,7 @@ const Activities = ({  className, ...rest }) => {
   const { t } = useTranslation();
   useEffect(()=>{
     getActivitiesByOmsGlobal(route.id)
+    console.log(activities);
     //eslint-disable-next-line
   },[])
 

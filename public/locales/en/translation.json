@@ -372,7 +372,17 @@
     },
     "Activities": {
         "Today": "Today",
-        "History": "History"
+        "History": "History",
+        "Action":{
+            "call":"has made a phone call to",
+            "comment":"has leave a comment",
+            "mailing":"has sent documentation",
+            "update":"has updated the Lead",
+            "status":{
+                "New":"has set status to New",
+                "Sold":"has set status to Sold"
+            }
+        }
     },
     "Lists": {
         "List": "List",
@@ -740,4 +750,5 @@
         "faauColony": "Colony",
         "color": "Color"
     }
+
 }

@@ -45,6 +45,7 @@ const Activities = ({  className, ...rest }) => {
   useEffect(()=>{
     getActivitiesByQuestLead(route.id)
     //eslint-disable-next-line
+    console.log(activities);
   },[])
 
   // eslint-disable-next-line no-restricted-syntax
