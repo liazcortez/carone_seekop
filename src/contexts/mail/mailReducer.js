@@ -3,7 +3,8 @@ import {
   SET_ERROR,
   CLEAR_STATE,
   SET_LOADING,
-  CREATE_MAIL_ATTACHMENT
+  CREATE_MAIL_ATTACHMENT,
+  GET_SEGMENTATIONS
  } from '../types';
 
 export default (state, action) => {
@@ -23,7 +24,13 @@ export default (state, action) => {
         loading: false, 
         error: null
       };
-   
+    case GET_SEGMENTATIONS:
+      return {
+        ...state,
+        segmentations: action.payload,
+        loading: false, 
+        error: null
+      };
     case SET_ERROR:
       return {
         ...state,

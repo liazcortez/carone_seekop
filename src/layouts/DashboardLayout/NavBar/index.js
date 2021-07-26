@@ -36,7 +36,8 @@ import {
   Sidebar as MultiBarIcon,
   Clock as HourIcon,
   File as DocumentIcon,
-  UploadCloud as LoadIcon
+  UploadCloud as LoadIcon,
+  Mail as mailjet
 } from 'react-feather';
 import Logo from 'src/components/Logo';
 import useAuth from 'src/hooks/useAuth';
@@ -240,6 +241,11 @@ const NavBar = ({ onMobileClose, openMobile, ...rest }) => {
               title: t('Navbar.LoadLeads'),
               href: '/app/management/loadLeads',
               icon: LoadIcon
+            },
+            {
+              title:t('Navbar.Segmentation'),
+              icon: mailjet,
+              href: '/app/management/segmentation'
             }
           ]
         }

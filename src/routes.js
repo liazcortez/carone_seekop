@@ -8,9 +8,7 @@ import LoadingScreen from 'src/components/LoadingScreen';
 import AuthGuard from 'src/components/AuthGuard';
 import GuestGuard from 'src/components/GuestGuard';
 
-
 export const renderRoutes = (routes = []) => (
-  
   <Suspense fallback={<LoadingScreen />}>
     <Switch>
       {routes.map((route, i) => {
@@ -81,7 +79,7 @@ const routes = [
     path: '/register-unprotected',
     component: lazy(() => import('src/views/auth/RegisterView'))
   },
-  
+
   {
     path: '/app',
     guard: AuthGuard,
@@ -200,7 +198,9 @@ const routes = [
       {
         exact: true,
         path: '/app/management/omsLeads/:id',
-        component: lazy(() => import('src/views/omsGlobal/OmsGlobalDetailsView'))
+        component: lazy(() =>
+          import('src/views/omsGlobal/OmsGlobalDetailsView')
+        )
       },
       {
         exact: true,
@@ -210,7 +210,9 @@ const routes = [
       {
         exact: true,
         path: '/app/management/questLeads/:id',
-        component: lazy(() => import('src/views/questLead/QuestLeadsDetailsView'))
+        component: lazy(() =>
+          import('src/views/questLead/QuestLeadsDetailsView')
+        )
       },
       {
         exact: true,
@@ -236,7 +238,7 @@ const routes = [
         exact: true,
         path: '/app/management/vehicles/:id',
         component: lazy(() => import('src/views/vehicle/VehicleDetailsView'))
-      }, 
+      },
       {
         exact: true,
         path: '/app/management/status/:id',
@@ -247,7 +249,7 @@ const routes = [
         path: '/app/management/users/:id',
         component: lazy(() => import('src/views/user/UserDetailsView'))
       },
-      
+
       {
         exact: true,
         path: '/app/management/companies/:id/edit',
@@ -300,6 +302,11 @@ const routes = [
       },
       {
         exact: true,
+        path: '/app/management/segmentation',
+        component: lazy(() => import('src/views/emailMarketing/segmentation/SegmentationListView'))
+      },
+      {
+        exact: true,
         path: '/app/create/make',
         component: lazy(() => import('src/views/make/MakeCreateView'))
       },
@@ -308,7 +315,7 @@ const routes = [
         path: '/app/create/company',
         component: lazy(() => import('src/views/company/CompanyCreateView'))
       },
-      
+
       {
         exact: true,
         path: '/app/create/document',
@@ -332,7 +339,9 @@ const routes = [
       {
         exact: true,
         path: '/app/create/questLead',
-        component: lazy(() => import('src/views/questLead/QuestLeadsCreateView'))
+        component: lazy(() =>
+          import('src/views/questLead/QuestLeadsCreateView')
+        )
       },
       {
         exact: true,

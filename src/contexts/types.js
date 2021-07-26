@@ -74,6 +74,9 @@ export const UPDATE_SOURCE = 'UPDATE_SOURCE';
 export const CREATE_MAIL = 'CREATE_MAIL';
 export const CREATE_MAIL_ATTACHMENT = 'CREATE_MAIL_ATTACHMENT';
 
+//MailJet
+export const GET_SEGMENTATIONS = 'GET_SEGMENTATIONS';
+
 // Activities
 export const GET_ACTIVITIES = 'GET_ACTIVITIES';
 export const GET_ACTIVITY = 'GET_ACTIVITY';

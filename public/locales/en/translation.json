@@ -265,7 +265,8 @@
         "Documents": "Documents",
         "Temperatures": "Temperatures",
         "SocialAccounts": "Social Accounts",
-        "Alarms": "Alarms"
+        "Alarms": "Alarms",
+        "Segmentation": "Segmentation"
     },
     "Dashboard": {
         "ThisMonth": "This Month",

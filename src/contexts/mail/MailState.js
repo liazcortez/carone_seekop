@@ -8,6 +8,7 @@ import {
   SET_ERROR,
   CLEAR_STATE,
   SET_LOADING,
+  GET_SEGMENTATIONS
 } from '../types';
 
 const MailState = props => {
@@ -15,7 +16,9 @@ const MailState = props => {
     mails: [],
     mail: {},
     loading: false,
-    error: null
+    error: null,
+    segmentations:[]
+
   };
 
   const [state, dispatch] = useReducer(MailReducer, initialState);
@@ -53,6 +56,26 @@ const MailState = props => {
       dispatch({ type: SET_ERROR, payload: err.response.data})
     }
   }
+  
+  //get mailjet segmentations
+  const getSegmentations = async () => {
+    console.log('getsegmentations');
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem("token")}`
+      }
+    };
+    setLoading();
+    try {
+      console.log('getting segmentations');
+      const res = await api.get(`/mails/segmentation`, config);
+      console.log('segmentations',res.data.data.Data);
+      dispatch({ type: GET_SEGMENTATIONS, payload: res.data.data.Data });
+    } catch (err) {
+      dispatch({ type: SET_ERROR, payload: err})
+    }
+  }
 
   //Clear State
   const clearState = () => dispatch({ type: CLEAR_STATE });
@@ -67,10 +90,12 @@ const MailState = props => {
         mails: state.mails,
         mail: state.mail,
         error: state.error,
+        segmentations: state.segmentations,
         createMail,
         clearState,
         setLoading,
-        createMailAttachment
+        createMailAttachment,
+        getSegmentations
       }}
     >
       {props.children}
